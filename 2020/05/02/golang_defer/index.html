@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="简介延迟调用是指函数返回之前自动调用的一个代码块，在Golang当中是用关键defer来实现的。defer向当前函数注册要执行的代码块，然后到函数返回之前执行。比如打开文件和关闭文件。 1234567func openFile() &amp;#123;    f, err :&#x3D; os.Open(&quot;...&quot;)    if err !&#x3D; nil &amp;#123;        return">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang之defer">
+<meta property="og:url" content="http://example.com/2020/05/02/golang_defer/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="简介延迟调用是指函数返回之前自动调用的一个代码块，在Golang当中是用关键defer来实现的。defer向当前函数注册要执行的代码块，然后到函数返回之前执行。比如打开文件和关闭文件。 1234567func openFile() &amp;#123;    f, err :&#x3D; os.Open(&quot;...&quot;)    if err !&#x3D; nil &amp;#123;        return">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/c39f5280a431cc801d70d1d22e7a6967a062eb3c/golang/runtime._defer.png">
+<meta property="article:published_time" content="2020-05-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.678Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/vfxh/site-images/raw/c39f5280a431cc801d70d1d22e7a6967a062eb3c/golang/runtime._defer.png">
+
+
+<link rel="canonical" href="http://example.com/2020/05/02/golang_defer/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;05&#x2F;02&#x2F;golang_defer&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;05&#x2F;02&#x2F;golang_defer&#x2F;&quot;,&quot;title&quot;:&quot;Golang之defer&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Golang之defer | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C"><span class="nav-number">1.1.</span> <span class="nav-text">注册</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%E7%9B%AE%E6%A0%87%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.2.</span> <span class="nav-text">作用目标对象</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C-1"><span class="nav-number">2.1.</span> <span class="nav-text">注册</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C"><span class="nav-number">2.2.</span> <span class="nav-text">执行</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/02/golang_defer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Golang之defer
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-05-02 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-02T00:00:00+08:00">2020-05-02</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>延迟调用是指函数返回之前自动调用的一个代码块，在Golang当中是用关键defer来实现的。defer向当前函数注册要执行的代码块，然后到函数返回之前执行。<br>比如打开文件和关闭文件。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">openFile</span><span class="params">()</span></span> &#123;</span><br><span class="line">    f, err := os.Open(<span class="string">&quot;...&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> f.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在函数openFile中先是打开了一个文件，然后defer f.Close()注册文件关闭代码。这样在openFile函数执行期间，文件是一直处于打开状态。等到openFile返回之前就自动关闭打开的文件，很方便。</p>
+<p>defer的作用域是函数或者方法的作用域，而不是某个局部代码块的作用域。即使在函数或者方法内的某个局部作用域使用defer注册延迟调用，也会在函数或方法结束之前调用。而不是在离开局部作用之前调用。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;internal code area&quot;</span>)</span><br><span class="line">        <span class="keyword">defer</span> fmt.Println(<span class="string">&quot;internal end&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println(<span class="string">&quot;main end&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果。可见，即使在函数内部的局部作用域进行defer注册，也会在函数结束之前调用，而不是离开函数内部局部作用域之前调用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">internal code area</span><br><span class="line">main end</span><br><span class="line">internal end</span><br></pre></td></tr></table></figure>
+
+<h4 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h4><p>可以注册多次，不过注册顺序和执行的顺序是反过来的。注册就相当压栈，执行就相当于出栈（其实底层并不是栈实现，这里只是为了方便理解）。所以先注册的代码块会在最后才执行。比如下面的代码打印的顺序是：third second first</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> fmt.Println(<span class="string">&quot;first&quot;</span>)</span><br><span class="line">    <span class="keyword">defer</span> fmt.Println(<span class="string">&quot;second&quot;</span>)</span><br><span class="line">    <span class="keyword">defer</span> fmt.Println(<span class="string">&quot;third&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>defer注册在return之后的代码可能不会被执行，就像下面的例程。</p>
+<blockquote>
+<p>错误例子</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">openFile</span><span class="params">()</span></span> &#123;</span><br><span class="line">    f, err := os.Open(<span class="string">&quot;./defer/defer.go&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err == <span class="literal">nil</span> &#123; <span class="comment">// 为了测试，这里改成了err == nil</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        f.Close()</span><br><span class="line">        fmt.Println(<span class="string">&quot;called defer&quot;</span>)</span><br><span class="line">    &#125;()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的代码中，成功打开文件之后继续执行下面的代码。如果这期间出现错误，导致函数提前返回，那么打开的文件就一直处于打开状态，直到程序退出。正确的做法是，文件成功打开之后，紧接着就注册延迟关闭文件的代码块，这样就可以正确地关闭文件了。</p>
+<blockquote>
+<p>正确的做法</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">openFile</span><span class="params">()</span></span> &#123;</span><br><span class="line">    f, err := os.Open(<span class="string">&quot;./defer/defer.go&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123; </span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 打开成功之后立即注册延迟关闭文件代码块</span></span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        f.Close()</span><br><span class="line">        fmt.Println(<span class="string">&quot;called defer&quot;</span>)</span><br><span class="line">    &#125;()</span><br><span class="line">    <span class="comment">// 后面的逻辑...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用os.Exit() defer不会被执行，即使defer是在调用os.Exit()函数之前注册的。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 这里注册的延迟不会执行</span></span><br><span class="line">    <span class="keyword">defer</span> fmt.Println(<span class="string">&quot;call defer&quot;</span>)</span><br><span class="line">    os.Exit(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>defer注册的时候如果需要用到外部变量，就会涉及到使用外部变量的两种方式：复制和引用。如果是复制，那在注册的时候就已经确定使用变量的值，即使后面这个变量再发生变化也不会影响注册时的值。如果时引用，那么defer在使用这个变量的时候会根据上下文环境来确定这个变量的值。defer注册后变量发生改变，defer执行时这个变量的值就是改变之后的值。</p>
+<p>比如下面这个例子。类型number有两个方法，其中一个方法接收者是指针类型，另一个是值类型。指针类型是引用方式，所以最后执行这个方法的时候会根据上下文环境来确定n的值。而值类型方法则不会，因为在defer注册的时候已经拷贝一份副本压入栈当中了，即使后面修改n的值也不会影响到defer中的n的值。</p>
+<blockquote>
+<p>例子</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> number <span class="keyword">int</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(n number)</span> <span class="title">print</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;value: &quot;</span>, n)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(n *number)</span> <span class="title">ptrPrint</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;pointer: &quot;</span>, *n)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> n number</span><br><span class="line">    <span class="keyword">defer</span> n.<span class="built_in">print</span>()</span><br><span class="line">    <span class="keyword">defer</span> n.ptrPrint()</span><br><span class="line">    n = <span class="number">20</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pointer:  20</span><br><span class="line">value:  0</span><br></pre></td></tr></table></figure>
+
+<p>关于使用外部变量的引用方式还有一个，就是闭包。闭包指的是匿名函数和引用环境的结合体。简单来说，被匿名函数使用的外部变量会变成引用方式。如果闭包作为函数返回参数返回，则闭包引用的外部函数变量就会延长生命周期。只要这个闭包还在使用，那么这个被闭包引用的变量就还存在。所以，如果defer注册的时候闭包，那么闭包里面使用的外部函数变量就成了引用方式。最用deer执行的时候，这个变量的值会根据上下文来决定。</p>
+<p>就如同下面这个例子，只要是使用闭包的方式注册，并且直接使用外部变量。那么不管方法的接收者是指针还是值，或者只是一个变量，不使用方法，都会变成引用方式。最终的值是根绝上下文来决定的。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> number <span class="keyword">int</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(n number)</span> <span class="title">print</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;value: &quot;</span>, n)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(n *number)</span> <span class="title">ptrPrint</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;pointer: &quot;</span>, *n)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> n number</span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; n.<span class="built_in">print</span>() &#125;()</span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; n.ptrPrint() &#125;()</span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; fmt.Println(n) &#125;() <span class="comment">// 闭包，引用</span></span><br><span class="line">    n = <span class="number">20</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">20</span><br><span class="line">pointer:  20</span><br><span class="line">value:  20</span><br></pre></td></tr></table></figure>
+
+<p>但是，如果作为闭包的参数传递就不是引用方式了，而是值方式。这种方式会在defer注册的时候直接拷贝当前外部变量的值，然后作为函数参数传给闭包。最终闭包内使用的变量就是函数参数，而不是外部变量了。比如下面的例子，最终的输出的结果都是0，而不是20。</p>
+<blockquote>
+<p>这里考虑的传参是变量类型为值的情况，如果是指针的情况那就是引用的方式</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> number <span class="keyword">int</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(n number)</span> <span class="title">print</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;value: &quot;</span>, n)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(n *number)</span> <span class="title">ptrPrint</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;pointer: &quot;</span>, *n)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> n number</span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">(n number)</span></span> &#123; n.<span class="built_in">print</span>() &#125;(n)</span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">(n number)</span></span> &#123; n.ptrPrint() &#125;(n)</span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">(n number)</span></span> &#123; fmt.Println(n) &#125;(n)</span><br><span class="line">    n = <span class="number">20</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以，如果想要使用defer来粗略计算一个函数的执行时间。那么就需要使用闭包，就像下面这样。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    start := time.Now()</span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; fmt.Println(time.Since(start)) &#125;()</span><br><span class="line">    time.Sleep(<span class="number">2</span> * time.Second)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>defer相对return和panic的执行顺序</strong></p>
+<p>（暂不确定！学习汇编之后重新看！）<br>return的执行顺序先于defer。比如下面的例子，return会先更新num的值为100。然后defer注册的代码块再执行，defer中先打印出100后更新num的值为200，最终打印出来的结果就是200。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(test())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span> <span class="params">(num <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; <span class="comment">// 闭包，直接引用外部变量</span></span><br><span class="line">        fmt.Println(num)</span><br><span class="line">        num += <span class="number">100</span></span><br><span class="line">    &#125;()</span><br><span class="line">    <span class="keyword">return</span> <span class="number">100</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不过要注意，defer可以修改返回值的情况是命名参数的情况下。如果不是命名返回参数，那么defer就没办法修改返回值了。像这种情况，return把变量num的值加上10然后作为返回值返回。而defer更新num的值只是更新test函数局部变量的值，并不影响返回值。所以最后打印出来的值就是20。原因是返回只是一个值，并没有局部变量来存储这个值，自然就没办法更改。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(test())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    num := <span class="number">10</span></span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        fmt.Println(num)</span><br><span class="line">        num += <span class="number">100</span></span><br><span class="line">    &#125;()</span><br><span class="line">    <span class="keyword">return</span> num + <span class="number">10</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>defer得执行顺序会先于panic，比如下面的例子。调用这个函数可以看到，先执行了defer中的代码块，然后再panic。所以这个函数先是执行fmt.Println函数，然后再panic。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> fmt.Println(<span class="string">&quot;啊！要panic了！天啊！&quot;</span>)</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="built_in">panic</span>(<span class="string">&quot;超级大法！协程崩溃！&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="作用目标对象"><a href="#作用目标对象" class="headerlink" title="作用目标对象"></a>作用目标对象</h4><p>先来看一个例子。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    x := <span class="number">1</span></span><br><span class="line">    y := <span class="number">2</span></span><br><span class="line">    <span class="keyword">defer</span> calc(<span class="string">&quot;A&quot;</span>, x, calc(<span class="string">&quot;B&quot;</span>, x, y))</span><br><span class="line">    x = <span class="number">3</span></span><br><span class="line">    <span class="keyword">defer</span> calc(<span class="string">&quot;C&quot;</span>, x, calc(<span class="string">&quot;D&quot;</span>, x, y))</span><br><span class="line">    y = <span class="number">4</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">calc</span><span class="params">(index <span class="keyword">string</span>, a, b <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    ret := a + b</span><br><span class="line">    fmt.Println(index, a, b, ret)</span><br><span class="line">    <span class="keyword">return</span> ret</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从最直接的感觉来看，这个程序执行的顺序应该是先调用第二个defer的calc函数，然后再调用嵌套在里面的calc函数，依次执行。但不是的，这个defer作用的仅仅是最外层的calc函数，对于嵌套在里面的calc是不起作用的，所以这个程序真正执行的顺序应该是下面这样子。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    x := <span class="number">1</span></span><br><span class="line">    y := <span class="number">2</span></span><br><span class="line">    tmp1 := calc(<span class="string">&quot;B&quot;</span>, x, y)</span><br><span class="line">    <span class="keyword">defer</span> calc(<span class="string">&quot;A&quot;</span>, x, tmp1)</span><br><span class="line">    x = <span class="number">3</span></span><br><span class="line">    tmp2 := calc(<span class="string">&quot;D&quot;</span>, x, y)</span><br><span class="line">    <span class="keyword">defer</span> calc(<span class="string">&quot;C&quot;</span>, x, tmp2)</span><br><span class="line">    y = <span class="number">4</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所以最终的打印结果是：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">B <span class="number">1</span> <span class="number">2</span> <span class="number">3</span></span><br><span class="line">D <span class="number">3</span> <span class="number">2</span> <span class="number">5</span></span><br><span class="line">C <span class="number">3</span> <span class="number">5</span> <span class="number">8</span></span><br><span class="line">A <span class="number">1</span> <span class="number">3</span> <span class="number">4</span></span><br></pre></td></tr></table></figure>
+<p>在看一个例子</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> test()()</span><br><span class="line">    fmt.Println(<span class="string">&quot;又是大法好！&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span> <span class="title">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;大法好！！！&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个程序的执行顺序是:</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">大法好！！！</span><br><span class="line">又是大法好！</span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
+<p>为什么呢？原因是defer作用的不是test函数，而是作用于test函数返回的那个匿名函数，所以hello world是最后才执行的。执行顺序相当于下面这样子。所以会先执行test函数的第一个fmt.Println函数，然后是main函数中的fmt.Println函数，最后才是test函数返回的那个函数。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 拆解</span></span><br><span class="line">    f := test()</span><br><span class="line">    <span class="keyword">defer</span> f()</span><br><span class="line">    fmt.Println(<span class="string">&quot;又是大法好！&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>应该避免在循环中使用defer</strong></p>
+<p>在这个函数中，循环遍历slice打开文件，然后defer注册关闭文件代码。但是这个有个问题，就是for没有结束之前，defer注册的关闭代码就不会被执行。这样可能导致fp的生命周期延长了，for循环结束之前那些被打开的文件就处于打开状态，直到loopAndDefer函数返回。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">loopAndDefer</span><span class="params">()</span></span> &#123;</span><br><span class="line">    files := []<span class="keyword">string</span>&#123;<span class="string">&quot;file_1&quot;</span>, <span class="string">&quot;file_2&quot;</span>, <span class="string">&quot;file_3&quot;</span>&#125;</span><br><span class="line">    <span class="keyword">for</span> _, file := <span class="keyword">range</span> files &#123;</span><br><span class="line">        fp, err := os.Open(file)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Println(err)</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">defer</span> fp.Close()</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以改成闭包的形式，就像下面这样。exec函数执行完返回之前，defer注册的代码块会被执行，关闭文件。这样就不会导致上面说到的情况发生了。当然这只是其中一种办法。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">loopAndDefer</span><span class="params">()</span></span> &#123;</span><br><span class="line">    files := []<span class="keyword">string</span>&#123;<span class="string">&quot;file_1&quot;</span>, <span class="string">&quot;file_2&quot;</span>, <span class="string">&quot;file_3&quot;</span>&#125;</span><br><span class="line">    exec := <span class="function"><span class="keyword">func</span><span class="params">(file <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">        fp, err := os.Open(file)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Println(err)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">defer</span> fp.Close() <span class="comment">// 当exec函数结束之前立即调用关闭文件</span></span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> _, file := <span class="keyword">range</span> files &#123;  </span><br><span class="line">        exec(file)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>defer延迟调用的性能比直接调用函数的性能要差。</p>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>（分析得不是很彻底！比如return和defer的顺序，以及如何判断groutine的defer调用链中的元素是各个不同函数中的defer的，比如函数A注册了多个defer，但是在A返回之前调用了B函数，B又注册了很多个defer）</p>
+<p>defer关键字在运行时对应的底层结构是runtime._defer，每一个结构体实例表示一个defer关键字注册后的相关上下文数据。包括参数和返回结果的大小，栈指针以及defer的代码块执行时执行的具体函数等等。</p>
+<blockquote>
+<p>runtime/runtime2.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> _defer <span class="keyword">struct</span> &#123;</span><br><span class="line">    siz       <span class="keyword">int32</span> <span class="comment">// 参数和结果的内存大小</span></span><br><span class="line">    started   <span class="keyword">bool</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    sp        <span class="keyword">uintptr</span>   <span class="comment">// 执行defer语句时调用方的栈指针</span></span><br><span class="line">    pc        <span class="keyword">uintptr</span>   <span class="comment">// 执行defer语句时调用方的程序计数器</span></span><br><span class="line">    fn        *funcval  <span class="comment">// defer注册时传入的函数</span></span><br><span class="line">    _panic    *_panic</span><br><span class="line">    link      *_defer   <span class="comment">// 指向下一个runtime._defer的指针</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>runtime._defer结构中有一个runtime._defer.link成员，这个成员是指向runtime._defer结构的指针，将多个defer关键字注册后的runtime._defer实例串联起来，形成一条调用链表。<em><strong>每一个Goroutine都有一个指向这条调用链的指针，每次在当前Goroutine中defer注册后，都会使用前插法将runtime._defer结构体实例作为一个节点插入这条调用链的头部。在执行时，就从链表的头部摘取一个节点</strong></em>。这就是为什么先注册，后调用的原因。</p>
+<blockquote>
+<p>示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/c39f5280a431cc801d70d1d22e7a6967a062eb3c/golang/runtime._defer.png" alt="image"></p>
+<h4 id="注册-1"><a href="#注册-1" class="headerlink" title="注册"></a>注册</h4><p>编译器会将defer语句转换成调用runtime.deferproc函数来创建一个延迟调用runtime._defer结构体实例。fn是传入的调用函数，函数参数是在紧接着fn后的内存空间。siz是参数的大小。runtime.deferproc只是创建一个延迟调用的实例，并没有调用函数。</p>
+<blockquote>
+<p>runtime/panic.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Create a new deferred function fn with siz bytes of arguments.</span></span><br><span class="line"><span class="comment">// The compiler turns a defer statement into a call to this.</span></span><br><span class="line"><span class="comment">//go:nosplit</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">deferproc</span><span class="params">(siz <span class="keyword">int32</span>, fn *funcval)</span></span> &#123; </span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取调用方的栈指针</span></span><br><span class="line">    sp := getcallersp()</span><br><span class="line">    <span class="comment">// 获取传入函数参数的起始地址</span></span><br><span class="line">    argp := <span class="keyword">uintptr</span>(unsafe.Pointer(&amp;fn)) + unsafe.Sizeof(fn)</span><br><span class="line">    <span class="comment">// 获取调用方的程序计数器</span></span><br><span class="line">    callerpc := getcallerpc()</span><br><span class="line">    <span class="comment">// 创建一个新的runtime._defer结构实例，然后返回指向这个结构实例的指针</span></span><br><span class="line">    d := newdefer(siz)</span><br><span class="line">    <span class="keyword">if</span> d._panic != <span class="literal">nil</span> &#123;</span><br><span class="line">        throw(<span class="string">&quot;deferproc: d.panic != nil after newdefer&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将新的runtime._defer实例插入goroutinedefer链表头部</span></span><br><span class="line">    d.link = gp._defer</span><br><span class="line">    gp._defer = d</span><br><span class="line">    d.fn = fn</span><br><span class="line">    d.pc = callerpc</span><br><span class="line">    d.sp = sp</span><br><span class="line">    <span class="comment">// 获取参数，并把参数存储在紧跟runtime._defer实例之后的内存空间</span></span><br><span class="line">    <span class="keyword">switch</span> siz &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">        <span class="comment">// Do nothing.</span></span><br><span class="line">    <span class="keyword">case</span> sys.PtrSize:</span><br><span class="line">        *(*<span class="keyword">uintptr</span>)(deferArgs(d)) = *(*<span class="keyword">uintptr</span>)(unsafe.Pointer(argp))</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        memmove(deferArgs(d), unsafe.Pointer(argp), <span class="keyword">uintptr</span>(siz))</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 调用return0的作用是避免无限递归runtime.deferreturn函数，不会触发延迟调用</span></span><br><span class="line">    return0()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="执行"><a href="#执行" class="headerlink" title="执行"></a>执行</h4><p>defer关键字注册的延迟调用是通过调用runtime.deferreturn这个函数来进行执行的，runtime.deferreturn函数接收一个参数，这个参数是指向defer注册函数的参数起始地址。runtime.deferreturn函数从goroutine的defer调用链从链表的头部摘取一个runtime._defer实例，然后将这个实例中注册的延迟调用函数和函数参数传入runtime.jmpdefer函数。runtime.jmpdefer函数是用汇编实现的一个函数，是真正执行延迟函数的地方，执行完成之后跳回runtime.deferreturn，接着执行下一个延迟调用函数，直到goroutine延迟调用链为空。</p>
+<blockquote>
+<p>runtime/panic.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">deferreturn</span><span class="params">(arg0 <span class="keyword">uintptr</span>)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 获取当前执行goroutine的defer调用链，如果不存在延迟调用的函数</span></span><br><span class="line">    <span class="comment">// 则直接返回</span></span><br><span class="line">    gp := getg()</span><br><span class="line">    d := gp._defer</span><br><span class="line">    <span class="keyword">if</span> d == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="comment">// 没有剩余的runtime._defer实例，返回</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    sp := getcallersp()</span><br><span class="line">    <span class="keyword">if</span> d.sp != sp &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> d.openDefer &#123;</span><br><span class="line">        done := runOpenDeferFrame(gp, d)</span><br><span class="line">        <span class="keyword">if</span> !done &#123;</span><br><span class="line">            throw(<span class="string">&quot;unfinished open-coded defers in deferreturn&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        gp._defer = d.link</span><br><span class="line">        freedefer(d)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 获取函数参数首地址</span></span><br><span class="line">    <span class="keyword">switch</span> d.siz &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">        <span class="comment">// Do nothing.</span></span><br><span class="line">    <span class="keyword">case</span> sys.PtrSize:</span><br><span class="line">        *(*<span class="keyword">uintptr</span>)(unsafe.Pointer(&amp;arg0)) = *(*<span class="keyword">uintptr</span>)(deferArgs(d))</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        memmove(unsafe.Pointer(&amp;arg0), deferArgs(d), <span class="keyword">uintptr</span>(d.siz))</span><br><span class="line">    &#125;</span><br><span class="line">    fn := d.fn</span><br><span class="line">    d.fn = <span class="literal">nil</span></span><br><span class="line">    gp._defer = d.link</span><br><span class="line">    freedefer(d)</span><br><span class="line">    _ = fn.fn</span><br><span class="line">    <span class="comment">// 传入要执行的函数以及函数参数，arg0是函数参数的首地址</span></span><br><span class="line">    jmpdefer(fn, <span class="keyword">uintptr</span>(unsafe.Pointer(&amp;arg0)))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>参考资料</p>
+<ol>
+<li>《Go语言学习笔记》</li>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/lmvpkWyVUuZhlBDdvXNV4Q">https://mp.weixin.qq.com/s/lmvpkWyVUuZhlBDdvXNV4Q</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/04/29/redis_data_type/" rel="prev" title="Redis读书笔记《二》：数据类型">
+                  <i class="fa fa-chevron-left"></i> Redis读书笔记《二》：数据类型
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/02/golang_cosure/" rel="next" title="Golang之闭包">
+                  Golang之闭包 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

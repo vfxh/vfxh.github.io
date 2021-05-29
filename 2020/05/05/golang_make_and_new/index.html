@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="简介在Golang中，make用来初始化引用类型，如map，slice，channel。这些数据类型初始化的时候不仅需要分配内存，还需要初始化一些相关属性，比如长度，容量等等。非引用类型就是字符串，数字，浮点数，结构体，数组这些数据类型。 new函数new函数的作用是给特定类型分配内存，然后返回这块内存的地址。 12345func main() &amp;#123;	i :&#x3D; new(int)	*i &#x3D;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang之make和new">
+<meta property="og:url" content="http://example.com/2020/05/05/golang_make_and_new/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="简介在Golang中，make用来初始化引用类型，如map，slice，channel。这些数据类型初始化的时候不仅需要分配内存，还需要初始化一些相关属性，比如长度，容量等等。非引用类型就是字符串，数字，浮点数，结构体，数组这些数据类型。 new函数new函数的作用是给特定类型分配内存，然后返回这块内存的地址。 12345func main() &amp;#123;	i :&#x3D; new(int)	*i &#x3D;">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.678Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/05/05/golang_make_and_new/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;05&#x2F;05&#x2F;golang_make_and_new&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;05&#x2F;05&#x2F;golang_make_and_new&#x2F;&quot;,&quot;title&quot;:&quot;Golang之make和new&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Golang之make和new | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#new%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">new函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%83%E9%80%B8"><span class="nav-number">3.</span> <span class="nav-text">逃逸</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A9%BAstruct%E9%80%83%E9%80%B8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">空struct逃逸的问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#make%E5%87%BD%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">make函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%96%91%E6%83%91"><span class="nav-number">6.</span> <span class="nav-text">疑惑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E7%96%91"><span class="nav-number">7.</span> <span class="nav-text">解疑</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/05/golang_make_and_new/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Golang之make和new
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-05-05 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-05T00:00:00+08:00">2020-05-05</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>在Golang中，make用来初始化引用类型，如map，slice，channel。这些数据类型初始化的时候不仅需要分配内存，还需要初始化一些相关属性，比如长度，容量等等。非引用类型就是字符串，数字，浮点数，结构体，数组这些数据类型。</p>
+<h3 id="new函数"><a href="#new函数" class="headerlink" title="new函数"></a>new函数</h3><p>new函数的作用是给特定类型分配内存，然后返回这块内存的地址。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	i := <span class="built_in">new</span>(<span class="keyword">int</span>)</span><br><span class="line">	*i = <span class="number">10</span></span><br><span class="line">	fmt.Println(*i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面的代码来看，new申请一块int类型的内存块，然后返回这个内存块的地址赋值给一个指针变量。可以通过这个指针变量来赋值，或者获取值。同样，new也可以给结构体，数组，这些类型分配内存。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">type</span> test <span class="keyword">struct</span> &#123;</span><br><span class="line">		a <span class="keyword">int</span></span><br><span class="line">	&#125;</span><br><span class="line">	tPtr := <span class="built_in">new</span>(test)</span><br><span class="line">	tPtr.a = <span class="number">10</span></span><br><span class="line">	arrptr := <span class="built_in">new</span>([<span class="number">4</span>]<span class="keyword">int</span>)</span><br><span class="line">	(*arrptr)[<span class="number">0</span>] = <span class="number">10</span></span><br><span class="line">	fmt.Println(tPtr, arrptr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&amp;&#123;<span class="number">10</span>&#125; &amp;[<span class="number">10</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<p>要获取数组元素的时候，需要用括号括起来，先解引用数组指针得到数组对象在用索引获取元素。</p>
+<h3 id="逃逸"><a href="#逃逸" class="headerlink" title="逃逸"></a>逃逸</h3><p>new分配的内存并不一定会在堆上，也可能会在栈上。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fn</span><span class="params">()</span></span> &#123;</span><br><span class="line">	x := <span class="built_in">new</span>(<span class="keyword">int</span>)</span><br><span class="line">	*x = <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这种情况下，x会分配在栈上。即使它是用new来分配内存的，x变量除了在fn函数中内被使用之外，就没有在任何地方引用它。所以当fn函数返回的时候，x就会被回收了。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	x := fn()</span><br><span class="line">	fmt.Printf(<span class="string">&quot;main: %#v\t%d\n&quot;</span>, x, *x)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fn</span><span class="params">()</span> *<span class="title">int</span></span> &#123;</span><br><span class="line">	x := <span class="number">10</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;fn:   %#v\t%d\n&quot;</span>, &amp;x, x)</span><br><span class="line">	<span class="keyword">return</span> &amp;x</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fn:   (*<span class="keyword">int</span>)(<span class="number">0xc0000100b0</span>)      <span class="number">10</span></span><br><span class="line">main: (*<span class="keyword">int</span>)(<span class="number">0xc0000100b0</span>)      <span class="number">10</span></span><br></pre></td></tr></table></figure>
+<p>查看逃逸情况</p>
+<blockquote>
+<p>go build -gcflags “-l -m” .\main.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.\main.<span class="keyword">go</span>:<span class="number">10</span>:<span class="number">2</span>: moved to heap: x</span><br><span class="line">.\main.<span class="keyword">go</span>:<span class="number">11</span>:<span class="number">12</span>: ... argument does not escape</span><br><span class="line">.\main.<span class="keyword">go</span>:<span class="number">11</span>:<span class="number">32</span>: x escapes to heap</span><br><span class="line">.\main.<span class="keyword">go</span>:<span class="number">7</span>:<span class="number">12</span>: ... argument does not escape</span><br><span class="line">.\main.<span class="keyword">go</span>:<span class="number">7</span>:<span class="number">35</span>: *x escapes to heap</span><br></pre></td></tr></table></figure>
+<p>可以看出，第一行显示出x被分配到了堆上：moved to heap: x<br>fn函数中，x被声明为局部变量。但是fn函数返回的是x的地址，在main函数中可以继续通过返回的地址来访问fn函数中声明的x变量。x并没有被回收，即使x不是使用new函数来分配内存的。这种情况被称为’逃逸’。逃逸最大的好处是不用担心在一个函数中声明了局部变量，再返回它的地址后就会被回收。相对不好的地方就是每次经过逃逸，都会涉及到额外的一次内存分配的过程，降低性能。</p>
+<h4 id="空struct逃逸的问题"><a href="#空struct逃逸的问题" class="headerlink" title="空struct逃逸的问题"></a>空struct逃逸的问题</h4><p>这个例程中，a和b两个变量都是分配在栈上面的，没有出现逃逸的情况，a和b的地址是不相同的。所以a和b的地址比较就是false。（为什么）</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> a, b <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line">	fmt.Printf(<span class="string">&quot;%t\n&quot;</span>, &amp;a == &amp;b) <span class="comment">// false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而在下面这个程序中，a和b出现了逃逸的情况，是分配在堆当中的。由于a和b都是空结构体类型，大小都是0，所以会分配一样的地址。所以它们的地址是相同的。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> a, b <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line">	fmt.Printf(<span class="string">&quot;%t, %p, %p\n&quot;</span>, &amp;a == &amp;b, &amp;a, &amp;b) <span class="comment">// true, 0x5a6da8, 0x5a6da8</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>go build -gcflags “-m -l” .\serv.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.\serv.<span class="keyword">go</span>:<span class="number">6</span>:<span class="number">6</span>: moved to heap: a</span><br><span class="line">.\serv.<span class="keyword">go</span>:<span class="number">6</span>:<span class="number">9</span>: moved to heap: b</span><br><span class="line">.\serv.<span class="keyword">go</span>:<span class="number">7</span>:<span class="number">12</span>: ... argument does not escape</span><br><span class="line">.\serv.<span class="keyword">go</span>:<span class="number">7</span>:<span class="number">32</span>: &amp;a == &amp;b escapes to heap</span><br></pre></td></tr></table></figure>
+<p>通过加上编译参数可以到看，前面两行都显示a和b被移动到了堆上面。<br>为什么大小是0的空结构体类型在堆上的地址相同呢？是因为Golang对于大小为0的空类型对象都分配同一个地址。<br>而从堆分配内存就是调用了mallocgc函数，别问我怎么知道，问就是百度来的，实际上也是百度来的！</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// base address for all 0-byte allocations</span></span><br><span class="line"><span class="keyword">var</span> zerobase <span class="keyword">uintptr</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">mallocgc</span><span class="params">(size <span class="keyword">uintptr</span>, typ *_type, needzero <span class="keyword">bool</span>)</span> <span class="title">unsafe</span>.<span class="title">Pointer</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> gcphase == _GCmarktermination &#123;</span><br><span class="line">		throw(<span class="string">&quot;mallocgc called with gcphase == _GCmarktermination&quot;</span>)</span><br><span class="line">	&#125;    </span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> size == <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> unsafe.Pointer(&amp;zerobase)</span><br><span class="line">	&#125; </span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从源码中可以看到，zerobase是一个所有0字节分配的基地址。而mallocgc函数在判断size==0之后就把这个变量转成unsafe.Pointer类型然后返回，这就是0字节的空类型变量逃逸之后在堆上分配内存会是相同地址的原因。</p>
+<blockquote>
+<p>为什么使用fmt.Printf函数之后就出现逃逸了呢？这个不知道，探索中！</p>
+</blockquote>
+<h3 id="make函数"><a href="#make函数" class="headerlink" title="make函数"></a>make函数</h3><p>new函数仅仅是分配内存然后返回内存块的地址，它并不关心类型是否还有那些属性需要初始化。对于map这些引用类型数据类型，它其实就是底层散列表的引用。如果用new来对map类型操作的话，会引发错误。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	mptr := <span class="built_in">new</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int</span>)</span><br><span class="line">	(*mptr)[<span class="string">&quot;key&quot;</span>] = <span class="number">10</span></span><br><span class="line">	<span class="comment">// panic: assignment to entry in nil map</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>出现panic的原因是：new只是分配内存块给引用底层散列表的那个对象，并没有初始化底层的散列表，所以对一个并不存在的散列表操作肯定会panic。所以，初始化map类型对象，就需要用make函数。<br>make函数被调用的时候，会被转成相应类型的创建函数来初始化对应类型的对象。不仅仅是分配内存，还要对被引用的底层数据结构初始化。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	m := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int</span>)</span><br><span class="line">	m[<span class="string">&quot;key&quot;</span>] = <span class="number">1</span></span><br><span class="line">	fmt.Println(m)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就没问题了，打印出</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">map</span>[key:<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<p>在看一个例子</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	m := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span>)</span><br><span class="line">	mPtr := <span class="built_in">new</span>(<span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span>)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;%#v\n&quot;</span>, reflect.ValueOf(mPtr))</span><br><span class="line">	fmt.Printf(<span class="string">&quot;%#v\n&quot;</span>, reflect.ValueOf(&amp;m))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 第一种引用的散列表是nil</span></span><br><span class="line">&amp;<span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span>(<span class="literal">nil</span>)</span><br><span class="line"><span class="comment">// 第二种虽然没有元素，但是已经初始化了</span></span><br><span class="line">&amp;<span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>make还可以指定初始化对象的长度和容量</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	sli := <span class="built_in">make</span>([]<span class="keyword">int</span>, <span class="number">3</span>, <span class="number">10</span>)</span><br><span class="line">	fmt.Println(sli)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;%#v\n&quot;</span>, *(*reflect.SliceHeader)(unsafe.Pointer(&amp;sli)))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">0</span> <span class="number">0</span> <span class="number">0</span>]</span><br><span class="line">reflect.SliceHeader&#123;Data:<span class="number">0xc000014190</span>, Len:<span class="number">3</span>, Cap:<span class="number">10</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>在初始化的时候就指定了三个元素，这个三个元素是对应类型的零值。Data是底层数组的地址，Len是当前元素的长度，Cap是容量。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>简单来概括就是：new用于非引用类型，如字符串，数字，数据，或者结构体。它仅仅给对应的类型分配内存，然后返回这个新分配的内存的地址，不做其它。而make，就是用来初始化那些引用类型的对象，slice，make，channel。它会被转化成相应类型的初始化函数，不仅分配引用变量的内存块，还会初始化底层的数据结构。</p>
+<h3 id="疑惑"><a href="#疑惑" class="headerlink" title="疑惑"></a>疑惑</h3><p>new也可以用来搞slice</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	sliPtr := <span class="built_in">new</span>([]<span class="keyword">string</span>)</span><br><span class="line">	*sliPtr = <span class="built_in">append</span>(*sliPtr, <span class="string">&quot;hello world&quot;</span>, <span class="string">&quot; yeyeyeyey&quot;</span>)</span><br><span class="line">	fmt.Println(*sliPtr)</span><br><span class="line">	<span class="comment">// [hello world  yeyeyeyey]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> sli []<span class="keyword">string</span></span><br><span class="line">	sliPtr := <span class="built_in">new</span>([]<span class="keyword">string</span>)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;%#v\n&quot;</span>, *(*reflect.SliceHeader)(unsafe.Pointer(&amp;sli)))</span><br><span class="line">	fmt.Printf(<span class="string">&quot;%#v\n&quot;</span>, *(*reflect.SliceHeader)(unsafe.Pointer(sliPtr)))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reflect.SliceHeader&#123;Data:<span class="number">0x0</span>, Len:<span class="number">0</span>, Cap:<span class="number">0</span>&#125;</span><br><span class="line">reflect.SliceHeader&#123;Data:<span class="number">0x0</span>, Len:<span class="number">0</span>, Cap:<span class="number">0</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>很明显，这两种都是未初始化的。既然第一种可以追加数据，自动分配内存，那么第二种同样也可以。</p>
+<h3 id="解疑"><a href="#解疑" class="headerlink" title="解疑"></a>解疑</h3><p>为什么用new返回的slice却能用append函数追加数据的问题。无论是var sli []int还是new返回的内存地址，它们都是没有被初始化的。但是为什么能追加数据，问题就处在append函数。这个函数先判断有没有空间存储新的元素，如果没有，就申请更大的内存来存储元素。所以即使是没有被初始化的slice也可以追加元素，因为append给它分配内存了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/05/05/golang_string/" rel="prev" title="Golang之字符串">
+                  <i class="fa fa-chevron-left"></i> Golang之字符串
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/08/golang_map/" rel="next" title="Golang之map">
+                  Golang之map <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

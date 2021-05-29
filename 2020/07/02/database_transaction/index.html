@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="概念事务一组对数据库原子性操作的集合，这些操作要么全部都执行，要么全部都不执行。每一条SQL语句都是一个事务，但也可以用多条SQL语句组成一个事务。一个事务从开始到完成可分成两个步骤：一是在从数据库中读取数据到内存，在内存中对数据进行操作。二是对在内存中操作完数据之后，提交到数据库当中。 ACID原子性：Atomicity  即一个事务中的所有操作要么全部都执行成功，要么都不执行。比如这样一个场景">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库之事务">
+<meta property="og:url" content="http://example.com/2020/07/02/database_transaction/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="概念事务一组对数据库原子性操作的集合，这些操作要么全部都执行，要么全部都不执行。每一条SQL语句都是一个事务，但也可以用多条SQL语句组成一个事务。一个事务从开始到完成可分成两个步骤：一是在从数据库中读取数据到内存，在内存中对数据进行操作。二是对在内存中操作完数据之后，提交到数据库当中。 ACID原子性：Atomicity  即一个事务中的所有操作要么全部都执行成功，要么都不执行。比如这样一个场景">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/0ec7d741e799dc9cba2d3e814440b73edd8f0e62/db/read_uncommitted_example_for_transfer_accounts.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/bb8932735955851befbc62fb10160588f32c1dbc/db/isolation_level_experiment_read_uncommited_1.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/17ae2c710def278676b7c74d03abe1404fb4d189/db/read_uncommited_level_step_for_test.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/84a77188be0f714ee2b94c6e83744b458e1436ec/db/read_committed_test_example.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/de4ae1fe12c473addaff8d0a6fab135123484dec/db/repeatable_read_test.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/07dbe5dfcd00b8cec692bf624af14c21c3ef5c1b/db/repeatable_read_test_2.png">
+<meta property="article:published_time" content="2020-07-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.678Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/vfxh/site-images/raw/0ec7d741e799dc9cba2d3e814440b73edd8f0e62/db/read_uncommitted_example_for_transfer_accounts.png">
+
+
+<link rel="canonical" href="http://example.com/2020/07/02/database_transaction/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;07&#x2F;02&#x2F;database_transaction&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;07&#x2F;02&#x2F;database_transaction&#x2F;&quot;,&quot;title&quot;:&quot;数据库之事务&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>数据库之事务 | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-number">2.</span> <span class="nav-text">隔离级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL%E5%AE%9E%E9%AA%8C"><span class="nav-number">3.</span> <span class="nav-text">SQL实验</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E6%9C%AA%E6%8F%90%E4%BA%A4"><span class="nav-number">3.1.</span> <span class="nav-text">读未提交</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E6%8F%90%E4%BA%A4"><span class="nav-number">3.2.</span> <span class="nav-text">读提交</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB"><span class="nav-number">3.3.</span> <span class="nav-text">可重复读</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E4%B8%B2%E8%A1%8C%E5%8C%96"><span class="nav-number">3.4.</span> <span class="nav-text">可串行化</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/07/02/database_transaction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据库之事务
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-07-02 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-02T00:00:00+08:00">2020-07-02</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p><strong>事务</strong><br>一组对数据库原子性操作的集合，这些操作要么全部都执行，要么全部都不执行。每一条SQL语句都是一个事务，但也可以用多条SQL语句组成一个事务。一个事务从开始到完成可分成两个步骤：一是在从数据库中读取数据到内存，在内存中对数据进行操作。二是对在内存中操作完数据之后，提交到数据库当中。</p>
+<p><strong>ACID</strong><br>原子性：Atomicity</p>
+<blockquote>
+<p>即一个事务中的所有操作要么全部都执行成功，要么都不执行。比如这样一个场景：从账户A转账到账户B，涉及到两个操作。从A账户减去要转账的额度，和增加转账的额度到B账户。假如在减去A账户的额度的操作完成之后出现崩溃，这个时候B账户还没有增加A账户减少的额度，A账户就白白损失了一堆钱。原子性就是针对类似于这种情况，在事务进行中出现崩溃的情况，就全部操作不执行，保持数据库原来的状态。</p>
+</blockquote>
+<p>一致性：Consistency</p>
+<blockquote>
+<p>保证事务在满足数据库预定义规则的条件下，将数据库从一个有效（正确）状态转换到另一个有效（正确）状态。事务的开始和结束期间的中间状态是对其它事务不可见的。</p>
+</blockquote>
+<p>对一致性的补充：<br>有效状态是指：满足数据库中预定义的一些规则就是有效的，比如在定义数据库的时候给某个字段定义一些约束，如它的值不能小于0。那么一个事务执行的过程中包含有对这个字段的操作，如果更新或者插入的值满足这个其值不能小于0的约束，并且事务最终执行成功，那么这个就是一个合法的事务。如果事务中的某个操作将这个字段的值更新为小于0，那么这就是一个不合法的事务。也就是说，这个事务不满足数据库定义的约束，不合法的事务无法将数据库当前有效状态转换成另一个有效状态。<br>从数据库的角度来看，它只关心事务符不符合预定义的规则。对于应用层面的事务的正确性它不关心，即使在符合规则但是从应用层面来看数据是错的数据库也执行这个事务。比如说：有两个账户A和B，没有对这两个账户做任何约束。现在A有100块钱，应用层需要从A账户向B账户转120块钱。因为没有做余额小于0是非法的数值约束，所以这个事务最终会被执行。得到的数据状态从数据库的角度来看是正确的，因为结果符合预定义的约束（压根就没约束）。但是从应用层面来看，这个结果是不正确的，余额小于零，那不是白嫖了银行的钱了吗。现在，对账户的余额加上约束，余额不能小于零。在这个前提下，转账事务不会执行成功，因为它违反了约束。<br>简而言之，事务的一致性和数据库预定义的规则有关，满足了预定义的规则就满足了一致性。<br>（这里看参考资料3的回答）</p>
+<p>隔离性：Isolation</p>
+<blockquote>
+<p>并发事务之间互相影响的程度，比如一个事务会不会读取另一个事务修改但未提交的数据（读未提交）。</p>
+</blockquote>
+<p>持久性：Durability</p>
+<blockquote>
+<p>事务提交后对数据的改变是永久性的，保证数据不会丢失，即使数据库出现故障了也是一样。</p>
+</blockquote>
+<p>这样看起来好像原子性和一致性类似，不过其区别是：原子性注重于过程，也就是提交和回滚。一致性注重的是结果，也就是执行前后的状态。原子性相对于一致性来说，是处于微观层次。还有就是隔离性和一致性，从一致性的定义上看，事务的开始和结束之间的中间状态是对其它事务不可见的，而隔离性则是适当破坏一致性来提升性能和并行度。这样看来，一致性和原子性，隔离性以及持久性都有关系，可以说：原子性，隔离性和持久性为了保证一致性。（这个理解得不是很清晰，后面继续探索）</p>
+<p><strong>只读事务</strong></p>
+<h3 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h3><p>读未提交</p>
+<blockquote>
+<p>多个事务在非串行化的执行过程中，这些事务之间可以看到对方在内存中修改但是还没有提交到数据库中的数据，这种情况被称为脏读。而这些在内存中修改但是还没有提交到数据库中的数据，被称为脏数据。在这个隔离级别下，如果一个事务在写数据，那么另一个事务就不允许写数据，这个隔离级别是通过“排他写锁”实现的。但是允许读数据，所以会读取脏数据。</p>
+</blockquote>
+<p>读提交</p>
+<blockquote>
+<p>事务之间可以看到对方成功修改后提交到数据库中的数据（避免了脏读），不过这种情况下会造成不可重复读的现象。<em><strong>不可重复读（虚读）</strong></em> 是指一个事务在第一次读取某一个数据，之后再第二次读取之后这个数据就发生改变了。因为读提交隔离级别会读取到其它事务提交的数据，只要提交之后处于都提交层次的事务就会读取到。</p>
+</blockquote>
+<p>可重复读</p>
+<blockquote>
+<p>可重复读的定义是：一个事务第一次读取一个数据，那么它之后再次读取这个数据的时候可以确信和第一次读取的数据一样（这个定义不恰当，有可能读到得数据不一样）。但是这个层次下有可能会出现幻读，所谓 <em><strong>幻读</strong></em>是指：该事务执行期间，多次查询到的记录不是同一个记录，或者批量查询的时候会发生新增或者减少记录的情况。</p>
+</blockquote>
+<p>可串行化</p>
+<blockquote>
+<p>在这个隔离级别，多个事务之间从宏观的角度上来看，在某一时刻就像串行执行一样只有一个事务在执行（虽然微观的角度上，这些事务并不是串行的）。在该层次下，事务之间顺序执行，可以避免脏读，不可重复读，幻读这些问题。比如有两个事务A和B，假设事务A在执行，那么B事务只能在A事务执行之前执行，或者在事务B执行之后执行。<br>举个例子，假如有A和B两人进行定同一张票的情况。A查询到一张空闲的票，然后执行预定的操作。假如在A执行查询和预定的操作期间，B也执行的查询操作，那么B看到的票也是空闲的。之后A成功预定了这张票，这时候B在预定这样票的时候就会显示票已经被预定的。A和B两个人的查票和订票的操作是两个独立的事务，假设这两个事务是出于可串行化的隔离层次。那么在其中一个事务执行期间，另一个事务时看不到这个事务所操作的数据的。也就是说，A在查票和订票这期间，B是无法查询到A操作的那张票的。（锁机制）</p>
+</blockquote>
+<p>简而言之，隔离级别越高，越是能保证数据的一致性。但是相应的代价也越高，比如隔离级别高得情况下并发性能低下，但是能保证数据得完整性和一致性。</p>
+<p>不可重复读（虚读）和幻读的区别：<em><strong>不可重复读指的是记录原本就存在，但是由于更新这条记录之后读取到的数据不是原来的数据。而幻读指的是记录本身就不会存在，因为别的事务插入之后才看得到。或者记录之前存在，但是由于别的事务删除之后读取不到</strong></em>。</p>
+<blockquote>
+<p>四个隔离级别的不同</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">隔离级别</th>
+<th align="left">脏读</th>
+<th align="left">不可重复读</th>
+<th align="left">幻读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">读未提交（read uncommitted）</td>
+<td align="left">允许</td>
+<td align="left">允许</td>
+<td align="left">允许</td>
+</tr>
+<tr>
+<td align="left">读提交（read committed）</td>
+<td align="left">不允许</td>
+<td align="left">允许</td>
+<td align="left">允许</td>
+</tr>
+<tr>
+<td align="left">可重复读（repeatable read）</td>
+<td align="left">不允许</td>
+<td align="left">不允许</td>
+<td align="left">允许</td>
+</tr>
+<tr>
+<td align="left">可串行化（serializable）</td>
+<td align="left">不允许</td>
+<td align="left">不允许</td>
+<td align="left">不允许</td>
+</tr>
+</tbody></table>
+<p>从四个不同的隔离级别的不同之处可以看出，读未提交是最低的隔离界别，其并发性好，但也是最不安全。而可串行化级别是最高隔离级别，是最安全的级别，到那时相应的，并发性也是最差的。</p>
+<h3 id="SQL实验"><a href="#SQL实验" class="headerlink" title="SQL实验"></a>SQL实验</h3><blockquote>
+<p>实验环境是MySQL8.0社区版</p>
+</blockquote>
+<p>我们先创建一张表tbl_isolation，作为实验的表。tbl_isolation只有三个字段，分别是作为主键的自动增量id，表示账户的字段account，表示余额的字段balance。然后对balance字段做一个简单的约束，值不能小于0的约束。然后向这张表插入一些必要的数据，作为实验数据。</p>
+<blockquote>
+<p>tbl_isolation</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> IF <span class="keyword">EXISTS</span> `tbl_isolation`; </span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> tbl_isolation (</span><br><span class="line">    `id`         <span class="type">BIGINT</span>(<span class="number">20</span>)  <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">    `account`    <span class="type">CHAR</span>(<span class="number">1</span>)     <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;账户&#x27;</span>,</span><br><span class="line">    `balance`    <span class="type">INTEGER</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;余额&#x27;</span>,</span><br><span class="line">    <span class="keyword">CHECK</span> (`balance` <span class="operator">&gt;=</span> <span class="number">0</span>),</span><br><span class="line">    <span class="keyword">UNIQUE</span> INDEX `ui_account` (`account`),</span><br><span class="line">    <span class="keyword">PRIMARY</span> KEY (`id`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span><span class="string">&#x27;utf8mb4&#x27;</span> COMMENT <span class="string">&#x27;示例表&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tbl_isolation(`account`, `balance`)<span class="keyword">VALUES</span>(<span class="string">&#x27;A&#x27;</span>, <span class="number">100</span>),(<span class="string">&#x27;B&#x27;</span>, <span class="number">200</span>),(<span class="string">&#x27;C&#x27;</span>,<span class="number">300</span>);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>数据表状态</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[learn_db]&gt;select * from tbl_isolation;</span><br><span class="line">+----+---------+---------+</span><br><span class="line">| id | account | balance |</span><br><span class="line">+----+---------+---------+</span><br><span class="line">|  4 | A       |     100 |</span><br><span class="line">|  5 | B       |     200 |</span><br><span class="line">|  6 | C       |     300 |</span><br><span class="line">+----+---------+---------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">[learn_db]&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="读未提交"><a href="#读未提交" class="headerlink" title="读未提交"></a>读未提交</h4><p>（这个例子由于两个事务对同一资源执行写操作导致资源被锁住，在另一个事务不能成功维持数据库的一致性时会导致事务全部夭折）<br><em><strong>模拟这样一个过程：</strong></em> 事务T1从账户B向账户C转账250块，事务T2从账户A向账户B转账150块。假如事务T1先增加账户C 250块变成550块，T1事务在检查账户B之前T2事务增加账户B的150块变成350块。等到事务T1读取账户B的余额的时候读到脏数据，以为B账户有足够的余额，准备减去账户B 250块。但是事务T2还在操作这个B账户，B账户被锁住，事务T1等待（排他写锁）。事务T2接着检查账户A是否有足够的余额，如果有就减去账户A的150块，没有足够的余额就回滚，T2事务失败。事实上T2事务即使强行对账户A进行减去150块的操作也违反了事先定义的约束（余额不能小于0），数据库系统为了保持事务的一致性而将事务T2强制回滚，T2事务失败。T2事务未提交的脏数据也被清除，T1事务也跟着失败。这个过程如下图所示：</p>
+<blockquote>
+<p>事务执行过程</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/0ec7d741e799dc9cba2d3e814440b73edd8f0e62/db/read_uncommitted_example_for_transfer_accounts.png" alt="image"></p>
+<p>查看当前事务隔离级别，默认是可重复读层次。现在我们启动两个客户端A和B，客户端A将隔离级别设置成读未提交层次。客户端B保持可重复读层次，不修改。但是AB两个客户端都需要修改自动提交为关闭状态，因为默认是打开的。保证在手动提交之前不会出现事务已经提交的情况，能够顺利进行实验。客户端A模拟T1事务，客户端B模拟T2事务。<br>为什么是读未提交的层次模拟的客户端A模拟T1事务，因为只有处于读未提交层次的客户端才能读取其它层次事务的未提交数据。也就是说：<em><strong>某个事务的隔离层次只影响该事务，该事务处于读未提交层次会看到其它隔离层次事务的脏数据。但是其它不是读未提交层次的事务是不会看到的别的事务的脏数据的</strong></em>。在这个例子中，客户端A可以看到客户端B的脏数据，但是客户端B是看不到客户端A的脏数据的。</p>
+<blockquote>
+<p>默认隔离级别</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[(none)]&gt;select @@transaction_isolation;</span><br><span class="line">+-------------------------+</span><br><span class="line">| @@transaction_isolation |</span><br><span class="line">+-------------------------+</span><br><span class="line">| REPEATABLE-READ         |</span><br><span class="line">+-------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">[(none)]&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>设置客户端A的隔离层次为读未提交</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[learn_db]&gt;select @@transaction_isolation;</span><br><span class="line">+-------------------------+</span><br><span class="line">| @@transaction_isolation |</span><br><span class="line">+-------------------------+</span><br><span class="line">| REPEATABLE-READ         |</span><br><span class="line">+-------------------------+</span><br><span class="line">1 row in set (0.01 sec)</span><br><span class="line"></span><br><span class="line">[learn_db]&gt;set session transaction isolation level read uncommitted;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">[learn_db]&gt;select @@transaction_isolation;</span><br><span class="line">+-------------------------+</span><br><span class="line">| @@transaction_isolation |</span><br><span class="line">+-------------------------+</span><br><span class="line">| READ-UNCOMMITTED        |</span><br><span class="line">+-------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">[learn_db]&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>客户端A和B关闭自动提交</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[learn_db]&gt;show session variables like &#x27;autocommit&#x27;;</span><br><span class="line">+---------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+---------------+-------+</span><br><span class="line">| autocommit    | ON    |</span><br><span class="line">+---------------+-------+</span><br><span class="line">1 row in set (0.01 sec)</span><br><span class="line"></span><br><span class="line">[learn_db]&gt;set session autocommit=0;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">[learn_db]&gt;show session variables like &#x27;autocommit&#x27;;</span><br><span class="line">+---------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+---------------+-------+</span><br><span class="line">| autocommit    | OFF   |</span><br><span class="line">+---------------+-------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">[learn_db]&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>设置完成后图示</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/bb8932735955851befbc62fb10160588f32c1dbc/db/isolation_level_experiment_read_uncommited_1.png" alt="image"></p>
+<p>具体实验步骤：</p>
+<ol>
+<li>客户端A（左边）和客户端B（右边）同时开启事务</li>
+<li>客户端A先对C账户执行加上250的操作，现在C账户有550</li>
+<li>紧接着客户端B对B账户执行加上150的操作，现在B账户有350。这个时候可以看到，客户端A是可以看到客户端B的脏数据，也就是B账户有了350</li>
+<li>客户端A的T1事务尝试对B账户进行减去250的操作，然后被阻塞（排他写锁）。与此同时，客户端B检查客户端A的余额，发现余额是不够的。这里需要注意，客户端B是看不到客户端A的脏数据。因为客户端B的隔离级别是可重复读层次</li>
+<li>客户端T2事务对A账户强行执行减去150的操作，结果违反了约束，数据库拒绝。事务T2失败，回滚</li>
+<li>随着T2事务失败后，T1事务也跟着失败。因为T1事务失败后脏数据也被清除，T2执行的减去账户B 250的操作也违反了约束，所以失败。回滚 </li>
+</ol>
+<blockquote>
+<p>实验步骤示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/17ae2c710def278676b7c74d03abe1404fb4d189/db/read_uncommited_level_step_for_test.png" alt="image"></p>
+<p><em><strong>（读未提交插入删除还没有试验）</strong></em></p>
+<h4 id="读提交"><a href="#读提交" class="headerlink" title="读提交"></a>读提交</h4><p>读提交可以避免读到脏数据，但是无法避免不可重复读。</p>
+<p>客户端A是读提交隔离级别，客户端B是可重复读隔离级别。客户端B修改了账户A的数据，在尚未提交期间客户端A无法读取到客户端B修改的数据的。只有在客户端B成功提交了事务之后，客户端A才能读取得到。成功提交到数据库之后，对数据库数据的改变是永久性的。</p>
+<blockquote>
+<p>读提交级别避免脏读实验</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/84a77188be0f714ee2b94c6e83744b458e1436ec/db/read_committed_test_example.png" alt="iamge"></p>
+<h4 id="可重复读"><a href="#可重复读" class="headerlink" title="可重复读"></a>可重复读</h4><p>客户端A和客户端B都是可重复读隔离级别。客户端B更新了某一条记录的数据，但是在客户端A是看不到更新的数据的。没提交之前看不到，避免了脏读。客户端B提交之后客户端还是可以和第一次读取到的数据一样，避免了不可重复读。</p>
+<blockquote>
+<p>避免不可重复读（虚读）</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/de4ae1fe12c473addaff8d0a6fab135123484dec/db/repeatable_read_test.png" alt="image"></p>
+<p>不过对于幻读的情况，就有些迷幻。可能是MySQL采取了某些机制避免了幻读。在实验中，即使在客户端A事务执行过程中，客户端B的事务插入了数据并提交。客户端A还是可以读取到之前一样的数据，并没有产生幻读现象。</p>
+<blockquote>
+<p>避免幻读</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/07dbe5dfcd00b8cec692bf624af14c21c3ef5c1b/db/repeatable_read_test_2.png" alt="image"></p>
+<h4 id="可串行化"><a href="#可串行化" class="headerlink" title="可串行化"></a>可串行化</h4><p>参考资料</p>
+<ol>
+<li>《数据库系统基础教程》第三版</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/37031059">https://zhuanlan.zhihu.com/p/37031059</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/tolcf/article/details/49283575">https://blog.csdn.net/tolcf/article/details/49283575</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/07/02/linux_network_program/" rel="prev" title="Linux网络编程——运输层">
+                  <i class="fa fa-chevron-left"></i> Linux网络编程——运输层
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/07/03/data_structure_tree/" rel="next" title="树">
+                  树 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

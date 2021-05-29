@@ -1,0 +1,2376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="基本概念散列表散列表也叫哈希表，是一种能够实现将多个键映射到多个值的数据结构，其添加，删除，查找等操作都是常数时间完成。其中，键和值的映射关系是通过散列函数来完成的。理想的散列表是一个固定大小的数组，不同的键经过散列函数的计算之后能够均匀分布到不同单元的散列表项当中，但这只是在理想的状态下。 散列函数散列函数就是将任意长度的数据映射到固定长度数据的函数。散列表使用散列函数来计算键在散列表的索引，来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="散列表">
+<meta property="og:url" content="http://example.com/2020/06/12/data_structure_hash/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="基本概念散列表散列表也叫哈希表，是一种能够实现将多个键映射到多个值的数据结构，其添加，删除，查找等操作都是常数时间完成。其中，键和值的映射关系是通过散列函数来完成的。理想的散列表是一个固定大小的数组，不同的键经过散列函数的计算之后能够均匀分布到不同单元的散列表项当中，但这只是在理想的状态下。 散列函数散列函数就是将任意长度的数据映射到固定长度数据的函数。散列表使用散列函数来计算键在散列表的索引，来">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-06-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.662Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/06/12/data_structure_hash/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;06&#x2F;12&#x2F;data_structure_hash&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;06&#x2F;12&#x2F;data_structure_hash&#x2F;&quot;,&quot;title&quot;:&quot;散列表&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>散列表 | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%A3%E5%88%97%E8%A1%A8"><span class="nav-number">1.1.</span> <span class="nav-text">散列表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">散列函数</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8F%96%E4%BD%99%E6%B3%95"><span class="nav-number">1.2.1.</span> <span class="nav-text">取余法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8A%98%E5%8F%A0%E6%B3%95"><span class="nav-number">1.2.2.</span> <span class="nav-text">折叠法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B9%B3%E6%96%B9%E5%8F%96%E4%B8%AD%E6%B3%95"><span class="nav-number">1.2.3.</span> <span class="nav-text">平方取中法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8F%90%E5%8F%96%E6%B3%95"><span class="nav-number">1.2.4.</span> <span class="nav-text">提取法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9F%BA%E6%95%B0%E8%BD%AC%E6%8D%A2%E6%B3%95"><span class="nav-number">1.2.5.</span> <span class="nav-text">基数转换法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%A8%E5%9F%9F%E6%95%A3%E5%88%97%E6%B3%95"><span class="nav-number">1.2.6.</span> <span class="nav-text">全域散列法</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B4%9F%E8%BD%BD%E5%9B%A0%E5%AD%90"><span class="nav-number">1.3.</span> <span class="nav-text">负载因子</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%8D%E6%95%A3%E5%88%97"><span class="nav-number">1.4.</span> <span class="nav-text">再散列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%A3%E5%88%97%E5%86%B2%E7%AA%81"><span class="nav-number">1.5.</span> <span class="nav-text">散列冲突</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E6%94%BE%E5%AE%9A%E5%9D%80%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">开放定址法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E6%8E%A2%E6%B5%8B"><span class="nav-number">2.1.</span> <span class="nav-text">线性探测</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%90%86%E8%AE%BA%E5%88%86%E6%9E%90"><span class="nav-number">2.1.1.</span> <span class="nav-text">理论分析</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.2.</span> <span class="nav-text">代码实现</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B3%E6%96%B9%E6%8E%A2%E6%B5%8B"><span class="nav-number">2.2.</span> <span class="nav-text">平方探测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E6%95%A3%E5%88%97"><span class="nav-number">2.3.</span> <span class="nav-text">双散列</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%A6%BB%E9%93%BE%E6%8E%A5%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">分离链接法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%A6%BB%E9%93%BE%E6%8E%A5%E6%B3%95%E7%9A%84%E4%B8%80%E4%BA%9B%E6%93%8D%E4%BD%9C"><span class="nav-number">3.1.</span> <span class="nav-text">分离链接法的一些操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%89%A9%E5%AE%B9"><span class="nav-number">3.2.</span> <span class="nav-text">为什么要扩容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B0-1"><span class="nav-number">3.3.</span> <span class="nav-text">散列函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.4.</span> <span class="nav-text">具体实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.5.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%B6%E5%AE%9A%E5%9D%80"><span class="nav-number">4.</span> <span class="nav-text">桶定址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E6%89%A9%E5%B1%95%E6%95%A3%E5%88%97"><span class="nav-number">5.</span> <span class="nav-text">可扩展散列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/12/data_structure_hash/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          散列表
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-06-12 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-12T00:00:00+08:00">2020-06-12</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><h4 id="散列表"><a href="#散列表" class="headerlink" title="散列表"></a>散列表</h4><p>散列表也叫哈希表，是一种能够实现将多个键映射到多个值的数据结构，其添加，删除，查找等操作都是常数时间完成。其中，键和值的映射关系是通过散列函数来完成的。理想的散列表是一个固定大小的数组，不同的键经过散列函数的计算之后能够均匀分布到不同单元的散列表项当中，但这只是在理想的状态下。</p>
+<h4 id="散列函数"><a href="#散列函数" class="headerlink" title="散列函数"></a>散列函数</h4><p>散列函数就是将任意长度的数据映射到固定长度数据的函数。散列表使用散列函数来计算键在散列表的索引，来找到键在散列表中对应的值。一个好的散列函数能够将不同的键均匀的映射到散列表的不同单元中，提高散列表利用率。所以，散列函数的好坏取决于其解决冲突的能力。但凡事都有利弊。一个好的散列函数通常会增加计算的开销，效率有所降低。所以，适当选择不是很完善的散列函数有助于提高效率。</p>
+<h5 id="取余法"><a href="#取余法" class="headerlink" title="取余法"></a>取余法</h5><p>最简单的散列函数是取余法，以键的长度对散列表的大小取余。对于键是字符串的形式，通常会先计算字符串的长度，然后根据字符串的长度对散列表的大小取余。一般来说，散列表的大小取素数会更好。取素数的散列计算方式：hash(key) = len(key) mod hashTableSize。如果散列表的长度不是素数，那么计算公式就是：hash(key) = (len(key) mod p) mod hashTableSize，p是一个大于hashTableSize的素数。</p>
+<blockquote>
+<p>为什么取余法的散列表长度要取素数</p>
+</blockquote>
+<p>简而言之就是为了减少冲突，使得键在散列之后能够均匀分布在散列表中</p>
+<blockquote>
+<p>具体分析</p>
+</blockquote>
+<p><em><strong>假设散列函数使用取余法的时，散列得出的位置索引是表大小因数的整数倍</strong></em></p>
+<p>首先是选取用来实验的数列。数列的选取并不是简单地按照以1为间隔（好吧，就是等差数列的公差）的数列，比如：1，2，3，4，5…，这样子的数列对于素数和合数的散列分布并没有什么区别，没法测出散列表的长度取素数或非素数有什么不同。<em><strong>因为无论是素数还是合数，1都是它们的因数</strong></em>。所以，<em><strong>数列的选取间隔是按照素数和合数没有共同的因数来确定的</strong></em>。比如下面的例子，1是6和7的共同因数，不能选。所以选取的数列之间的间隔应该是2，3，6，7之中选取。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">6的因数有：1，2，3，6</span><br><span class="line">7的因数有：1，7</span><br></pre></td></tr></table></figure>
+
+<p>前面两行是都是间隔为2的数列，但是数列元素分别是奇数和偶数。这是为了验证在相同的间隔下，冲突是否和数列元素的奇偶性有关。接着后面三行的间隔分别是6和7的因子。主要是为了测试数列的间隔是否和冲突有关。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> arr_1[] = &#123;<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">15</span>, <span class="number">17</span>, <span class="number">19</span>&#125;;     <span class="comment">// 间隔2，奇数</span></span><br><span class="line"><span class="keyword">int</span> arr_2[] = &#123;<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">8</span>, <span class="number">10</span>, <span class="number">12</span>, <span class="number">14</span>, <span class="number">16</span>, <span class="number">18</span>, <span class="number">20</span>&#125;;    <span class="comment">// 间隔2，偶数</span></span><br><span class="line"><span class="keyword">int</span> arr_3[] = &#123;<span class="number">1</span>, <span class="number">4</span>, <span class="number">7</span>, <span class="number">10</span>, <span class="number">13</span>, <span class="number">16</span>, <span class="number">19</span>, <span class="number">22</span>, <span class="number">25</span>, <span class="number">28</span>&#125;;   <span class="comment">// 间隔3</span></span><br><span class="line"><span class="keyword">int</span> arr_4[] = &#123;<span class="number">1</span>, <span class="number">7</span>, <span class="number">13</span>, <span class="number">19</span>, <span class="number">25</span>, <span class="number">31</span>, <span class="number">37</span>, <span class="number">43</span>, <span class="number">49</span>, <span class="number">55</span>&#125;;  <span class="comment">// 间隔6</span></span><br><span class="line"><span class="keyword">int</span> arr_5[] = &#123;<span class="number">1</span>, <span class="number">8</span>, <span class="number">15</span>, <span class="number">22</span>, <span class="number">29</span>, <span class="number">36</span>, <span class="number">43</span>, <span class="number">50</span>, <span class="number">57</span>, <span class="number">64</span>&#125;;  <span class="comment">// 间隔7</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>hash function</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">hashfunc</span><span class="params">(<span class="keyword">int</span> size, <span class="keyword">int</span> el)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> el % size;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>表格第一行表示表的索引行</p>
+</blockquote>
+<p><strong>散列表长度为6</strong></p>
+<p>先来看看散列表的长度为非素数的情况，表的长度取6。</p>
+<blockquote>
+<p>选取第一个数列的情况</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">第1次散列</td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第2次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">3</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第3次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">5</td>
+</tr>
+<tr>
+<td align="left">第4次散列</td>
+<td align="left"></td>
+<td align="left">7</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第5次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">9</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第6次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">11</td>
+</tr>
+<tr>
+<td align="left">第7次散列</td>
+<td align="left"></td>
+<td align="left">13</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第8次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">15</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第9次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">17</td>
+</tr>
+<tr>
+<td align="left">第10次散列</td>
+<td align="left"></td>
+<td align="left">19</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>最终的散列整理</p>
+<table>
+<thead>
+<tr>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left">3</td>
+<td align="left"></td>
+<td align="left">5</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">7</td>
+<td align="left"></td>
+<td align="left">9</td>
+<td align="left"></td>
+<td align="left">11</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">13</td>
+<td align="left"></td>
+<td align="left">15</td>
+<td align="left"></td>
+<td align="left">17</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">19</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<hr>
+<blockquote>
+<p>选取第二个数列的情况</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">第1次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">2</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第2次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">4</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第3次散列</td>
+<td align="left">6</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第4次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">8</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第5次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">10</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第6次散列</td>
+<td align="left">12</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第7次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">14</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第8次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">16</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第9次散列</td>
+<td align="left">18</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第10次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">20</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>最终的散列整理。</p>
+<table>
+<thead>
+<tr>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">6</td>
+<td align="left"></td>
+<td align="left">2</td>
+<td align="left"></td>
+<td align="left">4</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">12</td>
+<td align="left"></td>
+<td align="left">8</td>
+<td align="left"></td>
+<td align="left">10</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">18</td>
+<td align="left"></td>
+<td align="left">14</td>
+<td align="left"></td>
+<td align="left">16</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">20</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<hr>
+<blockquote>
+<p>选取的第三个数列的情况</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">第1次散列</td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第2次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">4</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第3次散列</td>
+<td align="left"></td>
+<td align="left">7</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第4次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">10</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第5次散列</td>
+<td align="left"></td>
+<td align="left">13</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第6次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">16</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第7次散列</td>
+<td align="left"></td>
+<td align="left">19</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第8次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">22</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第9次散列</td>
+<td align="left"></td>
+<td align="left">25</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第10次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">28</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>最终整理</p>
+<table>
+<thead>
+<tr>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">4</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">7</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">10</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">13</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">16</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">19</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">22</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">25</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">28</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<hr>
+<blockquote>
+<p>选取的第四个数列的情况。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">第1次散列</td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第2次散列</td>
+<td align="left"></td>
+<td align="left">7</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第3次散列</td>
+<td align="left"></td>
+<td align="left">13</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第4次散列</td>
+<td align="left"></td>
+<td align="left">19</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第5次散列</td>
+<td align="left"></td>
+<td align="left">25</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第6次散列</td>
+<td align="left"></td>
+<td align="left">31</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第7次散列</td>
+<td align="left"></td>
+<td align="left">37</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第8次散列</td>
+<td align="left"></td>
+<td align="left">43</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第9次散列</td>
+<td align="left"></td>
+<td align="left">49</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第10次散列</td>
+<td align="left"></td>
+<td align="left">55</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>最终整理</p>
+<table>
+<thead>
+<tr>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">7</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">13</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">19</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">25</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">31</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">37</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">43</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">49</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">55</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<hr>
+<blockquote>
+<p>最后是第五个数列</p>
+</blockquote>
+<p>数列之间的间隔是7，表长是6取余结果1。而数列中元素散列到的位置距离上一次散列的位置偏移量是1，那么可以得出这样一个假设：数列间隔比表长要大的时候。其散列到的位置距离上次偏移量是取余得到的余数。</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">第1次散列</td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第2次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">8</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第3次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">15</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第4次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">22</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第5次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">29</td>
+</tr>
+<tr>
+<td align="left">第6次散列</td>
+<td align="left">36</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第7次散列</td>
+<td align="left"></td>
+<td align="left">43</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第8次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">50</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第9次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">57</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第10次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">64</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>最终整理结果</p>
+<table>
+<thead>
+<tr>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">36</td>
+<td align="left">1</td>
+<td align="left">8</td>
+<td align="left">15</td>
+<td align="left">22</td>
+<td align="left">29</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">43</td>
+<td align="left">50</td>
+<td align="left">57</td>
+<td align="left">64</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>根据第五个数列分布的情况得到的假设，来实验以下数列间隔为8的情况。</p>
+<blockquote>
+<p>数列</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> arr_6[] = &#123;<span class="number">1</span>, <span class="number">9</span>, <span class="number">17</span>, <span class="number">25</span>, <span class="number">33</span>, <span class="number">41</span>, <span class="number">49</span>, <span class="number">57</span>, <span class="number">65</span>, <span class="number">73</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>得到的散列位置距离上一次的散列位置偏移了2个位置，也就是说这个和第一个数列的分布情况是一个样的。</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">第1次散列</td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第2次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">9</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第3次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">17</td>
+</tr>
+<tr>
+<td align="left">第4次散列</td>
+<td align="left"></td>
+<td align="left">25</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第5次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">33</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第6次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">41</td>
+</tr>
+<tr>
+<td align="left">第7次散列</td>
+<td align="left"></td>
+<td align="left">49</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第8次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">57</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第9次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">65</td>
+</tr>
+<tr>
+<td align="left">第10次散列</td>
+<td align="left"></td>
+<td align="left">73</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>最终整理</p>
+<table>
+<thead>
+<tr>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left">9</td>
+<td align="left"></td>
+<td align="left">17</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">25</td>
+<td align="left"></td>
+<td align="left">33</td>
+<td align="left"></td>
+<td align="left">41</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">49</td>
+<td align="left"></td>
+<td align="left">57</td>
+<td align="left"></td>
+<td align="left">65</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">71</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<hr>
+<p><strong>散列表长度为7</strong></p>
+<p>再来看看表长度素数的情况，表的长度取7。</p>
+<blockquote>
+<p>选取第一个数列。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">第1次散列</td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第2次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">3</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第3次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">5</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第4次散列</td>
+<td align="left">7</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第5次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">9</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第6次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">11</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第7次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">13</td>
+</tr>
+<tr>
+<td align="left">第8次散列</td>
+<td align="left"></td>
+<td align="left">15</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第9次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">17</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第10次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">19</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>整理结果</p>
+<table>
+<thead>
+<tr>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">7</td>
+<td align="left">1</td>
+<td align="left">9</td>
+<td align="left">3</td>
+<td align="left">11</td>
+<td align="left">5</td>
+<td align="left">13</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">15</td>
+<td align="left"></td>
+<td align="left">17</td>
+<td align="left"></td>
+<td align="left">19</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<hr>
+<blockquote>
+<p>选取第二个数列。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">第1次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">2</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第2次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">4</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第3次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">6</td>
+</tr>
+<tr>
+<td align="left">第4次散列</td>
+<td align="left"></td>
+<td align="left">8</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第5次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">10</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第6次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">12</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第7次散列</td>
+<td align="left">14</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第8次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">16</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第9次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">18</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第10次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">20</td>
+</tr>
+</tbody></table>
+<p>整理结果</p>
+<table>
+<thead>
+<tr>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">14</td>
+<td align="left">8</td>
+<td align="left">2</td>
+<td align="left">10</td>
+<td align="left">4</td>
+<td align="left">12</td>
+<td align="left">6</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">16</td>
+<td align="left"></td>
+<td align="left">18</td>
+<td align="left"></td>
+<td align="left">20</td>
+</tr>
+</tbody></table>
+<hr>
+<blockquote>
+<p>选取第三个数列。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">第1次散列</td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第2次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">4</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第3次散列</td>
+<td align="left">7</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第4次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">10</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第5次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">13</td>
+</tr>
+<tr>
+<td align="left">第6次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">16</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第7次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">19</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第8次散列</td>
+<td align="left"></td>
+<td align="left">22</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第9次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">25</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第10次散列</td>
+<td align="left">28</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>整理结果</p>
+<table>
+<thead>
+<tr>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">7</td>
+<td align="left">1</td>
+<td align="left">16</td>
+<td align="left">10</td>
+<td align="left">4</td>
+<td align="left">19</td>
+<td align="left">13</td>
+</tr>
+<tr>
+<td align="left">28</td>
+<td align="left">22</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">25</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<hr>
+<blockquote>
+<p>选取第四个数列。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">第1次散列</td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第2次散列</td>
+<td align="left">7</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第3次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">13</td>
+</tr>
+<tr>
+<td align="left">第4次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">19</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第5次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">25</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第6次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">31</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第7次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">37</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第8次散列</td>
+<td align="left"></td>
+<td align="left">43</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第9次散列</td>
+<td align="left">49</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第10次散列</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">55</td>
+</tr>
+</tbody></table>
+<p>整理结果</p>
+<table>
+<thead>
+<tr>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">7</td>
+<td align="left">1</td>
+<td align="left">37</td>
+<td align="left">31</td>
+<td align="left">25</td>
+<td align="left">19</td>
+<td align="left">13</td>
+</tr>
+<tr>
+<td align="left">49</td>
+<td align="left">43</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">55</td>
+</tr>
+</tbody></table>
+<hr>
+<blockquote>
+<p>选取第五个数列</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">第1次散列</td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第2次散列</td>
+<td align="left"></td>
+<td align="left">8</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第3次散列</td>
+<td align="left"></td>
+<td align="left">15</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第4次散列</td>
+<td align="left"></td>
+<td align="left">22</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第5次散列</td>
+<td align="left"></td>
+<td align="left">29</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第6次散列</td>
+<td align="left"></td>
+<td align="left">36</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第7次散列</td>
+<td align="left"></td>
+<td align="left">43</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第8次散列</td>
+<td align="left"></td>
+<td align="left">50</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第9次散列</td>
+<td align="left"></td>
+<td align="left">57</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">第10次散列</td>
+<td align="left"></td>
+<td align="left">64</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>整列结果</p>
+<table>
+<thead>
+<tr>
+<th align="left">0</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">8</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">15</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">22</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">29</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">36</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">43</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">50</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">57</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">64</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<hr>
+<p><strong>结论</strong></p>
+<p>散列表为素数的时候发生冲突的概率更小，分布更均匀。（好吧，其实是不知道怎么总结，留个坑）</p>
+<h5 id="折叠法"><a href="#折叠法" class="headerlink" title="折叠法"></a>折叠法</h5><h5 id="平方取中法"><a href="#平方取中法" class="headerlink" title="平方取中法"></a>平方取中法</h5><h5 id="提取法"><a href="#提取法" class="headerlink" title="提取法"></a>提取法</h5><h5 id="基数转换法"><a href="#基数转换法" class="headerlink" title="基数转换法"></a>基数转换法</h5><h5 id="全域散列法"><a href="#全域散列法" class="headerlink" title="全域散列法"></a>全域散列法</h5><h4 id="负载因子"><a href="#负载因子" class="headerlink" title="负载因子"></a>负载因子</h4><p>负载因子也叫装填因子，或者其它什么因子。是反映散列表的装填程度的一个参数，负载因子越大，表示装填程度越高，发生冲突的概率也更大。其计算公式是：<em>a = 散列表元素数量 / 散列表长度</em></p>
+<h4 id="再散列"><a href="#再散列" class="headerlink" title="再散列"></a>再散列</h4><p>当散列表到达一定程度的时候，重新申请一个比当前更大的新表（比如旧表容量地两倍）。然后将原来的表元素重新散列到新表上，这个过程就叫做再散列。再散列可以使得原来紧凑的表元素稀疏地分布在新表上，减少冲突的概率，提高效率。不过这个过程时很耗费时间，因为需要重新构建一个新的散列表，然后遍历旧表，将元素重新散列到新表上。再散列触发的时机有几个：一是当表元素的个数达到表容量的一般时再散列，二是当插入元素失败时再散列，三是当负载因子达到一定的值时再散列。相比较之下，时机三是这几个当中最好的。</p>
+<h4 id="散列冲突"><a href="#散列冲突" class="headerlink" title="散列冲突"></a>散列冲突</h4><p>理想中的散列表是不存在两个不相同的键散列在同一个散列表项上的，但现实就是现实。实际情况中散列表是有限长度的数组，而键是没有限制的。所以，不同的键有可能映射到相同的散列表单元中，这种情况叫散列冲突。</p>
+<blockquote>
+<p>冲突示意图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// key4和key2映射到散列表的同一个单元，形成散列冲突</span><br><span class="line"></span><br><span class="line">                                                      0 +---+</span><br><span class="line">                                                        |   |</span><br><span class="line">                                    +------key2---+-&gt; 1 +---+</span><br><span class="line">key1 -------+                       |             |     | \ |</span><br><span class="line">            |   +---------------+   |             |   2 +---+</span><br><span class="line">key2 -------+--&gt;| hash function |---+------key4---+     |   |</span><br><span class="line">            |   +---------------+   +------key1-----&gt; 3 +---+</span><br><span class="line">key3 -------+                       |                   | \ |</span><br><span class="line">            |                       +------key3-----&gt; 4 +---+</span><br><span class="line">            |                                           | \ |</span><br><span class="line">key4 -------+                                           +---+</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>解决冲突的方法有开放定址法，分离链接法等。</p>
+<h3 id="开放定址法"><a href="#开放定址法" class="headerlink" title="开放定址法"></a>开放定址法</h3><p>在开放定址法中，当一个键和另一个键发生冲突的时候，就需要查找下一个可用的位置，而不是覆盖住当前的位置。所以，使用开放定址法来解决散列冲突，就必须存在可用的位置。反之，插入元素失败。也就是说，只要表足够大，就会有存储元素的地方。不过缺点是效率不怎么理想。特别需要注意的是，使用开放定址法删除表元素时不能真的删除。而是标记这个元素已经删除了，但是数据还在，只不过在某些操作的时候忽略其存在（比如查找）。这种标记删除的方式叫做懒惰删除。这么做的原因是，一个键在插入表中的时候可能存在冲突。冲突之后需要查找后面的可用位置存储。假如一个冲突的元素存储的位置不在散列得到的那个位置上，而是经过查找后存储在偏移原来若干个位置的地方。那么在这种情况下删除了中间的某个元素，这个时候再查找之前存储的元素就不能正确查找了。有点绕，画个图帮助理解。</p>
+<blockquote>
+<p>对于开放定址法，负载因子应该小于0.5。其原因让元素尽量稀疏地分布在表上，减少冲突地概率。避免发生严重地聚集现象，降低性能。</p>
+</blockquote>
+<p><strong>懒惰删除</strong><br>指的是某个位置元素并不是真正地被删除，而是呈已经删除状态，实际数据还存在，就是”假装“被删除了。在开放定址法中，表项地数据不宜被删除，因为可能存在散列地位置和真正存储位置并不是同一个位置。如果有一个表项被删除了，那么后续的查找操作可能会失效。</p>
+<p>就像下面的示意图，假设元素D散列到索引1这个位置，但是索引1的位置已经被A占用了。那么就需要往下一个位置找，一直找到索引为4的位置，这个位置可用，然后将D存储到这个位置上。后面删除了B，然后索引2的这个位置的数据被清空。而查找D的时候，首先散列到索引1的位置。发现不符合，然后往后找。但是B已经被删除了，这个位置为空。根据开放定址法的特性，查找到位置为空的情况就表明元素不存在。所以，D元素就没办法正确查找到了。这就是为什么开放定址法不能够真正删除元素，而要使用懒惰删除的原因。</p>
+<p>当然除了懒惰删除还有别的方式，其中一种就是移动元素，就像数组中删除了某个元素之后需要将后面的元素向前移动一个位置。不过这种方式效率并不理想，每次删除元素都需要移动元素。如果表的长度很大，那么这种方法会导致效率急剧降低。相对来说，还是懒惰删除比较理想。</p>
+<blockquote>
+<p>示意图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">0  +---+          0  +---+                    </span><br><span class="line">   |   |             |   |                   </span><br><span class="line">1  +---+          1  +---+                     </span><br><span class="line">   | A |             | A |                     </span><br><span class="line">2  +---+          2  +---+                     </span><br><span class="line">   | B |             |   | &lt;--- deleted                     </span><br><span class="line">3  +---+          3  +---+                       </span><br><span class="line">   | C |             | C |                        </span><br><span class="line">4  +---+          4  +---+                      </span><br><span class="line">   | D |             | D |                           </span><br><span class="line">5  +---+          5  +---+                             </span><br><span class="line">   |   |             |   |                            </span><br><span class="line">   +---+             +---+                           </span><br></pre></td></tr></table></figure>
+
+<p>在开放定址法中，元素在表中的索引可以表示为：h(key) = (hash(key) + f(i)) mod Tsize。查找下一个可用位置的方法很多，最简单的就是线性探测法。</p>
+<h4 id="线性探测"><a href="#线性探测" class="headerlink" title="线性探测"></a>线性探测</h4><p>在线性探测法中，函数f取f(i) = i。也就是在第i次探测的位置等于(hash(key) + i) mod Tsize。这个公式的意思是：一个键被散列到表的某一个位置，假如这个位置已经被占用。那么就递增i，从散列的位置开始依次探测下去，直到找到一个可用的位置。假如最开始散列得到的位置不是表开始的位置，那么在探测到表的尾部的时候还没找到可用位置，就从表头开始继续探测。一直探测到最开始散列到的那个位置。这个类似于循环队列一样的思想。</p>
+<h5 id="理论分析"><a href="#理论分析" class="headerlink" title="理论分析"></a>理论分析</h5><p>假设有一长度是11地数组，使用散列函数是简单的取余法。有元素{47, 7, 29, 11, 9, 87, 54, 20, 30}，经过散列函数计算后得出各个元素在数组中最初的索引位置{3, 7, 7, 0, 9, 10, 10, 9, 8}。使用线性探测法后最终在数组中存放的位置就像下面示意图一样。只要出现冲突，就会从散列到的位置依次探测下去。探测的次数越多，元素距离原来散列到的位置偏移量就越大，查找的次数就越多。</p>
+<blockquote>
+<p>示意图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 第一行表示的是数组的索引，第一列表示的是第几次插入表中的元素</span><br><span class="line"></span><br><span class="line">key         47  7   29  11  9   87  54  20  30</span><br><span class="line">hash(key)   3   7   7   0   9   10  10  9   8</span><br><span class="line">conflicts   0   0   1   0   0   0   2   4   7</span><br><span class="line">---------------------------------------------------------</span><br><span class="line"></span><br><span class="line">  |  0   1   2   3   4   5   6   7   8   9   10      说明</span><br><span class="line">--|------------------------------------------------------            </span><br><span class="line">1 |              47                                  第一次插入47，无冲突，查找只需要比较1次</span><br><span class="line">2 |              47              7                   第二次插入7，无冲突，查找只需要比较1次 </span><br><span class="line">3 |              47              7   29              第三次插入29，有冲突，冲突1次，移到下1个位置，查找的时候需要比较2次</span><br><span class="line">4 |  11          47              7   29              第四次插入11，无冲突，查找只需要比较1次</span><br><span class="line">5 |  11          47              7   29  9           第五次插入9，无冲突，查找只需要比较1次 </span><br><span class="line">6 |  11          47              7   29  9   87      第六次插入87，无冲突，查找只需要比较1次</span><br><span class="line">7 |  11  54      47              7   29  9   87      第七次插入54，有冲突，冲突2次，循环移动2个位置，查找的时候需要比较3次</span><br><span class="line">8 |  11  54  20  47              7   29  9   87      第八次插入20，有冲突，冲突4次，循环移动4个位置，查找的时候需要比较5次</span><br><span class="line">9 |  11  54  20  47  30          7   29  9   87      第九次插入30，有冲突，冲突7次，循环移动7个位置，查找的时候需要比较8次</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>最后元素在数组中的分布图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0    1    2    3    4    5    6    7    8    9    10</span><br><span class="line">+----+----+----+----+----+----+----+----+----+----+----+</span><br><span class="line">| 11 | 54 | 20 | 47 | 30 |    |    | 7  | 29 | 9  | 87 |</span><br><span class="line">+----+----+----+----+----+----+----+----+----+----+----+</span><br></pre></td></tr></table></figure>
+
+<p>根据示意图中的分析，可以简单估算出元素的<em><strong>成功查找的平均长度</strong></em>和<em><strong>不成功查找平均长度</strong></em>。所谓的成功查找平均长度是指：一个存在于散列表元素从散列到的地方开始，它需要比较多少次才能找到这个元素的所在位置。而不成功查找平均长度是指：一个不存在于表中的元素，从散列到的位置开始，需要比较多少次才能判断出它不存在散列表中。一个元素不存在表中的判断方法就是，当从散列到的位置开始比较，一直到碰到一个空的位置时，就可以判断这个元素不存在了。这也可以用判断一个新的元素插入表中需要比较的次数。</p>
+<p><strong>成功查找的平均次数</strong></p>
+<p>ASL：result = sum(每个存在表中的元素的查找次数) / 散列表种元素个数<br>如上图的成功平均查找次数 = (1+1+2+1+1+1+3+5+8) / 9 = 2.44（近似）</p>
+<p><strong>不成功查找平均长度</strong></p>
+<p>针对于不存在散列表的元素，需要找多少次才能证明该元素不存在散列表里<br>比如22，散列函数计算出来的位置是0。那么索引0开始查找，需要找6次才能证明22不在散列表里。因为遇到空了，那么就可以证明22不存在散列表里。<br>所以，不成功平均查找次数就是散列表的每一个表项开始，需要查找多少次才能遇到空项的次数的和。<br>ASL：result= sum(从每一个表项开始比较，直到查找到空项的比较次数) / 散列表长度<br>如上图的不成功平均查找次数 = (6 + 5 + 4 + 3 + 2 + 1 + 1 + 10 + 9 + 8 +7) / 11 = 5.09（近似）</p>
+<p><strong>总结分析</strong></p>
+<p>根据上图的最终结果来看，会形成从索引0到索引4的连续区域以及从索引7到索引10的连续区域都被占用，即使表的大小比示意图中的大小还要大一些，有很多空位。但是还是有可能形成这样一段连续的区域被占用的情形，这样子的情况叫做<strong>一次聚集</strong>。即使散列函数被设计得很好，可以均匀地将元素分布在散列表上。但是无论如何都会有冲突的现象发生，这是不可能避免的。由于线性探测地特性（出现冲突之后依次探测，也就是一个单元一个单元地探测），一次聚集的现象也还是会发生的。</p>
+<h5 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h5><p>每一个表项都拥有一个状态，表示该表项是否可用。</p>
+<blockquote>
+<p>结构体声明和参数声明</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 负载因子的上限</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOAD_FACTOR_MAX 0.45</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// legitimate：表示当前项已经被占用</span></span><br><span class="line"><span class="comment">// empty：表示当前项可用</span></span><br><span class="line"><span class="comment">// deleted：表示当前项已经被删除，但是为了完整性还保留着数据，可用</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">kindOfState</span> &#123;</span> legitimate, empty, deleted &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 表项</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">item</span> &#123;</span></span><br><span class="line">    <span class="keyword">int32_t</span> el;</span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">kindOfState</span> <span class="title">state</span>;</span></span><br><span class="line">&#125; Item, *Itemptr;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 散列表结构</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">hash</span> &#123;</span></span><br><span class="line">    Itemptr <span class="built_in">array</span>;  <span class="comment">// 存储元素的数组</span></span><br><span class="line">    <span class="keyword">float</span> lfactor;  <span class="comment">// 负载因子</span></span><br><span class="line">    <span class="keyword">uint16_t</span> cap;   <span class="comment">// 表的容量</span></span><br><span class="line">    <span class="keyword">uint16_t</span> len;   <span class="comment">// 表的当前元素个数</span></span><br><span class="line">&#125; Hash, *Hashptr;</span><br></pre></td></tr></table></figure>
+
+<p>一些工具函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errExit</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* errMsg)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;%s\n&quot;</span>, errMsg);</span><br><span class="line">    <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printInfo</span><span class="params">(Hashptr hptr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (hptr == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;load factor: %0.2f\tlen: %d\tcap: %d\n&quot;</span>, hptr-&gt;lfactor, hptr-&gt;len,</span><br><span class="line">            hptr-&gt;cap);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; hptr-&gt;cap; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (hptr-&gt;<span class="built_in">array</span>[i].state == legitimate) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d  %d\n&quot;</span>, i, hptr-&gt;<span class="built_in">array</span>[i].el);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d  %s\n&quot;</span>, i, <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>初始化</p>
+</blockquote>
+<ol>
+<li>构建一个哈希表结构，这个表结构包含负载因子，数组的元素个数，容量以及指向数组的指针等等信息。</li>
+<li>对结构中的各个字段初始化，给数组指针申请空间，然后初始化数组的每一个项</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">inithash</span><span class="params">(Hashptr hptr, <span class="keyword">uint16_t</span> initcap)</span> </span>&#123;</span><br><span class="line">    hptr-&gt;lfactor = <span class="number">0.0</span>;</span><br><span class="line">    hptr-&gt;len = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 取素数</span></span><br><span class="line">    hptr-&gt;cap = upToPrime(initcap);</span><br><span class="line">    hptr-&gt;<span class="built_in">array</span> = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Item) * hptr-&gt;cap);</span><br><span class="line">    <span class="keyword">if</span> (hptr-&gt;<span class="built_in">array</span> == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        errExit(<span class="string">&quot;out of memory&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">memset</span>(hptr-&gt;<span class="built_in">array</span>, <span class="number">0</span>, <span class="keyword">sizeof</span>(Item) * hptr-&gt;cap);</span><br><span class="line">    <span class="comment">// 初始化数组的每个项，都设置为empty</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; hptr-&gt;cap; i++) &#123;</span><br><span class="line">        hptr-&gt;<span class="built_in">array</span>[i].state = empty;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Hashptr <span class="title">init</span><span class="params">(<span class="keyword">uint16_t</span> initcap)</span> </span>&#123;</span><br><span class="line">    Hashptr hptr = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Hash));</span><br><span class="line">    <span class="keyword">if</span> (hptr == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        errExit(<span class="string">&quot;out of memory&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">memset</span>(hptr, <span class="number">0</span>, <span class="keyword">sizeof</span>(Hash));</span><br><span class="line">    inithash(hptr, initcap);</span><br><span class="line">    <span class="keyword">return</span> hptr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>初始化后的示意图 </p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">            +-------+-----+-----+---------+</span><br><span class="line">hptr-------&gt;| array | len | cap | lfactor |</span><br><span class="line">            +-------+-----+-----+---------+</span><br><span class="line">                |</span><br><span class="line">                v</span><br><span class="line">                +---+---+---+---+---+---+---+---+</span><br><span class="line">                |   |   |   |   |   |   |   |   |</span><br><span class="line">                +---+---+---+---+---+---+---+---+</span><br><span class="line">                0   1   2   3   4   5   6   7</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>插入元素</p>
+</blockquote>
+<ol>
+<li>先检查是否需要扩容，如果满足扩容条件，就先扩容。扩容会重新初始化一个新的散列表结构，给数组重新申请新的内存空间，然后把旧的数组迁移过去</li>
+<li>找到一个在数组中的可用位置，然后更新这个位置上的数组。同时更新散列表的元素个数和负载因子</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insertIntoArray</span><span class="params">(Hashptr hptr, <span class="keyword">uint16_t</span> key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">uint16_t</span> i = find(hptr, key);</span><br><span class="line">    <span class="comment">// 只要不是legitimate状态就可以插入这个元素</span></span><br><span class="line">    <span class="comment">// 即使是deleted也无关紧要，deleted存在的初衷是为了保证表的完整性</span></span><br><span class="line">    <span class="comment">// 可以防止删除元素之后查找失效的问题。用新的元素覆盖掉已经删除元素</span></span><br><span class="line">    <span class="comment">// 的数据并不影响后面的查找</span></span><br><span class="line">    <span class="keyword">if</span> (hptr-&gt;<span class="built_in">array</span>[i].state != legitimate) &#123;</span><br><span class="line">        hptr-&gt;<span class="built_in">array</span>[i].el = key;</span><br><span class="line">        hptr-&gt;<span class="built_in">array</span>[i].state = legitimate;</span><br><span class="line">        <span class="comment">// 更新负载因子和长度</span></span><br><span class="line">        ++hptr-&gt;len;</span><br><span class="line">        hptr-&gt;lfactor = (<span class="keyword">float</span>)hptr-&gt;len / (<span class="keyword">float</span>)hptr-&gt;cap;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 扩容哈希表</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">growhash</span><span class="params">(Hashptr hptr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (hptr-&gt;lfactor &gt;= LOAD_FACTOR_MAX) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;grow...\n&quot;</span>);</span><br><span class="line">        <span class="keyword">uint16_t</span> oldcap = hptr-&gt;cap;</span><br><span class="line">        <span class="comment">// 扩容了两倍</span></span><br><span class="line">        <span class="keyword">uint16_t</span> doublecap = oldcap + oldcap;</span><br><span class="line">        <span class="comment">// 取出旧数组</span></span><br><span class="line">        Itemptr oldArray = hptr-&gt;<span class="built_in">array</span>;</span><br><span class="line">        <span class="comment">// 重新初始化哈希表</span></span><br><span class="line">        inithash(hptr, doublecap);</span><br><span class="line">        <span class="comment">// 迁移数组元素</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; oldcap; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (oldArray[i].state == legitimate) &#123;</span><br><span class="line">                insertIntoArray(hptr, oldArray[i].el);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 释放旧数组数据</span></span><br><span class="line">        <span class="built_in">free</span>(oldArray);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(Hashptr hptr, <span class="keyword">uint16_t</span> key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (hptr == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        errExit(<span class="string">&quot;need to init before insert&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 忽略array的检查</span></span><br><span class="line">    growhash(hptr);</span><br><span class="line">    insertIntoArray(hptr, key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>插入的操作涉及到一个查找可用位置的问题，在上文已经提到过了。采用线性探测，如果散列到的位置被占用，就依次向后查找。如果表中有空位，总会找到一个可用的位置。当然，也可能存在没有可用位置的极端情况。在这种情况下，当探测的下标移动到最初散列的地方时就直接跳出循环，然会第一次散列的索引。调用者会根据情况进行不同的操作，就像上面的插入例程。如果返回的索引位置不是可用的位置才会更新表项的数据，反之什么都不做。这里适用散列函数只是简单的取余法，所以表的大小应该是是一个素数。</p>
+<ol>
+<li>循环条件是当探测到的位置为空或者键是不存在的，就不在探测。第二个条件是当表项被懒惰删除了，但是数据还在。这样在重新添加这个键的时候，也终止循环，返回这个表项的位置。因为被删除之后状态就成了deleted，所以再插入或者获取键的时候可以根据状态来判断。</li>
+<li>后面的逻辑就是线性探测的关键位置。<em>pos = ++pos % hptr-&gt;cap</em>，这个适用于循环探测的方式。</li>
+</ol>
+<blockquote>
+<p>find例程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">uint16_t</span> <span class="title">hashfunc</span><span class="params">(Hashptr hptr, <span class="keyword">uint16_t</span> key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> key % hptr-&gt;cap;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果找到就返回该key所在的散列表项的索引，找不到返回</span></span><br><span class="line"><span class="comment">// 返回的情况还有一个，那就是新插入的key已经存在，那么也会返回</span></span><br><span class="line"><span class="comment">// 该函数的调用者会判断表项的状态来决定具体怎么做</span></span><br><span class="line"><span class="function"><span class="keyword">uint16_t</span> <span class="title">find</span><span class="params">(Hashptr hptr, <span class="keyword">uint16_t</span> key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">uint16_t</span> pos = hashfunc(hptr, key);</span><br><span class="line">    <span class="comment">// 调试信息</span></span><br><span class="line">    <span class="keyword">uint16_t</span> hash_pos = pos;</span><br><span class="line">    <span class="keyword">uint16_t</span> offset = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (hptr-&gt;<span class="built_in">array</span>[pos].state != empty &amp;&amp; hptr-&gt;<span class="built_in">array</span>[pos].el != key) &#123;</span><br><span class="line">        ++pos;</span><br><span class="line">        pos = pos % hptr-&gt;cap;</span><br><span class="line">        <span class="comment">// 如果探测回到了原点就结束查找</span></span><br><span class="line">        <span class="keyword">if</span> (pos &gt;= hash_pos) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 调试：递增偏移量</span></span><br><span class="line">        ++offset;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;key[%d] hash_pos[%d] insert_pos[%d] offset[%d]\n&quot;</span>, key, hash_pos,</span><br><span class="line">            pos, offset);</span><br><span class="line">    <span class="keyword">return</span> pos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>删除元素</p>
+</blockquote>
+<p>删除元素例程并不会真正的把某一个表项的数据清空，而是将这个项标记为”deleted“。这样做的目的是为了保证开放定址法实现下表的完整性，上文有提到。然后更新表的长度和负载因子。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">erase</span><span class="params">(Hashptr hptr, <span class="keyword">uint16_t</span> key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (hptr == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        errExit(<span class="string">&quot;need to init before erase&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 忽略array的检查</span></span><br><span class="line">    <span class="keyword">uint16_t</span> i = find(hptr, key);</span><br><span class="line">    <span class="keyword">if</span> (hptr-&gt;<span class="built_in">array</span>[i].state != legitimate) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;key[%d] does not exits\n&quot;</span>, key);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 懒惰删除</span></span><br><span class="line">    <span class="comment">// 不清空数据，只是标记这个元素呈删除状态</span></span><br><span class="line">    hptr-&gt;<span class="built_in">array</span>[i].state = deleted;</span><br><span class="line">    <span class="comment">// 更新当前元素个数</span></span><br><span class="line">    --hptr-&gt;len;</span><br><span class="line">    <span class="comment">// 更新负载因子</span></span><br><span class="line">    hptr-&gt;lfactor = (<span class="keyword">float</span>)hptr-&gt;len / (<span class="keyword">float</span>)hptr-&gt;cap;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;deleted key: %d\n&quot;</span>, key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之前在分析表的大小应该取素素更好，所以实现了个获取比给定非素数大的最小素数的方法。实际上就是从给定的数开始依次检查，判断是否是素数，效率低下。垃圾算法，无力吐槽！</p>
+<blockquote>
+<p>取素数</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 取素数</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isPrime</span><span class="params">(<span class="keyword">int16_t</span> digit)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 素数是指，大于1的任意自然数，除了可以被1和本身整除的数</span></span><br><span class="line">    <span class="comment">// 所以2是最小的素数</span></span><br><span class="line">    <span class="keyword">if</span> (digit &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">for</span> (; i &lt; digit; i++) &#123;</span><br><span class="line">        <span class="comment">// 可以被整除，不是素数</span></span><br><span class="line">        <span class="keyword">if</span> (digit % i == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 循环自然结束，说明是素数</span></span><br><span class="line">    <span class="keyword">if</span> (i == digit) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 一种获取比非素数大的最小素数的垃圾算法</span></span><br><span class="line"><span class="function"><span class="keyword">uint16_t</span> <span class="title">upToPrime</span><span class="params">(<span class="keyword">int16_t</span> num)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!isPrime(num)) &#123;</span><br><span class="line">            ++num;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> num;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后对理论分析的那部分设想进行验证，首先是不考虑扩容的问题。初始化散列表之后，依次插入9个元素，看看什么情况。</p>
+<blockquote>
+<p>测试例程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> arr[<span class="number">9</span>] = &#123;<span class="number">47</span>, <span class="number">7</span>, <span class="number">29</span>, <span class="number">11</span>, <span class="number">9</span>, <span class="number">87</span>, <span class="number">54</span>, <span class="number">20</span>, <span class="number">30</span>&#125;;</span><br><span class="line">    Hashptr hptr = init(<span class="number">11</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">9</span>; i++) &#123;</span><br><span class="line">        insert(hptr, arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    printInfo(hptr);</span><br><span class="line">    <span class="comment">// erase(hptr, 47);</span></span><br><span class="line">    <span class="comment">// printInfo(hptr);</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从打印结果来看，有好几个元素被存储在被散列到的位置，存储位置距离散列位置的偏移量都是0。这种情况事理想的情况。但也有偏移量较大的情况，比如元素20和元素30的情况。它们存储的位置距离散列的位置偏移了很多，在查找的时候就需要比较多次。冲突的次数越多，比较的次数也就越多，性能也下降得厉害。其负载因子变得很大，0.82，接近于1。有两个聚集区域。后面的再有元素添加进来，发生冲突的概率很大。为了减少碰撞的概率，就需要扩容。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">key[47] hash_pos[3] insert_pos[3] offset[0]</span><br><span class="line">key[7] hash_pos[7] insert_pos[7] offset[0]</span><br><span class="line">key[29] hash_pos[7] insert_pos[8] offset[1]</span><br><span class="line">key[11] hash_pos[0] insert_pos[0] offset[0]</span><br><span class="line">key[9] hash_pos[9] insert_pos[9] offset[0]</span><br><span class="line">key[87] hash_pos[10] insert_pos[10] offset[0]</span><br><span class="line">key[54] hash_pos[10] insert_pos[1] offset[2]</span><br><span class="line">key[20] hash_pos[9] insert_pos[2] offset[4]</span><br><span class="line">key[30] hash_pos[8] insert_pos[4] offset[7]</span><br><span class="line">load factor: 0.82       len: 9  cap: 11</span><br><span class="line">0  11</span><br><span class="line">1  54</span><br><span class="line">2  20</span><br><span class="line">3  47</span><br><span class="line">4  30</span><br><span class="line">5  (null)</span><br><span class="line">6  (null)</span><br><span class="line">7  7</span><br><span class="line">8  29</span><br><span class="line">9  9</span><br><span class="line">10  87</span><br></pre></td></tr></table></figure>
+
+<p>下面是扩容之后得元素分布。可以看到，扩容之后元素在散列表上分布得较为稀疏。发生碰撞得概率减小了。几乎没有偏移原来散列位置的情况，除了元素30。不过也比扩容之前要好很多。不过一次聚集现象还是会存在。在索引6到索引11这一段区域聚集了很多元素，假如后面的元素被散列到这个地方，势必会发生冲突。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">key[47] hash_pos[3] insert_pos[3] offset[0]</span><br><span class="line">key[7] hash_pos[7] insert_pos[7] offset[0]</span><br><span class="line">key[29] hash_pos[7] insert_pos[8] offset[1]</span><br><span class="line">key[11] hash_pos[0] insert_pos[0] offset[0]</span><br><span class="line">key[9] hash_pos[9] insert_pos[9] offset[0]</span><br><span class="line">grow...</span><br><span class="line">key[11] hash_pos[11] insert_pos[11] offset[0]</span><br><span class="line">key[47] hash_pos[1] insert_pos[1] offset[0]</span><br><span class="line">key[7] hash_pos[7] insert_pos[7] offset[0]</span><br><span class="line">key[29] hash_pos[6] insert_pos[6] offset[0]</span><br><span class="line">key[9] hash_pos[9] insert_pos[9] offset[0]</span><br><span class="line">key[87] hash_pos[18] insert_pos[18] offset[0]</span><br><span class="line">key[54] hash_pos[8] insert_pos[8] offset[0]</span><br><span class="line">key[20] hash_pos[20] insert_pos[20] offset[0]</span><br><span class="line">key[30] hash_pos[7] insert_pos[10] offset[3]</span><br><span class="line">load factor: 0.39       len: 9  cap: 23</span><br><span class="line">0  (null)</span><br><span class="line">1  47</span><br><span class="line">2  (null)</span><br><span class="line">3  (null)</span><br><span class="line">4  (null)</span><br><span class="line">5  (null)</span><br><span class="line">6  29</span><br><span class="line">7  7</span><br><span class="line">8  54</span><br><span class="line">9  9</span><br><span class="line">10  30</span><br><span class="line">11  11</span><br><span class="line">12  (null)</span><br><span class="line">13  (null)</span><br><span class="line">14  (null)</span><br><span class="line">15  (null)</span><br><span class="line">16  (null)</span><br><span class="line">17  (null)</span><br><span class="line">18  87</span><br><span class="line">19  (null)</span><br><span class="line">20  20</span><br><span class="line">21  (null)</span><br><span class="line">22  (null)</span><br></pre></td></tr></table></figure>
+
+<p>产生一次聚集的现象之后，发生冲突的概率也会更大。导致元素相对于被散列到的地方的偏移量越大，查找的效率也会降低。有一种探测法可以避免一次聚集现象，叫做平方探测。</p>
+<h4 id="平方探测"><a href="#平方探测" class="headerlink" title="平方探测"></a>平方探测</h4><p>使用平方探测法需要保证表的大小是素数并且至少有一半的空位（表的大小是元素个数的两倍，也就是负载因子最大是0.5，超过了就得扩容），这样才能保证新的元素插入。反之，即使只超过表大小的二分之一一个元素，也有可能插入失败（找不到可用的空位）。</p>
+<p>平方探测法的实现只需要将原来的线性探测法的函数改改就可以了，根据探测通式：h(key) = (hash(key) + f(i)) mod Tsize。在平凡探测法中，一般取f(i)=i^2，但实际这个函数取的是二次函数，二次函数并非只是f(i) = i^2，这样子的函数所探测到的位置仅仅只是表的一半位置，一个解决的方法是：f(i) = i^2 - 1。i的取值范围是：0 &lt; i ≤ Tsize-1。</p>
+<blockquote>
+<p>平方探测法</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 必须要保证负载因子大于等于0.5的时候扩容</span></span><br><span class="line"><span class="comment">// 保持表中至少有一半的空位</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">uint16_t</span> <span class="title">find</span><span class="params">(Hashptr hptr, <span class="keyword">uint16_t</span> key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">uint16_t</span> pos = hashfunc(hptr, key);</span><br><span class="line">    <span class="comment">// hash_pos用于调试</span></span><br><span class="line">    <span class="keyword">uint16_t</span> hash_pos = pos;</span><br><span class="line">    <span class="keyword">uint16_t</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (hptr-&gt;<span class="built_in">array</span>[pos].state != empty &amp;&amp; hptr-&gt;<span class="built_in">array</span>[pos].el != key) &#123;</span><br><span class="line">        <span class="comment">// 线性探测法</span></span><br><span class="line">        <span class="comment">// ++pos;</span></span><br><span class="line">        <span class="keyword">uint16_t</span> pre_pos = pos;</span><br><span class="line">        <span class="comment">// 平方探测法</span></span><br><span class="line">        <span class="comment">// 使用位移的方式，相当于i的2次方</span></span><br><span class="line">        pos = <span class="number">1</span> &lt;&lt; ++i - <span class="number">1</span>;</span><br><span class="line">        pos = pos % hptr-&gt;cap;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;key[%d] hash pos[%d] next detected pos[%d]\n&quot;</span>, key, hash_pos, pos);</span><br><span class="line">        <span class="comment">// 当i递增的次数达到表的大小时不在探测</span></span><br><span class="line">        <span class="keyword">if</span> (i &gt;= hptr-&gt;cap - <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>平方探测法不扩容的元素散列分布。相对于线性探测法来说，平均冲突的次数少了很多。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">key[29] hash pos[7] next detected pos[1]</span><br><span class="line">key[54] hash pos[10] next detected pos[1]</span><br><span class="line">key[54] hash pos[10] next detected pos[2]</span><br><span class="line">key[20] hash pos[9] next detected pos[1]</span><br><span class="line">key[20] hash pos[9] next detected pos[2]</span><br><span class="line">key[20] hash pos[9] next detected pos[4]</span><br><span class="line">load factor: 0.82       len: 9  cap: 11</span><br><span class="line">0  11</span><br><span class="line">1  29</span><br><span class="line">2  54</span><br><span class="line">3  47</span><br><span class="line">4  20</span><br><span class="line">5  (null)</span><br><span class="line">6  (null)</span><br><span class="line">7  7</span><br><span class="line">8  30</span><br><span class="line">9  9</span><br><span class="line">10  87</span><br></pre></td></tr></table></figure>
+
+<p>扩容之后的平方探测散列分布，感觉没多大区别。可能用的例子不够恰当，不过还是可以看得出来，平方探测的聚集程度要比线性探测要小。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">key[29] hash pos[7] next detected pos[1]</span><br><span class="line">grow...</span><br><span class="line">key[30] hash pos[7] next detected pos[1]</span><br><span class="line">key[30] hash pos[7] next detected pos[2]</span><br><span class="line">load factor: 0.39       len: 9  cap: 23</span><br><span class="line">0  (null)</span><br><span class="line">1  47</span><br><span class="line">2  30</span><br><span class="line">3  (null)</span><br><span class="line">4  (null)</span><br><span class="line">5  (null)</span><br><span class="line">6  29</span><br><span class="line">7  7</span><br><span class="line">8  54</span><br><span class="line">9  9</span><br><span class="line">10  (null)</span><br><span class="line">11  11</span><br><span class="line">12  (null)</span><br><span class="line">13  (null)</span><br><span class="line">14  (null)</span><br><span class="line">15  (null)</span><br><span class="line">16  (null)</span><br><span class="line">17  (null)</span><br><span class="line">18  87</span><br><span class="line">19  (null)</span><br><span class="line">20  20</span><br><span class="line">21  (null)</span><br><span class="line">22  (null)</span><br></pre></td></tr></table></figure>
+
+<p>理想的状态下，表的大小应该是素数4j+3，其中j为整数，1 &lt;= j。这种情况下，平方解决函数就是：f(i) = ±i^2。在这种条件下，就有可能探测到表的所有单元。不过这种解决方法会涉及到负数，负数取余得到的结果应该做特别的处理。比如：-6 % 23 = -6，这并不是想要的结果，并且数组的下标也不可能为0。所以，解决的办法就是：求模之后的结果再加上模，这就得到一个正数。比如：(-6 % 23) + 23 = 17。</p>
+<blockquote>
+<p>探测序列形式表示：</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 使用这种形式的探测，探测次数是：(Tsize-1)/2次。因为每一个绝对值i都有两次探测，分别是正数和负数时的探测。</span><br><span class="line">// 就比如表长为4*4+3 = 19，那么探测的次数就是：(19-1)/2 = 9次</span><br><span class="line"></span><br><span class="line">hash(key)+i^2,hash(key)-i^2   i = &#123;1,2,3,4 ... (Tsize-1)/2&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>探测序列，包含第一次散列到的位置</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// h(key)-(Tsize-1)^2/4 这里是(Tsize-1)的平方再除以4</span><br><span class="line">// 最终的结果都要对表大小求模</span><br><span class="line"></span><br><span class="line">h(key), h(key)+1, h(key)-1, h(key)+4, h(key)-4 ... h(key)+(Tsize-1)^2/4, h(key)-(Tsize-1)^2/4</span><br></pre></td></tr></table></figure>
+
+<p>比如表的大小是19（4j+3, j=4），假设hash(key) = 9，那么探测的序列就是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">        (9+1^2)mod19  (9-1^2)mod19    (9+2^2)mod19    (9-2^2)mod19   (9+3^2)mod19   (9-3^2)mod19   (9+4*2)mod19</span><br><span class="line">9           10             8               13              5              18             0              6</span><br><span class="line"></span><br><span class="line">        (9+4^2)mod19  (9+5^2)mod19    (9-5^2)mod19    (9+6^2)mod19   (9-6^2)mod19   (9+7^2)mod19   (9-7*2)mod19</span><br><span class="line">            12             15              3               7              11             1              17             </span><br><span class="line">        </span><br><span class="line">        (9+8*2)mod19  (9-8*2)mod19    (9+9*2)mod19    (9-9*2)mod19</span><br><span class="line">            16             2               14              4  </span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>表大小为4j+3的探测例程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 调整表的大小，表大小取4j+3的素数，j是一个整数</span></span><br><span class="line"><span class="function"><span class="keyword">uint16_t</span> <span class="title">upToPrime</span><span class="params">(<span class="keyword">uint16_t</span> num)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">uint16_t</span> res = <span class="number">4</span> * i + <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">while</span> (res &lt; num) &#123;</span><br><span class="line">        ++i;</span><br><span class="line">        res = <span class="number">4</span> * i + <span class="number">3</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 表大小为4j+3的平方探测法实现</span></span><br><span class="line"><span class="function"><span class="keyword">uint16_t</span> <span class="title">find</span><span class="params">(Hashptr hptr, <span class="keyword">uint16_t</span> key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int16_t</span> pos = hashfunc(hptr, key);</span><br><span class="line">    <span class="keyword">uint16_t</span> hash_pos = pos;</span><br><span class="line">    <span class="keyword">uint16_t</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (hptr-&gt;<span class="built_in">array</span>[pos].state != empty &amp;&amp; hptr-&gt;<span class="built_in">array</span>[pos].el != key) &#123;</span><br><span class="line">        <span class="comment">// 如果要测试就将条件设为true，这样才可以看到探测的所有位置</span></span><br><span class="line">        <span class="comment">// while (true) &#123;</span></span><br><span class="line">        ++i;</span><br><span class="line">        <span class="keyword">if</span> (i &gt;= hptr-&gt;cap) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 根据平方解决函数，奇数是加，偶数是减</span></span><br><span class="line">        <span class="keyword">if</span> (i % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">int16_t</span> j = i / <span class="number">2</span>;</span><br><span class="line">            pos = (hash_pos - j * j) % hptr-&gt;cap;</span><br><span class="line">            <span class="comment">// 如果求模得到的是负数，那么就需要加上摸的大小</span></span><br><span class="line">            <span class="keyword">if</span> (pos &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                pos += hptr-&gt;cap;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// ceil，向上取整</span></span><br><span class="line">            <span class="comment">// 两个操作数必须有一个是浮点数，否则结果为整数，最后取整也没意义了</span></span><br><span class="line">            <span class="keyword">int16_t</span> j = <span class="built_in">ceil</span>(i / <span class="number">2.0</span>);</span><br><span class="line">            pos = (hash_pos + j * j) % hptr-&gt;cap;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>对表大小为4j+3的探测例程分析</strong><br>首先，平方探测法探测的最大次数是Tsize-1次，20-22行做了这个限制。其次，我们需要确定每次探测的位置，也就是散列到的值加上一个具体的数值，定为a。这些探测位置的序列定义是：hash(key)+i^2,hash(key)-i^2   i = {1,2,3,4 … (Tsize-1)/2}中的其中一个。假设我们一共探测8次，依次是：1，2，3，4，5，6，7，8。那么，每次探测位置加上的具体数值a就像下面的对应数值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1       2       3       4       5       6       7       8</span><br><span class="line">1^2    -1^2     2^2    -2^2     3^2    -3^2     4^2    -4^2</span><br></pre></td></tr></table></figure>
+
+<p>由此我们可以得出一个规律，就是：相邻的两个数，奇数对应的具体数值a是正数，偶数对应的具体数值a是负数（相邻的两个数必定是一奇一偶）。并且，对于偶数：偶数除以2得到的商就是±i^2中的i的绝对值。而对于奇数：奇数除以2得到的商向上取整之后的数值也是±i^2中的i的绝对值。而且，两个相邻的数，一个奇数和后面的偶数所使用的i的绝对值都是同一个。比如：1对应的具体数值a是1^2，2对应的具体数值a是-1^2，其中i的绝对中就是1。根据这个规律，就可以在一个循环中依次加上具体数值±i^2了，这个处理在24-36行。</p>
+<p>上文有提到假设表大小是19(4*4+3)，key是9的的情况得出的探测位置在上文已经给出来了。然后我们将表的大小设为19，然后key为9，最后运行这个程序的出来的探测位置就是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10 8 13 5 18 0 6 12 15 3 7 11 1 17 16 2 14 4 </span><br></pre></td></tr></table></figure>
+<p>如果将第一次散列到位置9也加上去，那么得到的探测序列就和上文一样了。</p>
+<p>总结，平方探测法相对于线性探测主要的区别在于：出现冲突之后，线性探测法是从冲突的位置依次向后探测，容易产生一次聚集现象。平方探测法解决了这个问题，在出现冲突的时候按照一个二次函数计算出来的位置继续探测，这样避免了线性探测的一次聚集现象。但也会产生另一种聚集现象，叫二次聚集。总的来说，平方探测要比线性探测表现要好。</p>
+<h4 id="双散列"><a href="#双散列" class="headerlink" title="双散列"></a>双散列</h4><p>效率不高</p>
+<p><strong>三种开放定址法解决冲突得方法比较</strong><br>线性探测法算法简单，实现容易。但是容易产生一次聚集现象，增加冲突得概率。如果一次聚集得取余非常大，那么插入和查找等操作都会耗时，效率低下。平方探测法相对较为复杂，比如表的元素个数超过表大小的一半时候有可能插入失败，还有就是表大小为4j+3的素数时探测算法实现起来没有线性探测法那么容易。但是能够解决一次聚集得问题产生，降低了冲突的概率，提高效率。但是与此同时，也会产生二次聚集的现象。（双散列可以解决聚集的问题，但是由于需要两个散列函数，其效率低下。相比较平方探测和线性探测而言，双散列在效率这方面并没有什么优势）。 </p>
+<h3 id="分离链接法"><a href="#分离链接法" class="headerlink" title="分离链接法"></a>分离链接法</h3><p>分离链接法对于散列冲突的时候，其做法是保留散列到同一个值得所有元素到一个表中，通常是一个散列表。当然也可以是其它数据结构，比如B+树，红黑树等等。这里使用得单链表方式。所以，整个散列表就是数组加单链表的方式。每个数组的元素都包含一个单链表的头指针，指向一条链表。一个键所对应的值就保存在这个单链表中，如果出现散列冲突，那么就插入一个结点，形成一条单链表。<br>单链表的长度不宜过长，否则在执行查找操作的时候扫描一整条长长的链表，耗费的时候很多。</p>
+<blockquote>
+<p>数组+单链表的分离连接法示意图（省略散列函数）</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">0 +---+</span><br><span class="line">  | p-|--&gt;null</span><br><span class="line">1 +---+   +---+    +---+</span><br><span class="line">  | p-|--&gt;|   |---&gt;|   |---&gt;null</span><br><span class="line">2 +---+   +---+    +---+</span><br><span class="line">  | p-|--&gt;null</span><br><span class="line">3 +---+   +---+    +---+</span><br><span class="line">  | p-|--&gt;|   |---&gt;|   |---&gt;null  </span><br><span class="line">4 +---+   +---+    +---+</span><br><span class="line">  | p-|--&gt;null</span><br><span class="line">  +---+</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="分离链接法的一些操作"><a href="#分离链接法的一些操作" class="headerlink" title="分离链接法的一些操作"></a>分离链接法的一些操作</h4><ol>
+<li><p>插入键值对</p>
+<blockquote>
+<p>在向散列表中插入键值对的时候，首先通过散列函数对键进行计算来得出键在散列表中对应的位置。然后将和键对应的值插入该位置关联的链表中，即使不同的键计算出的位置相同（也就是冲突）也无关紧要，只需要将对应的值插入到链表当中就可以了。</p>
+</blockquote>
+</li>
+<li><p>删除键值对</p>
+<blockquote>
+<p>同样需要通过散列函数来计算键在散列表中的位置，然后遍历这个位置关联的链表。找到该键值所在的那个结点，就将其删除。如果不存在，要么什么都不做，要么抛出错误，结束程序。</p>
+</blockquote>
+</li>
+<li><p>根据键查找值</p>
+<blockquote>
+<p>通过散列函数来计算出键在散列表中的位置，然后遍历链表，找到和找不到的处理依赖于具体实现。</p>
+</blockquote>
+</li>
+<li><p>根据键修改值</p>
+<blockquote>
+<p>根据键找到对应的链表节点，然后更新这个键对应的值。如果找不到，那么就插入这个键值对。</p>
+</blockquote>
+</li>
+</ol>
+<h4 id="为什么要扩容"><a href="#为什么要扩容" class="headerlink" title="为什么要扩容"></a>为什么要扩容</h4><p>散列表始终是有大小的，当散列表中的元素到达一定程度的时候需要扩容，来满足更多的键值对存储而不降低效率。对于分离链接法来说，散列表扩容的时候需要申请一块更大的内存块，然后更新其相关数据。更重要的是，扩容之后需要重新散列，将原来的键值对重新散列存储到新的结构当中，使得原来分布非常紧密的数据单元变得稀疏，降低冲突的几率。同时也会使得原来的链表长度减短，提高效率。这时候，原来的结构就会出现改变。有可能原来存储的位置在重新散列之后就不同了，这个依赖于具体的散列函数实现。扩容的依据是根据很多因素来决定的，其中负载因子就是一个很重要的因素，当负载因子大于或等于某个数的时候就会触发扩容机制，进行扩容操作。对于分离链接法来说，如果不扩容出现的情况就是每一个散列表单元所关联的链表就会很长很长，那么在这种情况下进行查找或更新操作所耗费的时间会非常多。最极端的情况下会和普通单链表一样，遍历整条链表来达到操作的目的。这种情况下，散列表的优势就不复存在了。</p>
+<h4 id="散列函数-1"><a href="#散列函数-1" class="headerlink" title="散列函数"></a>散列函数</h4><p>使用分离链接法实现的散列表，散列函数使用的算法至关重要。一个通常的办法是根据散列表的长度对key（这里假设key是字符串）的长度取余，也就是：length(key) / tableSize。但是这种方法也有一定的缺陷，假设有一种情况，就是所有的key的长度都相同，但是内容不同。那么使用取余的方法就会造成所有的键都会散列到同一个位置上的情况，只会使用到一条链表。最后的情况就是这条链表会变得很长，而其它散列表项没有被使用，最终散列表退化为单向链表，效率急剧降低。</p>
+<blockquote>
+<p>示意图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">0 +---+</span><br><span class="line">  | p-|--&gt;null</span><br><span class="line">1 +---+   +---+    +---+    +---+    +---+    +---+    +---+    +---+</span><br><span class="line">  | p-|--&gt;|   |---&gt;|   |---&gt;|   |---&gt;|   |---&gt;|   |---&gt;|   |---&gt;|   |---&gt;null</span><br><span class="line">2 +---+   +---+    +---+    +---+    +---+    +---+    +---+    +---+</span><br><span class="line">  | p-|--&gt;null</span><br><span class="line">3 +---+   </span><br><span class="line">  | p-|--&gt;null  </span><br><span class="line">4 +---+   </span><br><span class="line">  | p-|--&gt;null</span><br><span class="line">  +---+</span><br></pre></td></tr></table></figure>
+
+<h4 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h4><p>散列表的实现起来千变万化，但是其基本思想是一样的。其中看起来多余的参数是老夫为了调试方便，主要是学习它的思想，不要在意这些细节。</p>
+<blockquote>
+<p>结构体声明</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOADFACTOR 0.75  <span class="comment">// 出发扩容的最大负载因子</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAXHASHSIZE 128  <span class="comment">// 散列表最大长度</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 链表结点</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">node</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">node</span>* <span class="title">next</span>;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span>* key;    <span class="comment">// hash元素的键</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span>* value;  <span class="comment">// hash元素的值</span></span><br><span class="line">&#125; Node, *Nodeptr;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 散列表数据单元</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">hashEl</span> &#123;</span></span><br><span class="line">    Nodeptr h;    <span class="comment">// 链表的头结点，定位一个指针</span></span><br><span class="line">    <span class="keyword">uint8_t</span> len;  <span class="comment">// 当前链表的结点长度，（为了测试用的，看看链表有多少个节点）</span></span><br><span class="line">&#125; HashEl, *HashElptr;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 散列表结构</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">hash</span> &#123;</span></span><br><span class="line">    HashElptr* <span class="built_in">array</span>;             <span class="comment">// 散列表数组</span></span><br><span class="line">    <span class="keyword">float</span> lfactor;                <span class="comment">// 负载因子</span></span><br><span class="line">    <span class="keyword">uint8_t</span> cap;                  <span class="comment">// 当前散列表容量</span></span><br><span class="line">    <span class="keyword">uint8_t</span> len;                  <span class="comment">// 当前散列表长度</span></span><br><span class="line">    <span class="keyword">uint8_t</span> helper[MAXHASHSIZE];  <span class="comment">// 辅助数组，用于计算负载因子</span></span><br><span class="line">&#125; Hash, *Hashptr;</span><br></pre></td></tr></table></figure>
+
+<p>首先，先给Hash结构申请内存块，然后初始化其各项参数。array成员是是一个指向数组的指针，这个数组的元素是指向HashEl结构的指针。HashEl结构包含两个成员，len成员是当前与之关联数组的节点个数（头节点不计算在内），h成员是指向链表的头节点的指针。接下来就是Hash结构len成员，表示当前散列数组的使用个数，cap则是散列数组的容量，cap的值是初始化时指定的。helper成员时一个数组，用来判断当前的散列数组哪一个单元被使用了，方便计算负载因子。lfactor则是负载因子，初始化为0.0。</p>
+<blockquote>
+<p>初始化散列表例程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initTableItem</span><span class="params">(Hashptr hptr, <span class="keyword">uint8_t</span> initcap)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 创建散列表数组</span></span><br><span class="line">    hptr-&gt;<span class="built_in">array</span> = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(HashEl) * initcap);</span><br><span class="line">    <span class="keyword">if</span> (hptr-&gt;<span class="built_in">array</span> == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        errExit(<span class="string">&quot;out of memory&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化各项参数</span></span><br><span class="line">    hptr-&gt;lfactor = <span class="number">0.0</span>;</span><br><span class="line">    hptr-&gt;len = <span class="number">0</span>;</span><br><span class="line">    hptr-&gt;cap = initcap;</span><br><span class="line">    <span class="built_in">memset</span>(hptr-&gt;helper, <span class="number">0</span>, <span class="keyword">sizeof</span>(<span class="keyword">uint8_t</span>) * MAXHASHSIZE);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化散列表项</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; hptr-&gt;cap; i++) &#123;</span><br><span class="line">        <span class="comment">// 给数组项申请内存</span></span><br><span class="line">        hptr-&gt;<span class="built_in">array</span>[i] = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(HashEl));</span><br><span class="line">        <span class="keyword">if</span> (hptr-&gt;<span class="built_in">array</span>[i] == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            errExit(<span class="string">&quot;out of memory&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 初始化HashEl结构成员</span></span><br><span class="line">        hptr-&gt;<span class="built_in">array</span>[i]-&gt;len = <span class="number">0</span>;</span><br><span class="line">        hptr-&gt;<span class="built_in">array</span>[i]-&gt;h = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">        <span class="keyword">if</span> (hptr-&gt;<span class="built_in">array</span>[i]-&gt;h == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            errExit(<span class="string">&quot;out of memory&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 初始化Node结构成员</span></span><br><span class="line">        <span class="comment">// 因为是头节点，所以三个成员都为NULL</span></span><br><span class="line">        <span class="built_in">memset</span>(hptr-&gt;<span class="built_in">array</span>[i]-&gt;h, <span class="number">0</span>, <span class="keyword">sizeof</span>(Node));</span><br><span class="line">        hptr-&gt;<span class="built_in">array</span>[i]-&gt;h-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">        hptr-&gt;<span class="built_in">array</span>[i]-&gt;h-&gt;key = <span class="literal">NULL</span>;</span><br><span class="line">        hptr-&gt;<span class="built_in">array</span>[i]-&gt;h-&gt;value = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化散列表</span></span><br><span class="line"><span class="function">Hashptr <span class="title">initHashTable</span><span class="params">(<span class="keyword">int</span> initcap)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 创建散列结构</span></span><br><span class="line">    Hashptr hptr = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Hash));</span><br><span class="line">    <span class="keyword">if</span> (hptr == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        errExit(<span class="string">&quot;out of memory&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 初始化各项参数</span></span><br><span class="line">    initTableItem(hptr, initcap);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> hptr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>初始化示意图（忽略一些细节，大体是这个样子）</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">// 假设散列数组初始化长度为5</span><br><span class="line">// 在数组的每一项的len指的是链表的当前长度</span><br><span class="line"></span><br><span class="line">hptr</span><br><span class="line">|</span><br><span class="line">|</span><br><span class="line">V</span><br><span class="line">+-------+---------+-----+-----+-------------+</span><br><span class="line">| array | lfactor | cap | len | helper[128] |</span><br><span class="line">+-------+---------+-----+-----+-------------+</span><br><span class="line">    |</span><br><span class="line">    |</span><br><span class="line">    V     |&lt;---------h--------&gt;|</span><br><span class="line">    +-----+-------------+------+</span><br><span class="line">    | len | key | value | next-|---&gt;NULL</span><br><span class="line">    +-----+-------------+------+</span><br><span class="line">    | len | key | value | next-|---&gt;NULL</span><br><span class="line">    +-----+-------------+------+</span><br><span class="line">    | len | key | value | next-|---&gt;NULL</span><br><span class="line">    +-----+-------------+------+</span><br><span class="line">    | len | key | value | next-|---&gt;NULL</span><br><span class="line">    +-----+-------------+------+</span><br><span class="line">    | len | key | value | next-|---&gt;NULL</span><br><span class="line">    +-----+-------------+------+</span><br></pre></td></tr></table></figure>
+
+<p>将键值对插入散列表中时，如果当前的键值对不存在，那么就插入链表当中。反之，就更新键对应的值。不过在不存在的情况下插入键值对之前需要处理扩容的情况，如果不需要扩容，那么就直接插入键值对。如果需要，那么先做扩容处理。</p>
+<blockquote>
+<p>插入键值对到散列表中例程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(Hashptr hptr, <span class="keyword">const</span> <span class="keyword">char</span>* key, <span class="keyword">const</span> <span class="keyword">char</span>* value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (hptr == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        errExit(<span class="string">&quot;hptr is null&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (key == <span class="literal">NULL</span> || value == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        errExit(<span class="string">&quot;key or value is null&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Nodeptr tmp = findNode(hptr, key);</span><br><span class="line">    <span class="comment">// 如果key不存在，那么就插入键值对</span></span><br><span class="line">    <span class="keyword">if</span> (tmp == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="comment">// 首先需要处理是否需要扩容</span></span><br><span class="line">        growHash(hptr);</span><br><span class="line">        <span class="comment">// 插入新的键值对</span></span><br><span class="line">        addNodeToList(hptr, key, value);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;  <span class="comment">// 如果键已经存在，那么就更新键值</span></span><br><span class="line">        <span class="comment">// 默认传进来的是字符串字面量，分配在静态储存区的数组</span></span><br><span class="line">        tmp-&gt;value = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>插入键值对之前需要先定位键经过散列函数处理之后在散列数组中的位置，散列表返回键在数组中对应的索引。然后在根据辅助数组判断当前的索引是否已经关联了一条链表，如果没有关联，那么就需要更新数组的长度。因为这个时候散列表的数组的某个单元被定为到了，而恰巧这个单元之前还没有被使用。相应的，也应该更新负载因子。同时讲辅助数组中的对应单元更新为1，这样再次定位到这个位置的时候就知道它已经关联一条数组了。最后，更新这条链表的长度。还需要注意的一点是，插入的位置是链表的头部，不需要遍历链表，所以这里主要耗时的地方就是散列函数计算这个地方。</p>
+<blockquote>
+<p>将键值对插入链表中例程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将元素结点添加到对应的链表头部当中</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addNodeToList</span><span class="params">(Hashptr hptr, <span class="keyword">const</span> <span class="keyword">char</span>* key, <span class="keyword">const</span> <span class="keyword">char</span>* value)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 定位</span></span><br><span class="line">    <span class="keyword">uint8_t</span> i = hashFunc(key, hptr);</span><br><span class="line">    Nodeptr head = hptr-&gt;<span class="built_in">array</span>[i]-&gt;h;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 构建新节点</span></span><br><span class="line">    Nodeptr newNode = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    <span class="keyword">if</span> (newNode == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        errExit(<span class="string">&quot;out of memory&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    newNode-&gt;key = key;</span><br><span class="line">    newNode-&gt;value = value;</span><br><span class="line">    <span class="comment">// 插入链表头部</span></span><br><span class="line">    newNode-&gt;next = head-&gt;next;</span><br><span class="line">    head-&gt;next = newNode;</span><br><span class="line">    <span class="comment">// 如果有需要就更新负载因子</span></span><br><span class="line">    <span class="keyword">if</span> (!hptr-&gt;helper[i]) &#123;</span><br><span class="line">        <span class="comment">// 更新散列表长度</span></span><br><span class="line">        ++hptr-&gt;len;</span><br><span class="line">        <span class="comment">// 更新负载因子的值</span></span><br><span class="line">        <span class="comment">// 强制转成浮点类型，否则无法计算出浮点数</span></span><br><span class="line">        hptr-&gt;lfactor = (<span class="keyword">float</span>)hptr-&gt;len / (<span class="keyword">float</span>)hptr-&gt;cap;</span><br><span class="line">        hptr-&gt;helper[i] = <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%f / %f = %f\n&quot;</span>, (<span class="keyword">float</span>)hptr-&gt;len, (<span class="keyword">float</span>)hptr-&gt;cap,</span><br><span class="line">                hptr-&gt;lfactor);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 更新链表长度</span></span><br><span class="line">    ++hptr-&gt;<span class="built_in">array</span>[i]-&gt;len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>插入键值对之后的示意图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">hptr</span><br><span class="line">|</span><br><span class="line">|</span><br><span class="line">V</span><br><span class="line">+-------+---------+-----+-----+-------------+</span><br><span class="line">| array | lfactor | cap | len | helper[128] |</span><br><span class="line">+-------+---------+-----+-----+-------------+</span><br><span class="line">    |</span><br><span class="line">    |</span><br><span class="line">    V     |&lt;---------h--------&gt;|</span><br><span class="line">    +-----+-----+-------+------+    +-----+-------+------+</span><br><span class="line">    | len | key | value | next-|---&gt;| key | value | next-|---&gt;NULL</span><br><span class="line">    +-----+-----+-------+------+    +-----+-------+------+</span><br><span class="line">    | len | key | value | next-|---&gt;NULL</span><br><span class="line">    +-----+-----+-------+------+</span><br><span class="line">    | len | key | value | next-|---&gt;NULL</span><br><span class="line">    +-----+-----+-------+------+</span><br><span class="line">    | len | key | value | next-|---&gt;NULL</span><br><span class="line">    +-----+-----+-------+------+</span><br><span class="line">    | len | key | value | next-|---&gt;NULL</span><br><span class="line">    +-----+-----+-------+------+</span><br></pre></td></tr></table></figure>
+
+<p>查找结点的例程和单向链表的查找是一样的，只不过这里多了散列函数计算出来散列数组中的索引而已。</p>
+<blockquote>
+<p>查找结点例程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查找结点</span></span><br><span class="line"><span class="function">Nodeptr <span class="title">findNode</span><span class="params">(Hashptr hptr, <span class="keyword">const</span> <span class="keyword">char</span>* key)</span> </span>&#123;</span><br><span class="line">    Nodeptr tmp = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> i = hashFunc(key, hptr);</span><br><span class="line">    <span class="comment">// 获取头节点的下一个结点</span></span><br><span class="line">    tmp = hptr-&gt;<span class="built_in">array</span>[i]-&gt;h-&gt;next;</span><br><span class="line">    <span class="keyword">while</span> (tmp != <span class="literal">NULL</span> &amp;&amp; (<span class="built_in">strcmp</span>(tmp-&gt;key, key) != <span class="number">0</span>)) &#123;</span><br><span class="line">        tmp = tmp-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> tmp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>扩容处理这里只做简单的两倍扩容，就是相对于原来的容量进行扩容两倍处理。然后对Hash结构的各项参数重新初始化，array成员也重新分配一块更大的内存。然后将原来的键值对从旧数组对应的链表里取出，然后插入到新的散列数组里。在插入的过程中，会重新散列计算新的位置，负载因子也会重新计算。扩容操作耗时还是很大的，涉及到申请内存以及重新散列将键值对插入到新的链表当中。</p>
+<blockquote>
+<p>扩容例程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Hashptr <span class="title">growHash</span><span class="params">(Hashptr hptr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (hptr-&gt;lfactor &gt;= LOADFACTOR) &#123;</span><br><span class="line">        <span class="keyword">uint8_t</span> oldcap = hptr-&gt;cap;</span><br><span class="line">        HashElptr* old = hptr-&gt;<span class="built_in">array</span>;</span><br><span class="line">        <span class="comment">// 扩容两倍</span></span><br><span class="line">        <span class="keyword">uint8_t</span> doublecap = hptr-&gt;cap + hptr-&gt;cap;</span><br><span class="line">        <span class="comment">// 重新初始化各项参数</span></span><br><span class="line">        initTableItem(hptr, doublecap);</span><br><span class="line">        <span class="comment">// 插入数据后自动散列，计算负载因子</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; oldcap; i++) &#123;</span><br><span class="line">            Nodeptr tmp = old[i]-&gt;h-&gt;next;</span><br><span class="line">            <span class="comment">// 释放掉旧的头节点</span></span><br><span class="line">            <span class="built_in">free</span>(old[i]-&gt;h);</span><br><span class="line">            <span class="keyword">while</span> (tmp != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                <span class="comment">// 插入旧数据</span></span><br><span class="line">                addNodeToList(hptr, tmp-&gt;key, tmp-&gt;value);</span><br><span class="line">                <span class="comment">// 移动指针到下一个</span></span><br><span class="line">                Nodeptr oldNode = tmp;</span><br><span class="line">                tmp = tmp-&gt;next;</span><br><span class="line">                <span class="comment">// 释放旧节点</span></span><br><span class="line">                <span class="built_in">free</span>(oldNode);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 释放掉旧表数据</span></span><br><span class="line">        <span class="built_in">free</span>(old);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> hptr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>相对于插入例程，删除例程在当前实现就容易很多。它显示散列计算找出键在散列数组中的索引，然后在这个单元关联的链表上遍历查找。如果找到就删除，找不到就什么都不做。在这个例程里，主要耗时的地方是就是遍历链表这里。如果链表很长，那么耗时就很多。所以，避免链表过长，对于效率的提升是很有帮助的。</p>
+<blockquote>
+<p>删除例程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 删除键值对</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">erase</span><span class="params">(Hashptr hptr, <span class="keyword">const</span> <span class="keyword">char</span>* key)</span> </span>&#123;</span><br><span class="line">    isNull(hptr, key);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 找到就删除该节点，反之什么都不做</span></span><br><span class="line">    HashElptr item = hptr-&gt;<span class="built_in">array</span>[hashFunc(key, hptr)];</span><br><span class="line">    Nodeptr tmp = item-&gt;h;</span><br><span class="line">    <span class="keyword">if</span> (tmp != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="comment">// 查找当前给定的key所属的节点的前一个结点</span></span><br><span class="line">        <span class="keyword">while</span> (tmp-&gt;next != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((tmp-&gt;next-&gt;key != <span class="literal">NULL</span>) &amp;&amp; !<span class="built_in">strcmp</span>(key, tmp-&gt;next-&gt;key)) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            tmp = tmp-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 找到就删除节点</span></span><br><span class="line">        <span class="keyword">if</span> (tmp-&gt;next != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            Nodeptr node = tmp-&gt;next;</span><br><span class="line">            tmp-&gt;next = node-&gt;next;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;delete key: %s\n&quot;</span>, node-&gt;key);</span><br><span class="line">            <span class="keyword">if</span> (item-&gt;len != <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">// 递减链表的节点数量</span></span><br><span class="line">                --item-&gt;len;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                errExit(<span class="string">&quot;the length of linked list is 0&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">free</span>(node);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>散列函数。这里使用的散列函数最初版本就是取余法，根据key的长度计算出键在散列数组中的索引。不过在使用字符串作为键的时候，这个缺陷很明显。第二种方法是从书里看来的，相对于取余法，这个算法相对较好，使得相同的键能够均匀分布。</p>
+<blockquote>
+<p>散列函数例程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 散列函数</span></span><br><span class="line"><span class="function"><span class="keyword">uint8_t</span> <span class="title">hashFunc</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* key, Hashptr hptr)</span> </span>&#123;</span><br><span class="line">    isNull(hptr, key);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">uint32_t</span> len = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (*key++ != <span class="string">&#x27;\0&#x27;</span>) &#123;</span><br><span class="line">        <span class="comment">//++len;</span></span><br><span class="line">        len = (len &lt;&lt; <span class="number">5</span>) + *key;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 得到的返回值最大不超过hptr-&gt;cap - 1</span></span><br><span class="line">    <span class="keyword">return</span> len % hptr-&gt;cap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用简单取余法遇到相同长度的字符串时会退化成单向链表，效率变得非常低下。下面是使用取余法的时候的散列表的分布。散列数组容量为5，索引从0到4。当键的长度都相同的时候，所有的键都会散列到同一个索引上，造成其它四个位置都为空的情况。这个时候散列表退化为单向链表，效率下降了。</p>
+<blockquote>
+<p>取余法</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cap: 5 | len: 1 load-factor: 0.200000</span><br><span class="line">table item:</span><br><span class="line">0               1               2               3               4</span><br><span class="line">next:</span><br><span class="line">0x00BA3E80      0x00000000      0x00000000      0x00000000      0x00000000</span><br><span class="line">index: 0 len: 7  `hello|world` `key-6|value-6` `key-5|value-5` `key-4|value-4` `key-3|value-3` `key-2|value-2` `key-1|value-1`</span><br><span class="line">index: 1 len: 0</span><br><span class="line">index: 2 len: 0</span><br><span class="line">index: 3 len: 0</span><br><span class="line">index: 4 len: 0</span><br></pre></td></tr></table></figure>
+
+<p>这是第二种散列算法，这里散列数组的容量比上面的大是因为触发了扩容，不过这并不妨碍分析。对比这两个算法的散列分布，很明显看到第二种算法处理得更好。根据键散列函数处理返回得数组索引分布较为均匀，链表得节点较之上面得取余法变得很短。这样，效率就有了极大得提升。</p>
+<blockquote>
+<p>第二种方法</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">cap: 10 | len: 5 load-factor: 0.500000</span><br><span class="line">table item:</span><br><span class="line">0               1               2               3               4               5               6               7               8               9</span><br><span class="line">next:</span><br><span class="line">0x00721918      0x00000000      0x007218A0      0x00000000      0x007217B0      0x00000000      0x00721810      0x00000000      0x00721798      0x00000000</span><br><span class="line">index: 0 len: 1  `key-5|value-5`</span><br><span class="line">index: 1 len: 0</span><br><span class="line">index: 2 len: 2  `key-6|value-6` `key-1|value-1`</span><br><span class="line">index: 3 len: 0</span><br><span class="line">index: 4 len: 2  `hello|world` `key-2|value-2`</span><br><span class="line">index: 5 len: 0</span><br><span class="line">index: 6 len: 1  `key-3|value-3`</span><br><span class="line">index: 7 len: 0</span><br><span class="line">index: 8 len: 1  `key-4|value-4`</span><br><span class="line">index: 9 len: 0</span><br></pre></td></tr></table></figure>
+
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>散列函数的处理算法有很多，以后有时间再慢慢研究。从上面的分析来看，分离链接法主要消耗的时间在散列函数计算以及链表的遍历上，这两个部分设计得好会使得效率得到很大的提升。一个好的散列函数使得键计算出来的位置能够均匀地分布在散列数组上，链表地长度也相对较短。不过，提高效率的同时，也会增加碰撞的概率，使得链表长度增加。所以，负载因子这个参数很重要。它表示散列表的装填程度，当负载因子变得很大得时候就表明冲突概率增加，这就需要扩容，重新散列分布使得散列表变得稀疏，提高效率。简而言之，在散列函数设计得相对较好得情况下，表的大小不重要，重要的是负载因子，这也就是以空间换时间的一种做法。<br>在分离链接法中，其实也可以使用其它数据结构体来代替单向链表，以增加查找的效率，比如红黑树什么的。当然，我没研究到。</p>
+<blockquote>
+<p>分离链接法实现源码：<a target="_blank" rel="noopener" href="https://github.com/vfxh/dsrepo/tree/master/hash">https://github.com/vfxh/dsrepo/tree/master/hash</a></p>
+</blockquote>
+<h3 id="桶定址"><a href="#桶定址" class="headerlink" title="桶定址"></a>桶定址</h3><h3 id="可扩展散列"><a href="#可扩展散列" class="headerlink" title="可扩展散列"></a>可扩展散列</h3><h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ol>
+<li>《C++数据结构和算法》第四版</li>
+<li>《数据结构和算法分析——C语言描述》第二版</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/zhishengqianjun/article/details/79087525">https://blog.csdn.net/zhishengqianjun/article/details/79087525</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/06/11/golang_memory_management/" rel="prev" title="Golang之内存管理">
+                  <i class="fa fa-chevron-left"></i> Golang之内存管理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/06/15/english_world/" rel="next" title="不懂得洋文单词集锦">
+                  不懂得洋文单词集锦 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

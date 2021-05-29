@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="简介对于面向对象编程的思想，简单来说对象就是一个变量，这个变量带有方法。而方法就是绑定在一个特定类型的特殊函数。类型的实例通过绑定类型的方法或者自身的属性来暴露对外的通信接口。对于方法和函数的区别，简而言之，方法是关联一个具体类型的特殊函数，而函数则是没有关联任何东西的一个处理单元。 方法的定义Golang中，在一个包内除了接口和指针的任何类型都可以定义方法。对于基本类型，需要先进行类型声明，然后">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang之方法">
+<meta property="og:url" content="http://example.com/2020/05/10/golang_method/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="简介对于面向对象编程的思想，简单来说对象就是一个变量，这个变量带有方法。而方法就是绑定在一个特定类型的特殊函数。类型的实例通过绑定类型的方法或者自身的属性来暴露对外的通信接口。对于方法和函数的区别，简而言之，方法是关联一个具体类型的特殊函数，而函数则是没有关联任何东西的一个处理单元。 方法的定义Golang中，在一个包内除了接口和指针的任何类型都可以定义方法。对于基本类型，需要先进行类型声明，然后">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.678Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/05/10/golang_method/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;05&#x2F;10&#x2F;golang_method&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;05&#x2F;10&#x2F;golang_method&#x2F;&quot;,&quot;title&quot;:&quot;Golang之方法&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Golang之方法 | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">方法的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.</span> <span class="nav-text">类型转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8C%BF%E5%90%8D%E5%AD%97%E6%AE%B5"><span class="nav-number">4.</span> <span class="nav-text">匿名字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E9%9B%86"><span class="nav-number">5.</span> <span class="nav-text">方法集</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/10/golang_method/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Golang之方法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-05-10 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-10T00:00:00+08:00">2020-05-10</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>对于面向对象编程的思想，简单来说对象就是一个变量，这个变量带有方法。而方法就是绑定在一个特定类型的特殊函数。类型的实例通过绑定类型的方法或者自身的属性来暴露对外的通信接口。对于方法和函数的区别，简而言之，方法是关联一个具体类型的特殊函数，而函数则是没有关联任何东西的一个处理单元。</p>
+<h3 id="方法的定义"><a href="#方法的定义" class="headerlink" title="方法的定义"></a>方法的定义</h3><p>Golang中，在一个包内除了接口和指针的任何类型都可以定义方法。对于基本类型，需要先进行类型声明，然后再定义一个方法。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> integer <span class="keyword">int</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(i integer)</span> <span class="title">toString</span><span class="params">()</span> <span class="title">string</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> fmt.Sprintf(<span class="string">&quot;%d&quot;</span>, i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>方法的定义和普通函数类似，只不过方法的定义多了一个方法的接收者。接收者可以是指针类型或者非指针类型，也可以只有类型而没有参数。对于接收者是否是指针类型，这关系到调用方法的时候，类型的实例是否复制。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> integer <span class="keyword">int</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(i integer)</span> <span class="title">value</span><span class="params">()</span></span> &#123;</span><br><span class="line">    i++</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(i *integer)</span> <span class="title">pointer</span><span class="params">()</span></span> &#123;</span><br><span class="line">    (*i)++</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> v integer = <span class="number">10</span></span><br><span class="line">    v.value()</span><br><span class="line">    fmt.Println(v)</span><br><span class="line">    v.pointer()</span><br><span class="line">    fmt.Println(v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">v addr:  <span class="number">0xc0000100b0</span></span><br><span class="line">value:  <span class="number">0xc0000100e0</span></span><br><span class="line"><span class="number">10</span></span><br><span class="line">pointer:  <span class="number">0xc0000100b0</span></span><br><span class="line"><span class="number">11</span></span><br></pre></td></tr></table></figure>
+<p>接收者是值和指针的区别就是：接收者是指针的方法，操作的实例是声明时的实例。所以在接收者是指针的方法里，改变对象的状态是直接影响调用实例的。而接收者是值的方法，在方法里修改接收者的状态，和调用的实例是没有关系的。这个和函数传参类似，值传递和指针传递一样的道理。</p>
+<h3 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h3><p>之前有提过，如果想要改变实例的状态，或者它的内部成员。那么就用接收者是指针的方式，避免实例被复制。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(i *integer)</span> <span class="title">pointer</span><span class="params">()</span></span> &#123;</span><br><span class="line">    (*i)++</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于这个方法，它的类型是 (*integer).pointer。所以，调用这个方法的调用者应该是一个指针。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> v integer = <span class="number">10</span></span><br><span class="line">    (&amp;v).pointer()</span><br><span class="line">    p := &amp;v</span><br><span class="line">    p.pointer()</span><br><span class="line">    v.pointer()</span><br><span class="line">    fmt.Println(v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pointer:  <span class="number">0xc0000100b0</span></span><br><span class="line">pointer:  <span class="number">0xc0000100b0</span></span><br><span class="line">pointer:  <span class="number">0xc0000100b0</span></span><br><span class="line"><span class="number">13</span></span><br></pre></td></tr></table></figure>
+<p>但实际的情况是，使用实例的指针和实例直接调用的效果是一样的。原因是隐式转换。在最后的v.pointer()会被转换成(&amp;v).pointer()这样子来调用，对于指针调用值接收者的方法也是一样的，比如p.value()，会被隐式转换为(*p).value()。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> v integer = <span class="number">10</span></span><br><span class="line">	<span class="keyword">var</span> p *integer = &amp;v</span><br><span class="line">	v.value()</span><br><span class="line">	v.pointer()</span><br><span class="line">	p.value()</span><br><span class="line">	p.pointer()</span><br><span class="line">	fmt.Println(<span class="string">&quot;v addr: &quot;</span>, &amp;v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">value:  <span class="number">0xc0000100b8</span>    <span class="comment">// v.value()</span></span><br><span class="line">pointer:  <span class="number">0xc0000100b0</span>  <span class="comment">// v.pointer()</span></span><br><span class="line">value:  <span class="number">0xc0000100c8</span>    <span class="comment">// p.value()</span></span><br><span class="line">pointer:  <span class="number">0xc0000100b0</span>  <span class="comment">// p.pointer()</span></span><br><span class="line">v addr:  <span class="number">0xc0000100b0</span>   <span class="comment">// &amp;v</span></span><br></pre></td></tr></table></figure>
+<p>从上面打印结果来看，就可以证明：<em><strong>指针调用值接收者的方法会隐式解引用，在值接收者方法内修改不会影响到实例的状态，因为修改的只是实例的复制。而值调用指针接收者的方法会隐式取地址，在指针接收者的方法内修改会影响到实例的状态</strong></em>。<br>命名类型和指针类型是唯一可以出现在方法的接收者的类型，所以不允许多级指针作为方法的接收者，也不允许指针声明方法。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 多级指针</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	p := <span class="built_in">new</span>(integer)</span><br><span class="line">	pptr := &amp;p</span><br><span class="line">    <span class="comment">// calling method value with receiver pptr (type **integer) requires explicit dereference</span></span><br><span class="line">	pptr.value()</span><br><span class="line">    <span class="comment">// calling method pointer with receiver pptr (type **integer) requires explicit dereference</span></span><br><span class="line">	pptr.pointer()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不能为指针声明方法</span></span><br><span class="line"><span class="keyword">type</span> intptr *<span class="keyword">int</span></span><br><span class="line"><span class="comment">// invalid receiver type intptr (intptr is a pointer type)</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(intptr)</span> <span class="title">test</span><span class="params">()</span></span> &#123;&#125; </span><br></pre></td></tr></table></figure>
+<p>nil是一个合法的接收者，不过需要注意的是：操作一个nil对象会panic，所以需要避免接收者是nil。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> ptr *integer</span><br><span class="line">    <span class="comment">// panic: runtime error: invalid memory address or nil pointer dereference</span></span><br><span class="line">	ptr.pointer()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>选择接收者的类型</p>
+<ol>
+<li>如果要改变实例的状态，就是用指针接收者</li>
+<li>如果不关心实例的状态，不修改固定值的情况，使用值接收者</li>
+<li>大对象使用指针接收者，减少复制成本</li>
+<li>引用类型的实例，使用值传递。因为引用类型本身就可以改变实例的状态，无需用指针接收者</li>
+<li>要么统一使用值接收者，要么统一使用指针接收者</li>
+<li>不确定使用什么类型的接收者时，都是用指针接收者</li>
+</ol>
+<p>举例一个有关实例状态的例子，并发读写map的问题。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> test <span class="keyword">struct</span> &#123;</span><br><span class="line">	mx sync.Mutex</span><br><span class="line">	v  <span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t test)</span> <span class="title">print</span><span class="params">(k <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	t.mx.Lock()</span><br><span class="line">	<span class="keyword">defer</span> t.mx.Unlock()</span><br><span class="line">	fmt.Println(t.v[k])</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t test)</span> <span class="title">set</span><span class="params">(k, v <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	t.mx.Lock()</span><br><span class="line">	<span class="keyword">defer</span> t.mx.Unlock()</span><br><span class="line">	t.v[k] = v</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	t := test&#123;&#125;</span><br><span class="line">	t.v = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span>)</span><br><span class="line">	<span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">	wg.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> wg.Done()</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++ &#123;</span><br><span class="line">			t.set(i, i+<span class="number">1</span>)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	wg.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> wg.Done()</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++ &#123;</span><br><span class="line">			t.<span class="built_in">print</span>(i)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	wg.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span></span><br><span class="line">fatal error: concurrent <span class="keyword">map</span> read and <span class="keyword">map</span> write</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>稍微修改一下</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> test <span class="keyword">struct</span> &#123;</span><br><span class="line">	mx sync.Mutex</span><br><span class="line">	v  <span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t test)</span> <span class="title">print</span><span class="params">(k <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	t.mx.Lock()</span><br><span class="line">	<span class="keyword">defer</span> t.mx.Unlock()</span><br><span class="line">	fmt.Printf(<span class="string">&quot;print: %p\tmap: %p\tmx: %p\n&quot;</span>, &amp;t, t.v, &amp;t.mx)</span><br><span class="line">	<span class="comment">//fmt.Println(t.v[k])</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t test)</span> <span class="title">set</span><span class="params">(k, v <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    t.mx.Lock()</span><br><span class="line">	<span class="keyword">defer</span> t.mx.Unlock()</span><br><span class="line">	fmt.Printf(<span class="string">&quot;set: %p\tmap: %p\tmx: %p\n&quot;</span>, &amp;t, t.v, &amp;t.mx)</span><br><span class="line">	t.v[k] = v</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	t := test&#123;&#125;</span><br><span class="line">	t.v = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span>)</span><br><span class="line">	<span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">	wg.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> wg.Done()</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">			t.set(i, i+<span class="number">1</span>)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	wg.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> wg.Done()</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">			t.<span class="built_in">print</span>(i)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	wg.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>: <span class="number">0xc0000401f0</span>     <span class="keyword">map</span>: <span class="number">0xc000072330</span>       mx: <span class="number">0xc0000401f0</span></span><br><span class="line"><span class="built_in">print</span>: <span class="number">0xc000040200</span>     <span class="keyword">map</span>: <span class="number">0xc000072330</span>       mx: <span class="number">0xc000040200</span></span><br><span class="line"><span class="built_in">print</span>: <span class="number">0xc000040210</span>     <span class="keyword">map</span>: <span class="number">0xc000072330</span>       mx: <span class="number">0xc000040210</span></span><br><span class="line">...</span><br><span class="line">set: <span class="number">0xc000086000</span>       <span class="keyword">map</span>: <span class="number">0xc000072330</span>       mx: <span class="number">0xc000086000</span></span><br><span class="line">set: <span class="number">0xc000040290</span>       <span class="keyword">map</span>: <span class="number">0xc000072330</span>       mx: <span class="number">0xc000040290</span></span><br><span class="line">set: <span class="number">0xc0000402a0</span>       <span class="keyword">map</span>: <span class="number">0xc000072330</span>       mx: <span class="number">0xc0000402a0</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>可以看到，接收者并不是同一个对象。而map时引用类型，不同的接收者所操作的map是同一个。而且sync.Mutex是一个结构体类型，由于接收者不是同一个对象，sync.Mutex的对象也不是同一个，自然就无法保证临界区在同一时间只有一个协程在操作，所以就会出现map读写错误。<br>对于这个问题，只需要把接收者改成指针类型。使得不同的协程操作的对象都是同一个，那么这个问题就可以解决了。<br>稍微修改修改</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> test <span class="keyword">struct</span> &#123;</span><br><span class="line">	mx sync.Mutex</span><br><span class="line">	v  <span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *test)</span> <span class="title">print</span><span class="params">(k <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	t.mx.Lock()</span><br><span class="line">	<span class="keyword">defer</span> t.mx.Unlock()</span><br><span class="line">    <span class="comment">// 因为是指针类型，所以不需要再对t取地址了</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;print: %p\tmap: %p\tmx: %p\n&quot;</span>, t, t.v, &amp;t.mx)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *test)</span> <span class="title">set</span><span class="params">(k, v <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	t.mx.Lock()</span><br><span class="line">	<span class="keyword">defer</span> t.mx.Unlock()</span><br><span class="line">	fmt.Printf(<span class="string">&quot;set: %p\tmap: %p\tmx: %p\n&quot;</span>, t, t.v, &amp;t.mx)</span><br><span class="line">	t.v[k] = v</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	t := test&#123;&#125;</span><br><span class="line">	t.v = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span>)</span><br><span class="line">	<span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">	wg.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> wg.Done()</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++ &#123;</span><br><span class="line">			t.set(i, i+<span class="number">1</span>)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	wg.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> wg.Done()</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++ &#123;</span><br><span class="line">			t.<span class="built_in">print</span>(i)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	wg.Wait()</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>打印结果，可以看到。无论是接收者，还是sync.Mutex对象，都是同一个。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">set: <span class="number">0xc0000401f0</span>       <span class="keyword">map</span>: <span class="number">0xc000072330</span>       mx: <span class="number">0xc0000401f0</span></span><br><span class="line">set: <span class="number">0xc0000401f0</span>       <span class="keyword">map</span>: <span class="number">0xc000072330</span>       mx: <span class="number">0xc0000401f0</span></span><br><span class="line">set: <span class="number">0xc0000401f0</span>       <span class="keyword">map</span>: <span class="number">0xc000072330</span>       mx: <span class="number">0xc0000401f0</span></span><br><span class="line">set: <span class="number">0xc0000401f0</span>       <span class="keyword">map</span>: <span class="number">0xc000072330</span>       mx: <span class="number">0xc0000401f0</span></span><br><span class="line"><span class="built_in">print</span>: <span class="number">0xc0000401f0</span>     <span class="keyword">map</span>: <span class="number">0xc000072330</span>       mx: <span class="number">0xc0000401f0</span></span><br><span class="line"><span class="built_in">print</span>: <span class="number">0xc0000401f0</span>     <span class="keyword">map</span>: <span class="number">0xc000072330</span>       mx: <span class="number">0xc0000401f0</span></span><br><span class="line">set: <span class="number">0xc0000401f0</span>       <span class="keyword">map</span>: <span class="number">0xc000072330</span>       mx: <span class="number">0xc0000401f0</span></span><br><span class="line">set: <span class="number">0xc0000401f0</span>       <span class="keyword">map</span>: <span class="number">0xc000072330</span>       mx: <span class="number">0xc0000401f0</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h3 id="匿名字段"><a href="#匿名字段" class="headerlink" title="匿名字段"></a>匿名字段</h3><p>当前实例可以调用匿名字段的方法</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> field <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> test <span class="keyword">struct</span> &#123;</span><br><span class="line">	field</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(f field)</span> <span class="title">print</span><span class="params">()</span></span> &#123; fmt.Println(<span class="string">&quot;receiver type: field&quot;</span>) &#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t test)</span> <span class="title">printInfo</span><span class="params">()</span></span> &#123; fmt.Println(<span class="string">&quot;recevier type: test&quot;</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	t := test&#123;&#125;</span><br><span class="line">	t.<span class="built_in">print</span>() <span class="comment">// receiver type: field</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是匿名字段的实例是无法调用外层类型实例的方法的</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	f := field&#123;&#125;</span><br><span class="line">    <span class="comment">// f.printInfo undefined (type field has no field or method printInfo)</span></span><br><span class="line">	f.printInfo()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果当前类型和匿名字段有相同名称的方法，那么当前实例调用这个方法默认是绑定当前实例的方法。如果要调用匿名字段的方法，就需要显式指定匿名字段名称。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> field <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> test <span class="keyword">struct</span> &#123;</span><br><span class="line">	field</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(f field)</span> <span class="title">print</span><span class="params">()</span></span>    &#123; fmt.Println(<span class="string">&quot;receiver type: field&quot;</span>) &#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t test)</span> <span class="title">printInfo</span><span class="params">()</span></span> &#123; fmt.Println(<span class="string">&quot;recevier type: test&quot;</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t test)</span> <span class="title">print</span><span class="params">()</span></span> &#123; fmt.Println(<span class="string">&quot;recevier type: test&quot;</span>) &#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	t := test&#123;&#125;</span><br><span class="line">	t.<span class="built_in">print</span>() <span class="comment">// recevier type: test</span></span><br><span class="line">	t.field.<span class="built_in">print</span>() <span class="comment">// receiver type: field</span></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>如果有多个匿名字段，并且匿名字段的方法名相同，那么就会报错：选择子不明确。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> field <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"><span class="keyword">type</span> other <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"><span class="keyword">type</span> test <span class="keyword">struct</span> &#123;</span><br><span class="line">	field</span><br><span class="line">	other</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(f field)</span> <span class="title">print</span><span class="params">()</span></span> &#123; fmt.Println(<span class="string">&quot;receiver type: field&quot;</span>) &#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(o other)</span> <span class="title">print</span><span class="params">()</span></span> &#123; fmt.Println(<span class="string">&quot;recevier type: other&quot;</span>) &#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	t := test&#123;&#125;</span><br><span class="line">	t.<span class="built_in">print</span>() <span class="comment">// ambiguous selector t.print</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实例t调用方法print时，先查找当前类型是否有定义这样一个方法。如果没有，那么继续查找内嵌字段。但是内嵌字段都有定义这样一个方法，具体并不知道调用的是哪个类型的方法，所以会出现选择子不明确的错误。</p>
+<h3 id="方法集"><a href="#方法集" class="headerlink" title="方法集"></a>方法集</h3><p>所谓的方法集，就是指某个类型的所有方法集合，方法集决定了是否实现了某个接口。<br>方法集遵循以下规则：</p>
+<ul>
+<li>对于类型T，它的方法集包含所有接收者类型为T的所有方法</li>
+<li>对于指针类型*T，它的方法集包含接收者类型为T，或者*T的所有方法</li>
+<li>对于嵌入匿名字段类型S，T类型包含接收者类型为S的所有方法</li>
+<li>对于嵌入匿名字段类型*S，T类型包含接收者为S和*S的所有方法</li>
+<li>对于嵌入匿名字段类型S或*S，*T类型包含所有接收者为S和*S的方法</li>
+</ul>
+<p>验证</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;reflect&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> S <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"><span class="keyword">type</span> T <span class="keyword">struct</span>&#123; S &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s S)</span> <span class="title">SVal</span><span class="params">()</span></span>  &#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *S)</span> <span class="title">SPtr</span><span class="params">()</span></span> &#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t T)</span> <span class="title">TVal</span><span class="params">()</span></span>  &#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *T)</span> <span class="title">TPtr</span><span class="params">()</span></span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">methodSet</span><span class="params">(a <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">	t := reflect.TypeOf(a)</span><br><span class="line">	<span class="comment">// NumMethod方法返回方法集中导出方法的数目</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; t.NumMethod(); i++ &#123;</span><br><span class="line">		m := t.Method(i)</span><br><span class="line">		fmt.Println(m.Name, m.Type)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	t := T&#123;&#125;</span><br><span class="line">	methodSet(t)</span><br><span class="line">	fmt.Println(<span class="string">&quot;--------------&quot;</span>)</span><br><span class="line">	tptr := <span class="built_in">new</span>(T)</span><br><span class="line">	methodSet(tptr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SVal <span class="function"><span class="keyword">func</span><span class="params">(main.T)</span></span></span><br><span class="line">TVal <span class="function"><span class="keyword">func</span><span class="params">(main.T)</span></span></span><br><span class="line">--------------</span><br><span class="line">SPtr <span class="function"><span class="keyword">func</span><span class="params">(*main.T)</span></span></span><br><span class="line">SVal <span class="function"><span class="keyword">func</span><span class="params">(*main.T)</span></span></span><br><span class="line">TPtr <span class="function"><span class="keyword">func</span><span class="params">(*main.T)</span></span></span><br><span class="line">TVal <span class="function"><span class="keyword">func</span><span class="params">(*main.T)</span></span></span><br></pre></td></tr></table></figure>
+<p>对于T类型，它的方法集包含接收者为T或者S，*S（如果嵌入匿名字段类型为*S）的方法。而对于*T类型，它的方法集包含接收者类型为T,S,*T,*S的所有方法。</p>
+<blockquote>
+<p>对于嵌入匿名字段类型*S的验证</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 嵌入匿名字段修改为*S</span></span><br><span class="line"><span class="keyword">type</span> T <span class="keyword">struct</span>&#123; *S &#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SPtr func(main.T)</span><br><span class="line">SVal func(main.T)</span><br><span class="line">TVal func(main.T)</span><br><span class="line">--------------</span><br><span class="line">SPtr func(*main.T)</span><br><span class="line">SVal func(*main.T)</span><br><span class="line">TPtr func(*main.T)</span><br><span class="line">TVal func(*main.T)</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/05/08/golang_map/" rel="prev" title="Golang之map">
+                  <i class="fa fa-chevron-left"></i> Golang之map
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/10/golang_interface/" rel="next" title="Golang之接口">
+                  Golang之接口 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="Redis不同MySQL这样的关系型数据，Redis是一种非关系型键值数据库，运行在内中。虽然可以做持久化设置，不过一般都是缓存来使用。因为是运行在内存中，并且在发送指令的时候没有经过查询分析器或者查询优化器的处理，所以Redis对数据的读取速度要高于MySQL这种关系型数据。另外，Redis对事务的支持没有MySQL那么完全，对于事务仅仅是不完全的支持。 一、CentOS7环境下的Redis的安">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis实战笔记《一》：Redis安装和数据类型">
+<meta property="og:url" content="http://example.com/2020/04/28/redis_action_install/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Redis不同MySQL这样的关系型数据，Redis是一种非关系型键值数据库，运行在内中。虽然可以做持久化设置，不过一般都是缓存来使用。因为是运行在内存中，并且在发送指令的时候没有经过查询分析器或者查询优化器的处理，所以Redis对数据的读取速度要高于MySQL这种关系型数据。另外，Redis对事务的支持没有MySQL那么完全，对于事务仅仅是不完全的支持。 一、CentOS7环境下的Redis的安">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.693Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/04/28/redis_action_install/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;04&#x2F;28&#x2F;redis_action_install&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;04&#x2F;28&#x2F;redis_action_install&#x2F;&quot;,&quot;title&quot;:&quot;Redis实战笔记《一》：Redis安装和数据类型&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Redis实战笔记《一》：Redis安装和数据类型 | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/04/28/redis_action_install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Redis实战笔记《一》：Redis安装和数据类型
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-04-28 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-28T00:00:00+08:00">2020-04-28</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Redis不同MySQL这样的关系型数据，Redis是一种非关系型键值数据库，运行在内中。虽然可以做持久化设置，不过一般都是缓存来使用。因为是运行在内存中，并且在发送指令的时候没有经过查询分析器或者查询优化器的处理，所以Redis对数据的读取速度要高于MySQL这种关系型数据。另外，Redis对事务的支持没有MySQL那么完全，对于事务仅仅是不完全的支持。</p>
+<p>一、CentOS7环境下的Redis的安装<br>    1. 下载源码<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://download.redis.io/releases/redis-4.0.8.tar.gz</span><br></pre></td></tr></table></figure><br>    2. 解压<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar xzvf redis-4.0.8.tar.gz</span><br></pre></td></tr></table></figure><br>    3. 编译<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> redis-4.0.8</span><br><span class="line">make</span><br><span class="line"><span class="comment"># 如果出现错误：zmalloc.h:50:31: fatal error: jemalloc/jemalloc.h: No such file or directory</span></span><br><span class="line"><span class="comment"># 则使用以下命令</span></span><br><span class="line">make MALLOC=libc</span><br></pre></td></tr></table></figure><br>    3. 安装<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 指定安装位置</span></span><br><span class="line">make install PREFIX=/usr/<span class="built_in">local</span>/redis</span><br><span class="line"><span class="comment"># 出现以下信息就说明安装成功了</span></span><br><span class="line">CC Makefile.dep</span><br><span class="line">Hint: It<span class="string">&#x27;s a good idea to run &#x27;</span>make <span class="built_in">test</span><span class="string">&#x27; ;)</span></span><br><span class="line"><span class="string">INSTALL install</span></span><br><span class="line"><span class="string">INSTALL install</span></span><br><span class="line"><span class="string">INSTALL install</span></span><br><span class="line"><span class="string">INSTALL install</span></span><br><span class="line"><span class="string">INSTALL install</span></span><br></pre></td></tr></table></figure><br>    4. 配置<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 返回上一层目录</span></span><br><span class="line"><span class="built_in">cd</span> ..</span><br><span class="line"><span class="comment"># 创建配置文件所在的目录</span></span><br><span class="line">mkdir /usr/<span class="built_in">local</span>/redis/etc</span><br><span class="line"><span class="comment"># 把配置文件移到新建的目录下</span></span><br><span class="line">mv redis.conf /usr/<span class="built_in">local</span>/redis/etc</span><br><span class="line"><span class="comment"># 设置开机启动</span></span><br><span class="line"><span class="comment"># 编辑配置文件： /usr/local/redis/etc/redis.conf</span></span><br><span class="line"><span class="comment"># 把daemonize no 改成 yes</span></span><br><span class="line"><span class="comment"># 关闭持久化</span></span><br><span class="line"><span class="comment"># 编辑文件：/usr/local/redis/etc/redis.conf</span></span><br><span class="line"><span class="comment"># 把以下的注释去掉</span></span><br><span class="line"><span class="comment"># save 900 1</span></span><br><span class="line"><span class="comment"># save 300 10</span></span><br><span class="line"><span class="comment"># save 60 10000</span></span><br></pre></td></tr></table></figure><br>    5. 设置密码<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编辑文件：/usr/local/redis/etc/redis.conf</span></span><br><span class="line"><span class="comment"># requirepass foobared 将注释去掉</span></span><br><span class="line"><span class="comment"># foobared 改成密码，不改也行，就默认密码是这个</span></span><br><span class="line"><span class="comment"># 保存重启服务</span></span><br></pre></td></tr></table></figure><br>    6. 启动服务<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动服务端</span></span><br><span class="line">/usr/<span class="built_in">local</span>/redis/bin/redis-server /usr/<span class="built_in">local</span>/redis/etc/redis.conf</span><br><span class="line"><span class="comment"># 启动客户端</span></span><br><span class="line"><span class="comment"># -h 指定服务端的IP</span></span><br><span class="line"><span class="comment"># -p 指定端口</span></span><br><span class="line"><span class="comment"># 如果省略服务端IP和端口，就默认连接本机的Redis服务端</span></span><br><span class="line">/usr/<span class="built_in">local</span>/redis/bin/redis-cli -h [hostip] -p [port]</span><br></pre></td></tr></table></figure><br>    7. 其它命令<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 认证</span></span><br><span class="line">&gt; AUTH [password]</span><br><span class="line"><span class="comment"># 选择数据库，Redis默认有16个数据，依次从0到15编号</span></span><br><span class="line">&gt; SELECT [index]</span><br><span class="line"><span class="comment"># 停掉Redis服务</span></span><br><span class="line">pkill redis</span><br></pre></td></tr></table></figure><br>    8. 卸载Redis<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除安装目录</span></span><br><span class="line">rm -rf /usr/<span class="built_in">local</span>/redis </span><br><span class="line">rm -rf /usr/bin/redis-*</span><br></pre></td></tr></table></figure></p>
+<p>二、数据类型<br>    1. 键的操作命令<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查询当前数据库下的所有键</span></span><br><span class="line"><span class="comment"># *是通配符，可以匹配任意字符的任意次</span></span><br><span class="line">KEYS *</span><br><span class="line"><span class="comment"># 删除键</span></span><br><span class="line">DEL [key_name]</span><br></pre></td></tr></table></figure><br>    2. 字符串<br>    增加字符串或者更新字符串的值<br>    如果键不存在就创建，如果键已经存在了，那么就会把str_value设为当前str_key的值。值不限于字符串，也可以是整数，浮点数<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; SET str_key str_value</span><br><span class="line"><span class="comment"># 成功会返回OK</span></span><br><span class="line">&gt; OK</span><br></pre></td></tr></table></figure><br>    获取字符串的值<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; GET str_key</span><br><span class="line"><span class="comment"># 返回字符串的值，如果字符串</span></span><br><span class="line">&gt; <span class="string">&quot;str_value&quot;</span></span><br><span class="line"><span class="comment"># 如果不存在就返回 nil 表示空</span></span><br><span class="line">&gt; (nil)</span><br></pre></td></tr></table></figure><br>    删除字符串跟删除键是一样的操作<br>    可以删除多个字符串，不过指定的键需要用空格隔开。返回的是成功删除的个数，如果键不存在，就返回0<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; DEL str_key</span><br><span class="line"><span class="comment"># 返回成功删除的个数</span></span><br><span class="line">&gt; 1</span><br></pre></td></tr></table></figure><br>    3. 列表<br>    列表可以有序存储多个字符串，对，它是有序的<br>    向列表增加元素，如果列表不存在就创建这个列表<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 从左边压入多个，成功返回列表现有的元素个数</span></span><br><span class="line"><span class="comment"># 注意，列表现在的元素顺序从左到右是 4 3 2 1</span></span><br><span class="line">&gt; LPUSH list_key 1 2 3 4</span><br><span class="line">&gt; <span class="string">&quot;4&quot;</span></span><br><span class="line"><span class="comment"># 也可以从右边压入元素</span></span><br><span class="line">&gt; RPUSH list_key 5 6 7 8</span><br><span class="line">&gt; <span class="string">&quot;8&quot;</span> </span><br><span class="line"><span class="comment"># 现在列表的元素有8个，顺序从左到右是：</span></span><br><span class="line"><span class="comment"># 4 3 2 1 5 6 7 8</span></span><br></pre></td></tr></table></figure><br>    获取给定范围的列表的值<br>    格式是：LRANGE [key_name] [start] [stop]<br>    注意点：<br>    1. start 是开始的索引，stop是结束的索引<br>    2. 如果stop是负数，那么最后一个元素的索引是-1，如果stop过大，超过列表的长度，那么就返回：(empty list or set)<br>    3. 如果stop是正数，并且超过列表的长度，那么就返回仅有的全部元素<br>    4. 如果start和stop相同，那么就返回这个索引元素的值<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 返回全部元素</span></span><br><span class="line">&gt; LRANGE list_key 0 -1</span><br><span class="line">1) <span class="string">&quot;4&quot;</span></span><br><span class="line">2) <span class="string">&quot;3&quot;</span></span><br><span class="line">3) <span class="string">&quot;2&quot;</span></span><br><span class="line">4) <span class="string">&quot;1&quot;</span></span><br><span class="line">5) <span class="string">&quot;5&quot;</span></span><br><span class="line">6) <span class="string">&quot;6&quot;</span></span><br><span class="line">7) <span class="string">&quot;7&quot;</span></span><br><span class="line">8) <span class="string">&quot;8&quot;</span></span><br></pre></td></tr></table></figure><br>    弹出元素<br>    1. 执行弹出元素操作之后，就从列表里面删除，并返回删除的元素值<br>    2. 如果列表不存在，就返回(nil)<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 从左边弹出一个元素</span></span><br><span class="line">&gt; LPOP list_key</span><br><span class="line">&gt; <span class="string">&quot;4&quot;</span></span><br><span class="line"><span class="comment"># 从右边弹出一个元素</span></span><br><span class="line">&gt; RPOP list_key </span><br><span class="line">&gt; <span class="string">&quot;8&quot;</span></span><br><span class="line"><span class="comment"># 现在列表只剩下6个元素，从左往右依次是：</span></span><br><span class="line"><span class="comment"># 3 2 1 5 6 7</span></span><br><span class="line">&gt; LRANGE list_key 0 -1</span><br><span class="line">1) <span class="string">&quot;3&quot;</span></span><br><span class="line">2) <span class="string">&quot;2&quot;</span></span><br><span class="line">3) <span class="string">&quot;1&quot;</span></span><br><span class="line">4) <span class="string">&quot;5&quot;</span></span><br><span class="line">5) <span class="string">&quot;6&quot;</span></span><br><span class="line">6) <span class="string">&quot;7&quot;</span></span><br></pre></td></tr></table></figure><br>    按索引查找元素<br>    1. 如果键不存在或者索引超过列表长度，就返回(nil)<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; LINDEX list_key 1</span><br><span class="line">&gt; <span class="string">&quot;2&quot;</span></span><br></pre></td></tr></table></figure><br>    4. 集合<br>    集合和列表都一样可以存储多个字符串，但不同的是：列表可以存储多个相同的元素，但是集合只能存储不同的元素。并且集合存储的数据是无序的，它底层是散列表实现，但只有散列表的键，没有相应的相关值。<br>    增加元素<br>    1. 如果键不存在就创建并添加元素，返回成功添加元素的数量<br>    2. 如果添加的元素有重复的，那么就只增加一个，其余重复的元素忽略点<br>    3. 如果元素已经存在，那么忽略掉增加的元素<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; SADD s_set 1 2 3 4</span><br><span class="line">&gt; 4</span><br></pre></td></tr></table></figure><br>    删除元素<br>    1. 如果元素存在集合中，那么删除并返回1<br>    2. 如果元素不存在，那么就返回0<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; SREM s_set 4</span><br><span class="line">&gt; 1</span><br></pre></td></tr></table></figure><br>    获取全部元素<br>    如果集合没有元素或者不存在就返回：(empty list or set)，反之返回所有元素<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; SMEMBERS s_set</span><br><span class="line">1) <span class="string">&quot;1&quot;</span></span><br><span class="line">2) <span class="string">&quot;2&quot;</span></span><br><span class="line">3) <span class="string">&quot;3&quot;</span></span><br><span class="line">4) <span class="string">&quot;4&quot;</span></span><br></pre></td></tr></table></figure><br>    判断元素是否是集合的成员<br>    如果是则返回1，不是返回0，键不存在也返回0<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; SISMEMBER s_set 1</span><br><span class="line">&gt; 1</span><br></pre></td></tr></table></figure><br>    5. 散列<br>    散列底层数据结构是散列表，散列类型的对象的元素是一个个键值对。元素的值可以是字符串，也可以是整数，浮点数。<br>    添加元素<br>    如果元素存在，则返回1，反之返回0，更新数据也返回0<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; HSET hash_key field_1 value_1 </span><br><span class="line">&gt; 1</span><br></pre></td></tr></table></figure><br>    获取元素<br>    如果元素不存在就返回nil，反之返回元素的值<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; HGET hash_key field_1</span><br><span class="line">&gt; <span class="string">&quot;value_1&quot;</span></span><br><span class="line"><span class="comment"># 获取全部元素，键值对</span></span><br><span class="line">&gt; HGETALL hash_key</span><br><span class="line">1) <span class="string">&quot;f_1&quot;</span> // 元素的键</span><br><span class="line">2) <span class="string">&quot;v_1&quot;</span> // 元素的值</span><br></pre></td></tr></table></figure><br>    删除元素<br>    1. 可以删除多个元素，返回成功删除的元素个数<br>    2. 如果元素不存在或者散列对象不存在则返回0<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; HDEL hash_key field_1</span><br><span class="line">&gt; 1</span><br></pre></td></tr></table></figure><br>    6.有序集合<br>    有序集合和散列一样，都是用来存储键值对。不过有序集合的键是唯一的，不存在相同的键，这点和集合一样。有序集合的键也成为成员，对应的值称为分数，分数必须是浮点数。可以根据分数来排序。<br>    添加元素<br>    1. 虽然有序集合的成员是不能相同的，但是分是是可以相同的<br>    2. 一次性可以添加多个元素，返回成功添加元素的个数。另外，分数在成员的前面<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; ZADD z_set 10 one 20 two 100 three</span><br><span class="line">&gt; 3</span><br></pre></td></tr></table></figure><br>    获取元素<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 和列表一样的索引规则</span></span><br><span class="line">&gt; ZRANGE z_set 0 -1</span><br><span class="line">1) <span class="string">&quot;one&quot;</span></span><br><span class="line">2) <span class="string">&quot;three&quot;</span></span><br><span class="line">3) <span class="string">&quot;two&quot;</span></span><br></pre></td></tr></table></figure><br>    根据分数范围获取元素<br>    1. 如果分数范围内没有成员，就会返回：(empty list or set)<br>    2. 如果终止分数超过所有元素的分数，那么就按其开始分数到最大分数的范围返回<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; ZRANGEBYSCORE z_set 0 30</span><br><span class="line">1) <span class="string">&quot;one&quot;</span></span><br><span class="line">2) <span class="string">&quot;three&quot;</span></span><br><span class="line">3) <span class="string">&quot;two&quot;</span></span><br></pre></td></tr></table></figure><br>    删除元素<br>    1. 如果元素不存在则返回0，对象不存在也返回0<br>    2. 删除成功返回删除成功的元素个数<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; ZREM z_set one two three</span><br><span class="line">&gt; 3</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/04/28/redis_install/" rel="prev" title="Redis读书笔记《一》：Redis安装">
+                  <i class="fa fa-chevron-left"></i> Redis读书笔记《一》：Redis安装
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/04/28/op_process_and_thread/" rel="next" title="操作系统之进程和线程">
+                  操作系统之进程和线程 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

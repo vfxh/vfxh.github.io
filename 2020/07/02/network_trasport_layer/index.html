@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="相关知识字节序所谓字节序就是超过一个字节的数据类型的变量在内存中存储时字节的顺序，也就是说像char这种数据类型的变量不用担心字节序的问题了，因为char类型只占一个字节。字节序是处理器架构的一个特性，不同的处理器架构之间可能存在差异。所以，在同一台机器上的进程通信不需要考虑字节序的问题。而在不同主机之间进行通信，就需要处理字节序的问题了。字节序分为大端字节序和小端字节序，在TCP&#x2F;IP协议体系中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络协议——运输层">
+<meta property="og:url" content="http://example.com/2020/07/02/network_trasport_layer/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="相关知识字节序所谓字节序就是超过一个字节的数据类型的变量在内存中存储时字节的顺序，也就是说像char这种数据类型的变量不用担心字节序的问题了，因为char类型只占一个字节。字节序是处理器架构的一个特性，不同的处理器架构之间可能存在差异。所以，在同一台机器上的进程通信不需要考虑字节序的问题。而在不同主机之间进行通信，就需要处理字节序的问题了。字节序分为大端字节序和小端字节序，在TCP&#x2F;IP协议体系中">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/ee1018c605b55e0b22b865883fff41f1c58fe52b/network_multiplexing_demultiplexing_tcp_udp_ip.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/44b0e924a9bca5ac6a9cf3ceb466bf4709bb5027/network/basic_reliable_data_transfer_1.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/98755ccaa747951d271502b4b7aab1ee35cd3199/network/complete_reliable_channel.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/a037df27e59bd296ec05e0d683c040b0ccb47a44/network/UDP_message_format.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/6b1c3e2b52ab7ef73e2a054bf5917ff3f467890d/network/TCP_message_format.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/2ccb8744feaaccf0260d73775d44e7440cfaa0c6/network/TCP_XXXXXXXXXXXXX.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/60ff9052cda5d7f4e23c3be47c1c6d7a973fc535/network/TCP_three_way_handshake_2.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/82e4e2a022abb176fe5368de7f6b3bb629247515/network/TCP_four_way_handshake.png">
+<meta property="article:published_time" content="2020-07-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.693Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/vfxh/site-images/raw/ee1018c605b55e0b22b865883fff41f1c58fe52b/network_multiplexing_demultiplexing_tcp_udp_ip.png">
+
+
+<link rel="canonical" href="http://example.com/2020/07/02/network_trasport_layer/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;07&#x2F;02&#x2F;network_trasport_layer&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;07&#x2F;02&#x2F;network_trasport_layer&#x2F;&quot;,&quot;title&quot;:&quot;网络协议——运输层&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>网络协议——运输层 | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">相关知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E8%8A%82%E5%BA%8F"><span class="nav-number">1.1.</span> <span class="nav-text">字节序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%BE%93%E5%B1%82"><span class="nav-number">1.2.</span> <span class="nav-text">运输层</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%BE%93%E5%B1%82%E4%B8%8E%E7%BD%91%E7%BB%9C%E5%B1%82"><span class="nav-number">1.2.1.</span> <span class="nav-text">运输层与网络层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%BE%93%E5%B1%82%E6%A6%82%E8%BF%B0"><span class="nav-number">1.2.2.</span> <span class="nav-text">运输层概述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%8D%E7%94%A8%E5%92%8C%E5%88%86%E7%94%A8"><span class="nav-number">1.2.3.</span> <span class="nav-text">复用和分用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93%E5%8E%9F%E7%90%86"><span class="nav-number">1.2.4.</span> <span class="nav-text">可靠传输原理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UDP%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.</span> <span class="nav-text">UDP协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.</span> <span class="nav-text">TCP协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">TCP报文格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86"><span class="nav-number">3.2.</span> <span class="nav-text">TCP连接管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">3.2.1.</span> <span class="nav-text">三次握手</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">3.2.2.</span> <span class="nav-text">四次握手</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93%E5%8E%9F%E7%90%86"><span class="nav-number">3.3.</span> <span class="nav-text">TCP可靠传输原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%BE%93%E5%B1%82%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83"><span class="nav-number">3.4.</span> <span class="nav-text">运输层的一些思考</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UDP%E7%BC%96%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">UDP编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP%E7%BC%96%E7%A8%8B"><span class="nav-number">5.</span> <span class="nav-text">TCP编程</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/07/02/network_trasport_layer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          网络协议——运输层
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-07-02 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-02T00:00:00+08:00">2020-07-02</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" itemprop="url" rel="index"><span itemprop="name">网络协议</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="相关知识"><a href="#相关知识" class="headerlink" title="相关知识"></a>相关知识</h2><h3 id="字节序"><a href="#字节序" class="headerlink" title="字节序"></a>字节序</h3><p>所谓字节序就是超过一个字节的数据类型的变量在内存中存储时字节的顺序，也就是说像char这种数据类型的变量不用担心字节序的问题了，因为char类型只占一个字节。字节序是处理器架构的一个特性，不同的处理器架构之间可能存在差异。所以，在同一台机器上的进程通信不需要考虑字节序的问题。而在不同主机之间进行通信，就需要处理字节序的问题了。字节序分为大端字节序和小端字节序，在TCP/IP协议体系中，进程间进行网络通信默认的字节是大端字节序。</p>
+<p><em><strong>大端字节序：</strong></em>最高有效字节出现在低地址上，最低有效字节出现在高地址上<br><em><strong>小端字节序：</strong></em>最高有效字节出现在高地址上，最低有效字节出现在低地址上</p>
+<p>比如现在有一个十六进制的整数0x12345678，有四个字节的内存块，这个数可以以这样的形式存储：0x12, 0x34, 0x56, 0x78。其中0x12就是最高有效字节，所谓的最高有效字节就是 <em><strong>权值最大的字节</strong></em>。相反的，最低有效字节就是 <em><strong>权值最小的字节</strong></em>，所以这里的0x78就是最低有效字节。</p>
+<p><strong>大/小端字节序示意图</strong></p>
+<blockquote>
+<p>大端字节序示意图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">高地址                    低地址</span><br><span class="line">|                           |</span><br><span class="line">v                           v </span><br><span class="line">+------+------+------+------+</span><br><span class="line">| 0x78 | 0x56 | 0x34 | 0x12 |</span><br><span class="line">+------+------+------+------+</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>小端字节序示意图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">高地址                    低地址</span><br><span class="line">|                           |</span><br><span class="line">v                           v </span><br><span class="line">+------+------+------+------+</span><br><span class="line">| 0x12 | 0x34 | 0x56 | 0x78 |</span><br><span class="line">+------+------+------+------+</span><br></pre></td></tr></table></figure>
+
+<p>废话太多，需要用代码来验证一下。从打印结果来看，最高字节地址出现在最高有效字节上，也就是存储0x12的字节。所以，这里使用的是小端字节序。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> num = <span class="number">0x12345678</span>;</span><br><span class="line">    <span class="keyword">char</span> *cp = (<span class="keyword">char</span>*)&amp;num;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;0x%x\t%p\n&quot;</span>, cp[<span class="number">0</span>], &amp;cp[<span class="number">0</span>]);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;0x%x\t%p\n&quot;</span>, cp[<span class="number">1</span>], &amp;cp[<span class="number">1</span>]);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;0x%x\t%p\n&quot;</span>, cp[<span class="number">2</span>], &amp;cp[<span class="number">2</span>]);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;0x%x\t%p\n&quot;</span>, cp[<span class="number">3</span>], &amp;cp[<span class="number">3</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0x78	0x7fff2d6e2294</span><br><span class="line">0x56	0x7fff2d6e2295</span><br><span class="line">0x34	0x7fff2d6e2296</span><br><span class="line">0x12	0x7fff2d6e2297</span><br></pre></td></tr></table></figure>
+
+<p>当然，也可以从小端字节序转成大端字节序。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> num = <span class="number">0x12345678</span>;</span><br><span class="line">    <span class="comment">// 这里应该使用无符号整型</span></span><br><span class="line">    <span class="comment">// 不过实验性也就无所谓了</span></span><br><span class="line">    num = htonl(num);</span><br><span class="line">    <span class="keyword">char</span> *cp = (<span class="keyword">char</span>*)&amp;num;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;0x%x\t%p\n&quot;</span>, cp[<span class="number">0</span>], &amp;cp[<span class="number">0</span>]);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;0x%x\t%p\n&quot;</span>, cp[<span class="number">1</span>], &amp;cp[<span class="number">1</span>]);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;0x%x\t%p\n&quot;</span>, cp[<span class="number">2</span>], &amp;cp[<span class="number">2</span>]);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;0x%x\t%p\n&quot;</span>, cp[<span class="number">3</span>], &amp;cp[<span class="number">3</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果。可以看到，最低字节地址对应是最高有效字节，也就是0x12。而最高字节地址对应的则是最低有效字节0x78</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0x12	0x7ffedd0f0ab4</span><br><span class="line">0x34	0x7ffedd0f0ab5</span><br><span class="line">0x56	0x7ffedd0f0ab6</span><br><span class="line">0x78	0x7ffedd0f0ab7</span><br></pre></td></tr></table></figure>
+
+<p><strong>主机字节序和网络字节序</strong><br>其实大端字节序和小端字节序只是计算机本身的说法，所以也叫主机字节序，只不过不同CPU架构的主机的字节序有可能不同而已。但是在网络传输中必须要统一字节序，否则某一端接收到其它端传输过来的数据就会发生混乱。所以，网络中使用的字节序需要相同，这就是网络字节序。比如TCP/IP协议体系使用的大端字节序作为网络字节序。</p>
+<p><strong>Linux系统字节序的转换</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 将32/16位整数由主机字节序转成网络字节序</span></span><br><span class="line"><span class="function"><span class="keyword">uint32_t</span> <span class="title">htonl</span><span class="params">(<span class="keyword">uint32_t</span> hostlong)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">uint16_t</span> <span class="title">htons</span><span class="params">(<span class="keyword">uint16_t</span> hostshort)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将32/16位整数由网络字节序转成主机字节序</span></span><br><span class="line"><span class="function"><span class="keyword">uint32_t</span> <span class="title">ntohl</span><span class="params">(<span class="keyword">uint32_t</span> netlong)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">uint16_t</span> <span class="title">ntohs</span><span class="params">(<span class="keyword">uint16_t</span> netshort)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="运输层"><a href="#运输层" class="headerlink" title="运输层"></a>运输层</h3><p>几个注意点：</p>
+<ol>
+<li>运输层最大报文长度</li>
+<li>网络层最大报文长度</li>
+<li>网络层的IP协议分段可能会导致报文过大的UDP数据包数据被切割，TCP报文段重组之后不连续（存疑！！）</li>
+</ol>
+<h4 id="运输层与网络层"><a href="#运输层与网络层" class="headerlink" title="运输层与网络层"></a>运输层与网络层</h4><p>运输层是介于应用层和网络之间，提供在不同主机之间的运行的进程进行逻辑通信。所以的<em><strong>逻辑通信</strong></em>是指，两台不同主机上的进程好像直接相互通信一样的方式。实际上两台主机之间的通信需要通过多种不同类型的链路相连接，经过多个路由器才能够彼此通信。而运输层提供的逻辑通信可以让不同主机上的进程可以不用考虑这些承载报文的基础设施细节，而直接相互传输报文。所以，运输层协议是是现在端系统，而不是在路由器上的。</p>
+<blockquote>
+<p>运输层逻辑通信示意图1</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">      A                                           B</span><br><span class="line">+-------------+                             +-------------+</span><br><span class="line">| application |                             | application |</span><br><span class="line">+-------------+    loggic communitcation    +-------------+</span><br><span class="line">| transport   | &lt;-------------------------&gt; | transport   |</span><br><span class="line">+-------------+                             +-------------+</span><br><span class="line">| network     |                             | network     |</span><br><span class="line">+-------------+                             +-------------+</span><br><span class="line">| data link   |                             | data link   |</span><br><span class="line">+-------------+                             +-------------+</span><br><span class="line">| physical    |                             | physical    |</span><br><span class="line">+-------------+                             +-------------+</span><br></pre></td></tr></table></figure>
+
+<p>实际上A和B两个应用进程的通信并非这么简单。现在假设A是发送端，B是接收端。A在接收到应用层进程传下来的报文后，需要转成运输层的报文。实现的方式根据使用不同的运输层协议而不同。如果是UDP协议，那么不会应用层传下来的协议做其它操作，再加上必须的UDP报文首部之后直接传给网络层。如果是TCP协议，则是对应用层传下来的报文转成字节流，然后根据情况选择若干个字节流作为传输数据再加上TCP首部传给网络层。网络层再将运输层传下来的报文组成网络分组，加上相应协议的报文首部之后向目的地发送（这里还涉及到链路层和物理层，不过这里就不讨论了）。在经过若干个网络路由器之后，B端接收到这个报文。B端的网络层剥离该报文的网络层协议首部，提交给运输层。运输层接收到报文之后对报文进行处理，做校验等操作。然后剥离运输层相应协议报文首部，将数据提交到应用层使用。还有一点需要注意，网络路由器仅作用于该数据报的网络层字段，对其中运输层的数据不会检查。</p>
+<blockquote>
+<p>应用层和运输层会受制于低级别协议层，比如网络层会为上层协议提供时延带宽。如果网络层的时延很大，或者带宽不够，那将会直接影响到上层报文在传输过程中的效率</p>
+</blockquote>
+<blockquote>
+<p>示意图2</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">      A                                                       B</span><br><span class="line">+-------------+                                         +-------------+</span><br><span class="line">| application | message                         message | application |</span><br><span class="line">+-------------+  v                                   ^  +-------------+</span><br><span class="line">| transport   |  |              router               |  | transport   |</span><br><span class="line">+-------------+  |          +-------------+          |  +-------------+</span><br><span class="line">| network     |  |       +&gt; | network     | &gt;+       |  | network     |</span><br><span class="line">+-------------+  |       |  +-------------+  |       |  +-------------+</span><br><span class="line">| data link   |  |       |  | data link   |  |       |  | data link   |</span><br><span class="line">+-------------+  |       |  +-------------+  |       |  +-------------+</span><br><span class="line">| physical    |  |       |  | physical    |  |       |  | physical    |</span><br><span class="line">+-------------+  +-------+  +-------------+  +-------+  +-------------+</span><br></pre></td></tr></table></figure>
+
+<p>从示意图2来看，运输层和应用层是工作在两个端系统中。而网络路由器只包含网络层，链路层和物理层。也就是说，网络层并不会处理也不会识别运输层和网络层的任何数据。</p>
+<h4 id="运输层概述"><a href="#运输层概述" class="headerlink" title="运输层概述"></a>运输层概述</h4><p>位于运输层之下的网络层为运输层提供服务，网络层有个叫做网际协议IP（Internet protocol）的网络协议为运输层中协议提供主机与主机之间的逻辑通信。每一台网络中的主机都有一个唯一标识这台主机的标识符，称为IP地址，IP地址的作用是为了定位网络中的主机。另外，IP协议提供一种不可靠的，尽最大努力交付报文的服务。也就说，如果没有另外保证可靠报文传输的方式干预，报文有可能会丢失在网络中。而且，IP协议提供的服务也不会保证报文的完整性，以及报文段（将一个报文拆分成一个个独立的段）的交付顺序。因此，如果想要达到报文在传输到目的主机的时候保持报文的正确性，就需要上层协议加以控制。比如运输层中的TCP协议。<br>运输层上中两个主要的协议，分别是TCP（transmission control protocol）和UDP（user datagram protocol）。其中，TCP协议的报文称为TCP报文段，UDP报文称为UDP数据报。TCP和UDP都会对应用层交付下来的报文或者网络层交付上来的报文提供差错检测。不过不同的是：TCP为应用层提供一种可靠传输的，按序交付的服务。也就是说，应用层使用TCP协议作为运输层支撑协议进行通信的过程中，在网络不断开连接的情况下，报文会完整的交付到对方的进程中。但是UDP协议则不然，它和IP协议同样是不可靠传输的，不保证报文完整性的协议的。有可能发送的报文在网络中丢失，也有可能到达对方主机上的报文不完整。不过，不论是TCP协议还是UDP协议，在通信的过程中，它们都是用同一个网络层协议，就是IP协议。<br>还有一个需要注意的是，既然网络层提供主机与主机之间的逻辑通信使用主机的IP来定位网络中一台主机的，那么运输层提供的进程与进程之间的逻辑通信受怎么定位哪个进程呢？换句话说就是，怎么知道报文要交付给哪一个进程呢？答案是 <em><strong>套接字</strong></em>。套接字是运输层和应用层进程之间进行数据交互的接口，套接字由ip和端口号组成。而在每一个需要网络服务的进程，都会有多个套接字。由于套接字是端口组成的，而一台主机有多个不同的端口号，所以一个端口号唯一标识一个套接字。简单来说就是，端口用来定位在一台主机上的某一个进程。所以，IP地址是为了定位主机，端口号是为了定位进程。端口号只有在同一台主机上才有意义，也就是 <em><strong>端口号只具有本地意义</strong></em>。不同主机上相同的端口号是没有关联的。<br>有些端口号是被限制的，用来分配给某些特定协议的。比如80端口被保留给HTTP协议使用，21端口是FTP协议使用，像这类端口称为熟知端口。目前端口号在UDP或者TCP协议中占两个字节，也就是65535，包括0在内的话就是65536个端口号。除了一些被限制的端口外，其它端口是可以自定义的。比如在实现网络应用服务端的时候可以指定应用程序监听哪个端口号（同一台主机一个端口号同一时间只能被一个进程监听。当然，一个进程可监听多个端口号，也就是说一个进程可以有多个套接字），而对于客户端来说，只会在它发起网络请求的时候动态分配，是一种短暂的端口号。<br><em><strong>端口号在运输层协议报文中占两个字节</strong></em>，一台主机最大可分配65535个端口，0号端口一般不使用。</p>
+<blockquote>
+<p>TCP中的报文按序交付的服务是指最终进程接收到的报文数据是从发送端发送的报文数据一样的顺序，但是在通信的过程中，TCP报文段的顺序可能不是按序到达的。具体参考TCP协议部分。</p>
+</blockquote>
+<h4 id="复用和分用"><a href="#复用和分用" class="headerlink" title="复用和分用"></a>复用和分用</h4><p>上文提到，UDP协议和TCP协议在通信的过程中都会使用同一个网络层协议，IP协议。在发送端将报文发送出去的时候，如果层运输层开始考虑，那么无论是UDP数据包还是TCP报文段在交付到网络层的时候，都需要经过IP协议处理。像这样同一层的多个协议实体都可以使用直接下层的同一个协议来传输数据的情况叫 <em><strong>复用</strong></em>，或者多路复用。而在报文到达通信的另一方接收端的时候，网络层的IP协议也可以将剥离出来的运输层报文交付到UDP协议实体或者TCP协议主体。像这样某一层的某个协议直接服务于上层的多个协议实体的情况叫 <em><strong>分用</strong></em>，或者多路分用。</p>
+<blockquote>
+<p>运输层和网络层之间的复用和分用示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/ee1018c605b55e0b22b865883fff41f1c58fe52b/network_multiplexing_demultiplexing_tcp_udp_ip.png" alt="image"></p>
+<p>复用和分用不仅仅是在运输层和网络层之间才会出现，运输层和应用层之间同样会有。比如现在有两个使用应用层协议网络应用A和B，A使用的协议是HTTP，B使用的协议是FTP。这两个应用会将报文交付到运输层对应的协议实体，由于HTTP协议和FTP协议都是基于TCP协议。所以，这个交付的过程会涉及到复用。相应的，报文到达目的主机的时候，运输层将报文交付到应用层涉及到的情况就是分用了。分用是根据端口号的不同来决定将报文通过对应的套接字交付给对应的进程。</p>
+<blockquote>
+<p>这里需要特别说明，协议实体是…</p>
+</blockquote>
+<h4 id="可靠传输原理"><a href="#可靠传输原理" class="headerlink" title="可靠传输原理"></a>可靠传输原理</h4><p>可靠传输是指：端和端之间进行通信的时候，数据通过一条可靠的信道进行传输。数据在传输的过程中不会发生损坏或者丢失的情况，并且多个数据在同一信道上从一端发送到另一端在交付的时候是按照发送顺序来交付的。</p>
+<blockquote>
+<p>这里顺便提一下，TCP报文段交付到接收端是按照发送顺序的。但是TCP协议本身是面对字节流的，也就是说：发送TCP报文段中的字节到达对方主机可能不是按顺序到达的。但最终发送的字节组成报文段的时候，是按照发送报文段的顺序交付的。</p>
+</blockquote>
+<p>如果某一个协议实现可靠传输机制，那么即使它对应下层的协议不提供可靠传输，这个协议也可以在网络上进行可靠通信（比如TCP实现了可靠传输，下层的IP协议是不可靠的）。而其对应上层协议即使也没有实现可靠传输，也可以依赖于该协议的可靠传输机制来在网络中进行可靠通信（比如HTTP协议依赖于TCP协议的可靠传输机制）。所以，如果处于应用层的协议基于运输层的UDP协议来进行网络通信，即使UDP协议不提供可靠传输机制，也可以在应用层实现可靠传输机制来进行可靠通信。不过这样子就很复杂，可能精力都放在实现可靠传输机制上了，脱离业务，得不偿失。</p>
+<blockquote>
+<p>可靠传输机制粗略示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/44b0e924a9bca5ac6a9cf3ceb466bf4709bb5027/network/basic_reliable_data_transfer_1.png" alt="image"></p>
+<p><strong>完全可靠信道传输</strong></p>
+<p>假设有一个完全可靠的信道，在这个信道传输的报文不会丢失，也不会乱序。也就是说，在这个完全可靠的信道上进行通信不会出现任何差错。在这种情况下，发送端收到由上层实体交付下来的报文就可以直接发送出去，然后回到等待上层实体交付报文的状态。接收端在完全可靠信道上接收一个报文，将这个报文交付给上层实体，然后回到等待从完全可靠信道上继续接收报文的状态。这样接收端和发送端就各有一个事件和一个动作，事件的发生会引起动作的执行。对于发送端，它的事件是接收上层实体交付它的报文，然后触发一个将报文发送出去的动作。对于接收端，其事件是从底层完全可靠信道接收一个报文，然后触发一个向上层实体交付报文的动作。</p>
+<blockquote>
+<p>完全可靠信道发送/接收示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/98755ccaa747951d271502b4b7aab1ee35cd3199/network/complete_reliable_channel.png" alt="image"></p>
+<p><strong>具有比特差错信道的可靠传输</strong><br>数据在传输过程中不发生损毁是不可能的，现在考虑一个问题，如果在通信的过程中由于某种原因而发生数据损坏的情况应该怎么办？下意识中就可以想得到就是重新发送。重新发送就需要让发送方知道此次发送的数据有损坏的情况，那么接收方就需要反馈给发送方。接收方在接收数据的时候需要检查数据才知道是否有损坏的数据，就比如UDP协议中的校验字段。所以，具有比特差错的信息可靠传输就聚焦于三点：差错检测，接受反馈以及发送放重传。像这样的基于重传机制的协议叫做：自动重传请求协议。需要注意一点，这里是假设发送的数据都是按序到达的。<br><strong><em>差错检测</em>：</strong>对于接收方来说，需要对发送放发送过来的数据进行校验，来验证接收到的报文是否有错误。<br><em><strong>接收方反馈：</strong></em>接收方在接收到发送方发送的数据后，经过校验决定下一步该怎么办。如果有错误的数据，那么就需要反馈给发送方。如果没有错误，也需要反馈给发送方。因为发送方式根据接收方的反馈来决定是否需要重新传送，还是接着发送剩余的数据。<br><em><strong>重传：</strong></em>发送方在接收到接收方返回的错误提示的时候，就需要将数据重新发送，而不是发送下一个数据。</p>
+<p>所以，除了发送真正的数据报文之外，还需要发送确认报文和否定报文来说明发送的报文是否有错。但是这又出现了一个新的问题，如果确认报文和否定报文也出现了损坏了该怎么办？一种方法是增加足够校验方法和数据，让接收方不仅可以检测差错还可以恢复数据。还有一种是如果收到不明确的报文，那么就重新发送上一个报文。这就需要对报文编号，否则无法确定那些报文是重传的。</p>
+<p><strong>具有比特差错和丢包信道的可靠传输</strong></p>
+<h2 id="UDP协议"><a href="#UDP协议" class="headerlink" title="UDP协议"></a>UDP协议</h2><p>UDP协议只提供对直接上层应用层和直接下层网络层之间复用和分用功能，以及报文的校验功能。除此之外没有提供其它功能，即不提供可靠传输服务。对应用层交付下来的应用层报文加上必要的数据，比如源端口号和目的端口号，还有校验数据之后直接交付给网络层。当UDP数据到达目的主机之后，会根据报文中的目的端口交付给对应的进程。不过，虽然UDP协议本身不提供可靠传输服务，但是可以在应用层的程序实现可靠传输服务。比如增加确认和重传机制等，不过，这会导致大部分工作都会倾斜到保证UDP可靠传输的工作上，得不偿失。<br>UDP协议的特性：</p>
+<ol>
+<li><em><strong>无连接</strong></em>，两台不同主机之间的进程使用UDP协议通信前不需要建立连接</li>
+<li><em><strong>面向报文</strong></em>，即：UDP协议不管应用层交付下来的报文有多大，或者在运输层运行的进程使用UDP协议工作所发送的报文有多大，它都在加上必要的UDP首部之后直接交付给网络层。由于网络层可能会对报文进行分段，而导致最终传到对方主机上的UDP数据报不是完整的报文</li>
+<li><em><strong>尽最大努力交付</strong></em>，报文在网络传输的过程中可能会丢失</li>
+<li><em><strong>支持一对一，一对多，多对一，多对多的通信方式</strong></em></li>
+<li><em><strong>首部开销小，只有8个字节</strong></em></li>
+</ol>
+<p>由于UDP的特性，使用UDP协议的服务相对来说效率高一点。因为不需要在通信之前消耗掉建立连接的时间，而发送速率不会因为网络阻塞这样的问题而降低。相应的，由于这些原因，发送的UDP数据报最终也有可能无法到达对方的主机。</p>
+<p><strong>UDP报文格式</strong></p>
+<blockquote>
+<p>UDP报文格式示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/a037df27e59bd296ec05e0d683c040b0ccb47a44/network/UDP_message_format.png" alt="image"></p>
+<blockquote>
+<p>各个字段说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">字段</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">源端口号</td>
+<td align="left">占两个字节。报文发送端的端口号，可能是主机临时分配的，也可能是自定义的。源端口号的作用是可能接收端会发送一些报文回来，需要使用这个源端口号找到发送端的目的进程</td>
+</tr>
+<tr>
+<td align="left">目的端口号</td>
+<td align="left">占两个字节。接收端的端口号，其目的时为了找到接收端对应的进程</td>
+</tr>
+<tr>
+<td align="left">长度</td>
+<td align="left">占两个字节。UDP数据报的长度，UDP首部加上UDP数据部分的字节总数，为了确定各个UDP首部字段的边界和UDP数据部分的边界</td>
+</tr>
+<tr>
+<td align="left">校验和</td>
+<td align="left">占两个字节。为了防止UDP报文在传输的过程中报文数据出现被修改的情况</td>
+</tr>
+</tbody></table>
+<p>从UDP报文的全部字段中，除了端口号和长度以及校验和之外，没有任何有关IP地址的字段。目的端口号是为了定位目的进程的，那么怎么定位到目的主机呢？答案是网络层的IP协议首部。之前有提到过，端口是为了定位目的进程，而IP则是为了定位目的主机。IP首部中包含目的主机的IP地址，所以，即使UDP报文中没有目的主机的IP地址，也能依靠IP数据包中的目的主机IP来找到接收端主机。</p>
+<h2 id="TCP协议"><a href="#TCP协议" class="headerlink" title="TCP协议"></a>TCP协议</h2><p>TCP协议，即传输控制协议。是一种提供可靠传输的运输层协议，和UDP协议不同，TCP协议能够做到数据在逻辑链路上传输的过程中报文无差错，无丢失，并且按序到达（按序到达是指报文段之间的按序到达，不是报文段中字节流的按序到达）。TCP协议工作在运输层中，只在端系统上运行。而在网络中的中间系统（路由器或者交换机）是不会维持TCP连接状态的，事实上网络中的中间系统一般只使用网络层及下层协议，并不包含运输层和应用层。</p>
+<p>下面是TCP协议的几个特点：</p>
+<ol>
+<li>面向连接，通信双方在通信之前必须建立TCP连接。</li>
+<li>全双工通信。即进程在作为服务端的同时也可以作为客户端，而不是固定于某个角色。比如：A进程和B进程存在一条TCP连接，A进程可以发送数据给B进程，B进程同样也可以发送数据给A进程。</li>
+<li>点对点通信。和UDP协议不一样，TCP只能一条连接上进程端到端的通信，也就是同一时间只能一对一的通信。而不能进行一对多，或者多对一，多对多等等方式。</li>
+<li>面向字节流。TCP协议在网络中传输的数据是字节流形式的，但是传输单位则是报文段。</li>
+</ol>
+<p>TCP和UDP还有一个区别就是：UDP会将用户交付下来的报文整个发送出去，TCP不会。TCP协议会维护一个缓冲区，用来作为临时存放发送数据或者接收数据的临时存放区域。在发送端，应用层交付下来的数据放入缓冲区之后就可以立即返回，不用关心TCP会在什么时候发送出去。而在接收端，TCP将收到的数据暂时存放在缓冲区，等到接收完毕一个报文段之后，会在合适的时机将报文段交付到应用层。另外，TCP发送端会根据接收端给出的窗口值和网络中的拥塞程度来决定一次发送多少字节。所以，TCP协议的发送报文长度是由TCP协议自身控制的，而UDP协议的发送报文长度是由应用层控制的。</p>
+<h3 id="TCP报文格式"><a href="#TCP报文格式" class="headerlink" title="TCP报文格式"></a>TCP报文格式</h3><blockquote>
+<p>TCP报文格式</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/6b1c3e2b52ab7ef73e2a054bf5917ff3f467890d/network/TCP_message_format.png" alt="image"></p>
+<blockquote>
+<p>字段说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">字段</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">源端口号</td>
+<td align="left">发送端的端口号，占2个字节</td>
+</tr>
+<tr>
+<td align="left">目的端口号</td>
+<td align="left">接收端端口号，占2个字节</td>
+</tr>
+<tr>
+<td align="left">序号</td>
+<td align="left">占4个字节。其范围是：[0, 2^32 - 1]。当序号达到最大值的时候，下一个序号就是从0开始，意思就是对2的32次方求模。TCP通信是面向字节流的，一个TCP报文段中每个字节都有编号，在建立连接的时候设置。<em><strong>报文段首都的序号是指：本报文段发送数据的第一个字节编号</strong></em>。比如本报文段的第一个序号是500，报文长度是100，那么本报文段的最后一个字节的序号就是599。所以，下一个要发送的报文段的序号字段就是600。</td>
+</tr>
+<tr>
+<td align="left">确认号</td>
+<td align="left">占4个字节。<em><strong>确认号是指：接收端期待发送端发送的下一个报文段的第一个字节的序号</strong></em>。比如：接收端接收发送端一个报文段序号是500，报文段长度是100。当完成这个报文段的全部字节接收时，确认号就是600。简而言之，当确认号更新时，就表明当前确认号N-1之前的数据已经正确接收。</td>
+</tr>
+<tr>
+<td align="left">数据偏移</td>
+<td align="left">占4位。指的是：<em><strong>TCP报文段的起始处距离TCP报文段数据起始处有多少个字节</strong></em>。其实就是当前TCP报文首部的长度，因为TCP报文段首部是不固定的，这个数据偏移字段的值也是可变的。另外数据偏移字段的单位是4个字节（32个比特位），而4个二进制位转换成十进制最大值就是15。所以，数据偏移字段值表示的最大值就是15*4，也就是60个字节。这也就表明了，<em><strong>TCP首部最大是60个字节，选项最大是40个字节</strong></em>。（从TCP报文段的首部那一端开始，起始处就是TCP报文段的起始处，TCP报文段首部之后就是TCP报文段数据的起始处）</td>
+</tr>
+<tr>
+<td align="left">保留</td>
+<td align="left">当前不使用</td>
+</tr>
+<tr>
+<td align="left">控制位</td>
+<td align="left">占6位，见下文</td>
+</tr>
+<tr>
+<td align="left">窗口</td>
+<td align="left">占2个字节，取值范围：[0, 2^16-1]。窗口是指发送端（发送本报文段的那一方）的接收窗口。窗口值告诉对方，从当前的确认号开始，允许对方发送多少个字节的数据量。比如：A发送的报文段确认号时701，窗口值是100。B接收该报文段之后，明白这样一个事实：A当前的TCP缓存从701开始，还可以接收100个字节的数据量。主要注意，窗口值是可变的，不是固定的。总之，窗口值是告诉对方自身当前还可以接收多少数据量的依据</td>
+</tr>
+<tr>
+<td align="left">校验和</td>
+<td align="left">占2个字节，用于校验TCP报文</td>
+</tr>
+<tr>
+<td align="left">紧急指针</td>
+<td align="left">占2个字节，当URG为1时才有意义。该字段指的是紧急数据的字节数，当紧急数据处理完成之后接下来的就是普通数据。另外，窗口为0时也可以发送紧急数据</td>
+</tr>
+<tr>
+<td align="left">选项</td>
+<td align="left">最长40个字节，长度可变，见下文</td>
+</tr>
+</tbody></table>
+<p>控制位一共有6个，用来说明本报文的性质。</p>
+<blockquote>
+<p>控制位说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">字段</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">URG紧急</td>
+<td align="left">当URG为1时，说明紧急指针字段有效，需要紧急指针字段配合。紧急数据会插入到TCP报文段数据部分的最前面，后面跟着的依然是不同数据</td>
+</tr>
+<tr>
+<td align="left">ACK确认</td>
+<td align="left">当ACK为1时，确认号有效，为0时无效。TCP规定，建立连接后的所有报文段该字段都置为1</td>
+</tr>
+<tr>
+<td align="left">PSH推送</td>
+<td align="left">当PSH为1时，会立即构建一个报文段传送出去，接收端接收到之后应该尽快交付给应用进程，而不用等到缓存满之后再交付。该字段的使用情况是：当发送端需要发送数据之后希望立即得到接收端的响应</td>
+</tr>
+<tr>
+<td align="left">RST复位</td>
+<td align="left">当RST为1时，表明TCP需要释放该连接，然后重新建立。该标志位也用于拒绝打开一个连接</td>
+</tr>
+<tr>
+<td align="left">SYN同步</td>
+<td align="left">当发送端的报文段的SYN为1，表明这是一个请求建立连接的报文。接收端同意建立连接则在响应的报文中将SYN置为1并且ACK为1</td>
+</tr>
+<tr>
+<td align="left">FIN终止</td>
+<td align="left">当FIN为1时，表明发送端要求释放连接</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>选项</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">字段</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">MSS</td>
+<td align="left">最大报文段长度，指的是TCP报文段数据部分，不包含首部。默认536字节长，加上固定首部字段20字节之后就是556字节长，这是因特网主机都应能接受的报文长度就是556字节长</td>
+</tr>
+<tr>
+<td align="left">时间戳</td>
+<td align="left">占10个字节。时间戳选项主要有两个作用：1. 用于计算往返时间RTT。发送方在发送报文段时将当前时钟时间写入该字段，接收端将发送报文段的时间戳提取出来，写入响应报文段返回发送端。这样就可以计算RTT来了。2. 防止序号绕回导致无法区分。当序号用完之后需要重复使用序号，时间戳是为了区分序号重复的时候当前报文段是否有效（可能重复序号的另一个报文在网络中滞留，延迟很久才到达接收端）</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>TCP报文段起始位置</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/2ccb8744feaaccf0260d73775d44e7440cfaa0c6/network/TCP_XXXXXXXXXXXXX.png" alt="image"></p>
+<h3 id="TCP连接管理"><a href="#TCP连接管理" class="headerlink" title="TCP连接管理"></a>TCP连接管理</h3><h4 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h4><p>使用TCP协议进行通信之前需要建立连接，客户端主动打开连接，服务端被动打开连接。建立连接的过程流行的说法是三次握手，不过准确来说是一次握手，三次报文交换。</p>
+<blockquote>
+<p>示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/60ff9052cda5d7f4e23c3be47c1c6d7a973fc535/network/TCP_three_way_handshake_2.png" alt="image"></p>
+<p>三次握手的过程如上图所示，实线部分是报文交换的过程，其中还有一条虚线是客户端在建立连接之后向服务端发送报文，这里是为了说明发送报文段序号和确认号。建立连接可分成三个步骤，分别是：</p>
+<ol>
+<li>客户端主动向服务端发送建立连接请求报文。TCP报文首部中的SYN控制位为1，TCP协议规定这个请求报文段不能携带数据，但是需要消耗一个序号（或序列号-seq：sequence number）。发送请求连接报文段之后，客户端进入SYN-SENT（同步已发送）状态。</li>
+<li>服务端接收到客户端的请求报文段之后，如果同意建立连接，就需要对请求报文段的确认。于是向客户端发送的响应报文段首部中的控制位SYN和ACK都设置为1，同时需要消耗一个序号（seq=222），并且设置确认号（ack=112，因为服务端已经正确收到序号为111的报文段了），期望客户端发送报文段的第一个字节序号。和第一个步骤一样，这个步骤也不能携带数据。</li>
+<li>客户端接收到服务端的同意建立连接响应报文段之后，还需要给出确认，控制位ACK设置为1。同时更新报文段序号以及确认号。TCP规定，这个步骤可以携带数据。如果不携带数据则不消耗序号，这也就是为什么图中画出虚线的原因。如果客户端仅返回确认报文给服务端而不携带数据。那么在第一次向服务端发送数据的时候，这一次使用的序号和确认号仍然是返回确认报文段时的序号和确认号。（如图中所示：客户端返回确认报文段，序号是112，确认号是223。如果不携带数据，那么下一个报文段的序号仍然是112，确认号是223）。</li>
+</ol>
+<blockquote>
+<p>其实TCP连接建立过程是这个样子的</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 其中2，3两个步骤合成了上文的第二个步骤</span><br><span class="line"></span><br><span class="line">1. client ---- ISN-cli ---- SYN ----&gt; server  // client向server发起建立连接请求，并告诉自己的ISN，SYN为1</span><br><span class="line">2. server ---- ACK -----------------&gt; client  // server做出确认</span><br><span class="line">2. server ---- ISN-ser -------------&gt; client  // server告诉client自身的ISN</span><br><span class="line">4. client ---- ACK -----------------&gt; server  // client做出确认</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么需要三次报文交换？</strong><br>关于这个问题有很多种说法，其中一种是：<em><strong>为了防止客户端曾经发送但已经失效的连接请求报文段突然传送到了服务端，产生错误</strong></em>。这个说法的大致情况是这样的：</p>
+<blockquote>
+<p>客户端发送连接请求报文段，但是由于某种原因没有到达服务端。然后客户端又重新发送一次连接请求报文段，这一次成功建立连接并且数据传送完毕，断开连接。之后客户端第一次发送的连接请求报文段突然到达了服务端（这个报文段可能在网络中某处滞留了很长时间），服务端误以为这是个新的连接请求报文段，于是同意建立连接，并返回确认响应报文。但是客户端并没有请求建立连接，于是不会理会这个报文段。这样，服务端一直等待客户端，造成资源浪费。</p>
+</blockquote>
+<p>另一种说法是：<em><strong>TCP协议需要使用seq序号来保证可靠传输，避免在连接复用的时候无法确认seq到底是正常的seq还是已经失效的seq，所以所需要使用三次报文交换来确定初始seq序号</strong></em>。</p>
+<blockquote>
+<p>首先应该明确一点，TCP的可靠传输机制是依靠seq来达成的。通过TCP连接发送的每一个报文段都会有一个序号seq，接收端在接收这些报文段之后都会给出确认。确认机制是累计的，比如确认号是n，那么n-1以及之前的序号报文段都已经被正确接收到了。在断开连接之后，区分旧连接的失效报文段（或者第一种说法的第一次连接请求报文段），和正常报文段就是依靠初始序号ISN来区分的。初始序号之前的报文段被视为失效报文段，初始序号之后的报文段被视为正常报文段。那么假设序号用尽，需要重复使用之前的序号怎么办？答案在选项字段中，选项字段中有一个时间戳选项，它方式序号绕回的时候无法区分是否有效的情况（谢希仁说的）。</p>
+</blockquote>
+<p>鄙人倾向于用第一种说法辅助理解第二种说法。<em><strong>三次报文交换是为了确定初始序号（ISN）</strong></em>。</p>
+<p><strong>初始化序列号是否固定</strong></p>
+<h4 id="四次握手"><a href="#四次握手" class="headerlink" title="四次握手"></a>四次握手</h4><p>四次握手是TCP连接释放的过程，进行四次报文交换。和建立连接一样，释放连接也是客户端发起断开连接请求。</p>
+<p><img src="https://gitee.com/vfxh/site-images/raw/82e4e2a022abb176fe5368de7f6b3bb629247515/network/TCP_four_way_handshake.png" alt="image"></p>
+<p>和三次握手相比，四次握手较为复杂。因为断开连接过程涉及到两次半关闭状态，一次是客户端到服务端方向的关闭，另一次是服务端到客户端方向的关闭。大致流程：</p>
+<ol>
+<li>第一次握手。客户端主动发送断开连接请求报文段，TCP报文首部控制位的FIN会设置为1。这个时候停止发送数据，断开连接请求报文段也不携带数据。该报文段的序号是上一次报文段序号加1，这里假设是333。发送断开连接请求报文段之后，客户端进入FIN-WAIT-1状态。</li>
+<li>第二次握手。服务端接收到客户端的断开连接请求报文段之后，对这个报文段进行确认，返回确认报文段。确认报文段序号假设是444，并且确认号是334，控制位ACK设置成1。然后服务端通知应用进程，然后进入CLOSE-WAIT状态。</li>
+<li>客户端接收到服务端返回的确认报文段之后，进入FIN-WAIT-2状态。这个时候客户端到服务端这个方向的连接已经关闭了，称为客户端到服务端方向的半关闭状态。注意，这个时候服务端到客户端这个方向的连接还没有关闭。如果服务端需要向客户端发送数据，客户端还需要接收，<em><strong>并且需要做出回复确认，只是不带数据的空报文段，不消耗序号</strong></em>。</li>
+<li>第三次握手。服务端的应用进程确定要关闭连接后，向客户端发送一个断开连接通知报文段。该报文段的控制位FIN设置为1，ACK也设置为1。因为这次断开的连接是服务端到客户端这个方向的连接，所以需要设置FIN。ACK则是对第一次客户端发送断开连接请求的确认，因为客户端到服务端这个方向的连接已经关闭了，它不再向服务端发送数据。（确认报文不携带数据，不消耗序号）所以，确认号ack仍然是334。不过序号可能不同，因为这期间可能服务端向客户端发送了一些数据，所以需要应该是444+n。之后，服务端等待客户端的最后确认状态LAST-ACK。</li>
+<li>第四次握手。客户端对服务段发来的断开连接通知报文段进行了确认，返回确认报文段给服务端。然后进入TIME-WAIT阶段。服务端在收到客户端的确认之后成功关闭服务端到客户端这个方向的连接。</li>
+</ol>
+<p>注意，第四次握手服务端关闭了服务端到客户端这个方向的连接之后TCP连接还没有被释放，需要等待2MSL时长之后才会释放。</p>
+<p><strong>保活计时器</strong><br>保活计时器的作用是：当客户端和服务端完成三次报文交换之后，客户端突然出现故障。服务端在这种情况下，为了不浪费资源，会每隔75分钟发一次探测报文，等到发10次之后还没有回应。服务端就自动断开连接，避免资源占用。</p>
+<p><strong>为什么需要四次握手</strong></p>
+<ol>
+<li>TCP是全双工通信的，也就是说两端都可以互相发送数据，服务端和客户端都可以互相转换角色。客户端主动发送断开报文连接请求后，进入FIN-WAIT-1状态。等到服务端返回确认报文段，客户端结束FIN-WAIT-1阶段，进入FIN-WAIT-2阶段。这个时候表明客户端到服务端这个方向的连接已经关闭了，但是服务端到客户端这个方向还没有关闭。</li>
+<li>等到服务端确定要关闭服务端到客户端这个方向的连接的时候，就需要发送断开连接报文请求，断开服务端到客户端这个方向的连接。</li>
+</ol>
+<p>上述的两个原因总的来说就是：TCP由于是全双工通信，所以需要断开两次连接。并且服务端接收到客户端断开连接请求报文段后也断开服务端到客户端这个方向的连接，所以，在这种情况下，至少需要4次报文交换。当然也有可能三次，不过这种是特殊情况。比如：<em><strong>服务端在收到客户端的断开连接请求报文段后，在没有用户程序的情况下。那么服务端返回的响应报文段中ACK控制位和FIN控制位都置为1，在这种情况下，四次报文交换就变成了三次报文交换</strong></em>。简单来说，客户端先发起断开连接请求，服务端接收到这个报文段，如果有应用程序，那么就需要和应用程序协商。在应用程序回答之前，需要先返回ACK报文段。如果没有应用程序，那么ACK和FIN可以合并在一起发送回客户端，这就成了三次挥手。</p>
+<p><strong>CLOSE-WAIT和TIME-WAIT</strong></p>
+<ol>
+<li>CLOSE-WAIT是服务端在收到客户端断开连接请求报文并作出响应后进入的一个阶段，这个阶段可能服务端还需要向客户端发送数据，等到用户进程发送完毕之后才会结束这个阶段，然后发送服务端到客户端这个方向的断开连接请求报文段，接着进入LAST-ACK阶段。</li>
+<li>TIME-WAIT是客户端等待服务端正常进入CLOSE阶段。这个阶段存在的目的是有两点：<em><strong>一是防止客户端对服务端断开连接请求报文段的确认没有正确到达服务端</strong></em>。如果这个确认报文段在网络中丢失，或者滞留很久，服务端会再次发送断开连接请求，那么客户端就需要再次发送确认，并重置2MSL时间。直到服务端再也没有发送断开连接请求报文段，客户端等到2MSL时间后进入CLOSE状态，TCP连接断开完成。<em><strong>二是为了尽量防止该连接的报文出现在下一次连接中</strong></em>，经过2MSL时间后，可以很大程度认为该连接的报文已经消失在网络中了，不会对下一个连接产生影响。</li>
+</ol>
+<blockquote>
+<p>建立连接有防止失效报文段的措施：确定初始序列号。断开连接也有类似的措施：连接需要等到2MSL时间后才断开。</p>
+</blockquote>
+<p><strong>FIN, SYN等报文段为什么需要需要序号</strong><br>无它，因为可能要重传</p>
+<h3 id="TCP可靠传输原理"><a href="#TCP可靠传输原理" class="headerlink" title="TCP可靠传输原理"></a>TCP可靠传输原理</h3><h3 id="运输层的一些思考"><a href="#运输层的一些思考" class="headerlink" title="运输层的一些思考"></a>运输层的一些思考</h3><p><strong>1. 报文长度字段</strong><br>UDP协议报文首部里有表示UDP数据报的总长度（UDP首部+UDP数据部分），但是TCP首部没有表示TCP报文段的总长度字段，那么应该如何确定TCP报文段的数据部分长度？在网络层IP协议的首部中，有一个字段Total Length，表示整个IP数据报的长度。因此，TCP数据的数据长度可以这样表示：<em><strong>TCP数据长度 = IP数据报总长度（Total Length） - IP数据报首部 - TCP报文段首部</strong></em>。所以，即使在TCP协议中没有表示数据长度的报文也是可以的。</p>
+<p>（一种错误：在发送TCP报文段的时候会接收端会给出一个窗口值，表示当前至多还可以接收多少个字节。但是发送端可能无法发送那么多个字节。所以，这个没有办法获取得到正确的数据长度）</p>
+<p>（这样子是不违反分层思想的，分层不是数据独立，数据是叠加在一起的）</p>
+<p>同样，UDP数据报的数据部分也可以按照上面的方式获取：<em><strong>UDP数据长度 = IP数据报总长度（Total Length） - IP数据报首部 - UDP数据报首部</strong></em>。那么UDP数据报首部中的长度字段这么看来是多余的。实际上它也就是多余的，但是为什么还需要这个字段。有一种说法是应用程序可能从IP数据报里获取数据长度，也可能是从UDP数据报中获取。如果不在UDP数据报中填充报文长度字段，就有可能出错。至于为什么要两个重复字段，不知道咯。（参考：<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc3828#page-4%EF%BC%89">https://tools.ietf.org/html/rfc3828#page-4）</a></p>
+<p><strong>2. UDP数据报被IP协议分片</strong><br>如果UDP数据报过大，IP协议就会将这部分数据分成若干份，然后发送出去。数据到达对方主机网络层的时候，会将属于原来一整块报文的IP数据报重组，然后交付到运输层。简而言之，一个UDP数据报可以有多个IP数据报。另外，IP数据报重组对上层协议来说是透明的，不需要UDP中的长度字段。所以，因为UDP数据报过大所以需要长度字段来保证网络层IP协议重组的说法是错误的。</p>
+<p>另外，即使IP协议分片之后，存在某个分片丢失了。IP无法重组成完整的数据报，这样的报文是不会交付到上层的。</p>
+<h2 id="UDP编程"><a href="#UDP编程" class="headerlink" title="UDP编程"></a>UDP编程</h2><p>（除了基本的示例外，还需要举例一个使用protobuf的例子，二进制形式解析报文格式，获取字段）</p>
+<h2 id="TCP编程"><a href="#TCP编程" class="headerlink" title="TCP编程"></a>TCP编程</h2><p>socket在Linux中是一个结构体，表示一种特殊的I/O，在Linux系统中每一个本地的socket都一个唯一的文件描述符来唯一标记，由操作系统分配。可以根据这个描述符来读写数据，从文件描述符读取数据，或者向描述符写入数据。</p>
+<p>创建socket，socket在内核中创建。成功返回文件描述符，出错返回-1。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>domain参数<br>AF_INET     IPv4因特网域<br>AF_INET6    IPv6因特网域<br>AF_UNIX     Unix域<br>AF_UNSPEC   未指定</p>
+<p>type参数<br>SOCK_STREAM：用于TCP协议，流式套接字，面向连接的通讯流，提供可靠的，按序到达的连接。<br>SOCK_DGRAM：用于UDP协议，数据通过相互独立的报文进行传输，无序，不保证可靠性。<br>SOCK_RAW：原始套接字，允许对底层协议进行访问，比如IP或者ICMP进行直接访问。主要用于测试新的网络协议。<br>SOCK_SEQPACKET：长度固定，有序，可靠的面向连接的报文传递。</p>
+<p>protocol参数<br>通常为0，表示按指定的域和套接字类型选择默认协议</p>
+<p>通用地址结构</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> &#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">short</span> sa_family;   <span class="comment">// Internet地址族，AF_XXX</span></span><br><span class="line">    <span class="keyword">char</span> sa_data[<span class="number">14</span>];           <span class="comment">// 14bytes协议地址</span></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>sa_family成员表示协议族，比如IPv4的协议族是AF_INET<br>sa_data成员包含远程主机的地址，端口号，套接字数组，里面的数据是糅杂在一起的。<br>在传递给包含通用地址结构的参数时，需要强制转成struct sockaddr*类型</p>
+<p>因特网地址结构</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> &#123;</span></span><br><span class="line">    <span class="keyword">in_addr_t</span> s_addr;       <span class="comment">// IPv4地址</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> &#123;</span></span><br><span class="line">    <span class="keyword">short</span> <span class="keyword">int</span> sin_family;           <span class="comment">// Internet地址族，AF_XXX，主机字节序</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">short</span> <span class="keyword">int</span> sin_port;    <span class="comment">// 端口号，16位，网络字节序</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> <span class="title">sin_addr</span>;</span>        <span class="comment">// Internet地址，32位IPv4地址，网络字节序</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> sin_zero[<span class="number">8</span>];      <span class="comment">// 填0，为了内存对齐</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>点分十进制和网络字节序（二进制）之间的转换，这两个函数同时支持IPv4和IPv6</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arp/inet.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 网络字节序转成点分十进制IP地址</span></span><br><span class="line"><span class="comment">// 成功返回地址字符串指针，失败返回NULL</span></span><br><span class="line"><span class="function"><span class="keyword">const</span> <span class="keyword">char</span> *<span class="title">inet_ntop</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">const</span> <span class="keyword">void</span> *<span class="keyword">restrict</span> addr, <span class="keyword">char</span> *<span class="keyword">restrict</span> str, <span class="keyword">socklen_t</span> size)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 成功返回1，无效格式返回0，出错返回-1</span></span><br><span class="line"><span class="comment">// 点分十进制转网络字节序</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">inet_pton</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">restrict</span> str, <span class="keyword">void</span> *<span class="keyword">restrict</span> addr)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>参数：<br>domain  Internet地址族，如：AF_INET<br>addr    Internet地址，32位IPv4地址<br>str     点分十进制IP地址字符串指针<br>size    地址字符串的大小</p>
+<p>参考资料</p>
+<ol>
+<li>《UNIX环境高级编程》第三版</li>
+<li>TCP 为什么是三次握手，而不是两次或四次？ - 山尽的回答 - 知乎<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/24853633/answer/573627478">https://www.zhihu.com/question/24853633/answer/573627478</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/06/16/golang_network_http/" rel="prev" title="HTTP">
+                  <i class="fa fa-chevron-left"></i> HTTP
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/07/02/linux_network_program/" rel="next" title="Linux网络编程——运输层">
+                  Linux网络编程——运输层 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

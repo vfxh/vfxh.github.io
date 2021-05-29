@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="实验环境：Linux系统，Go14.2  引导事实上，一个go程序启动的入口点并非是main.main函数，而是在main.main函数启动之前进入引导的代码。这些引导的代码做的事情包括命令函参数收集，运行时初始化等等操作。最后才会进入main.main函数。 要找到真正的程序入口点，可以用gdb来查看。可以选择一个简单的程序来做实验，然后用gdb调试。 12345package mainfun">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang之程序引导和运行时初始化">
+<meta property="og:url" content="http://example.com/2020/08/02/golang_boot_and_init/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="实验环境：Linux系统，Go14.2  引导事实上，一个go程序启动的入口点并非是main.main函数，而是在main.main函数启动之前进入引导的代码。这些引导的代码做的事情包括命令函参数收集，运行时初始化等等操作。最后才会进入main.main函数。 要找到真正的程序入口点，可以用gdb来查看。可以选择一个简单的程序来做实验，然后用gdb调试。 12345package mainfun">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-08-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.678Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/08/02/golang_boot_and_init/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;08&#x2F;02&#x2F;golang_boot_and_init&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;08&#x2F;02&#x2F;golang_boot_and_init&#x2F;&quot;,&quot;title&quot;:&quot;Golang之程序引导和运行时初始化&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Golang之程序引导和运行时初始化 | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%95%E5%AF%BC"><span class="nav-number">1.</span> <span class="nav-text">引导</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0%E8%8E%B7%E5%8F%96"><span class="nav-number">2.1.</span> <span class="nav-text">命令行参数获取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E7%B3%BB%E7%BB%9F%E4%BF%A1%E6%81%AF"><span class="nav-number">2.2.</span> <span class="nav-text">获取系统信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E8%B0%83%E5%BA%A6%E5%99%A8"><span class="nav-number">2.3.</span> <span class="nav-text">初始化调度器</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/08/02/golang_boot_and_init/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Golang之程序引导和运行时初始化
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-08-02 00:00:00" itemprop="dateCreated datePublished" datetime="2020-08-02T00:00:00+08:00">2020-08-02</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>实验环境：Linux系统，Go14.2</p>
+</blockquote>
+<h3 id="引导"><a href="#引导" class="headerlink" title="引导"></a>引导</h3><p>事实上，一个go程序启动的入口点并非是main.main函数，而是在main.main函数启动之前进入引导的代码。这些引导的代码做的事情包括命令函参数收集，运行时初始化等等操作。最后才会进入main.main函数。</p>
+<p>要找到真正的程序入口点，可以用gdb来查看。可以选择一个简单的程序来做实验，然后用gdb调试。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="built_in">println</span>(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用info files命令查看目标文件的调试信息。可以看到有一个入口点地址Entry point: 0x455220。然后在这个入口点打上断点，运行，然后跳入入口点内部。就可以看到入口点是在runtime/asm_amd64.s文件的第十五行，这是一个汇编代码的文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">// go build -gcflags &quot;-N -l&quot; main.go</span><br><span class="line">// gdb main</span><br><span class="line"></span><br><span class="line">(gdb) info files // 查看调试信息</span><br><span class="line">Symbols from &quot;/root/golang/main&quot;.</span><br><span class="line">Local exec file:</span><br><span class="line">    `/root/golang/main&#x27;, file type elf64-x86-64.</span><br><span class="line">    Entry point: 0x455220</span><br><span class="line">    0x0000000000401000 - 0x0000000000458261 is .text</span><br><span class="line">    0x0000000000459000 - 0x0000000000487eb3 is .rodata</span><br><span class="line">    0x0000000000488080 - 0x00000000004886c8 is .typelink</span><br><span class="line">    0x00000000004886c8 - 0x00000000004886d0 is .itablink</span><br><span class="line">    0x00000000004886d0 - 0x00000000004886d0 is .gosymtab</span><br><span class="line">    0x00000000004886e0 - 0x00000000004cbe83 is .gopclntab</span><br><span class="line">    0x00000000004cc000 - 0x00000000004cc020 is .go.buildinfo</span><br><span class="line">    0x00000000004cc020 - 0x00000000004cd620 is .noptrdata</span><br><span class="line">    0x00000000004cd620 - 0x00000000004cf430 is .data</span><br><span class="line">    0x00000000004cf440 - 0x00000000004f89b0 is .bss</span><br><span class="line">    0x00000000004f89c0 - 0x00000000004fb1c8 is .noptrbss</span><br><span class="line">    0x0000000000400f9c - 0x0000000000401000 is .note.go.buildid</span><br><span class="line">(gdb) b *0x455220 // 入口点打上断点</span><br><span class="line">Breakpoint 1 at 0x455220</span><br><span class="line">(gdb) r // 运行</span><br><span class="line">Starting program: /root/golang/main </span><br><span class="line"></span><br><span class="line">Breakpoint 1, 0x0000000000455220 in _rt0_amd64_linux ()</span><br><span class="line">(gdb) s // 跳入入口点内部</span><br><span class="line">Single stepping until exit from function _rt0_amd64_linux,</span><br><span class="line">which has no line number information.</span><br><span class="line">_rt0_amd64 () at /usr/local/go/src/runtime/asm_amd64.s:15</span><br><span class="line">15		MOVQ	0(SP), DI	// argc</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>不同的处理器架构的入口点函数是不同的，这里只是其中一个</p>
+</blockquote>
+<p>这里的_rt0_amd64_linux函数就是Linux平台go程序的入口点。虽然看不懂汇编，但是看注释也能猜到。这里是将命令行参数个数和命令函参数分别从栈当中读取出来，然后放到DI和SI两个寄存器当中。（其实函数参数是将函数参数的所在内存的地址拷贝到SI寄存器当中）然后跳转到runtime·rt0_go函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// _rt0_amd64 is common startup code for most amd64 systems when using</span><br><span class="line">// internal linking. This is the entry point for the program from the</span><br><span class="line">// kernel for an ordinary -buildmode=exe program. The stack holds the</span><br><span class="line">// number of arguments and the C-style argv.</span><br><span class="line">TEXT _rt0_amd64(SB),NOSPLIT,$-8</span><br><span class="line">    MOVQ	0(SP), DI	// argc</span><br><span class="line">    LEAQ	8(SP), SI	// argv</span><br><span class="line">    JMP	runtime·rt0_go(SB)</span><br></pre></td></tr></table></figure>
+<p>继续往下之后可以看到，这个runtime·rt0_go函数是在同一个文件runtime/asm_amd64.s的第89行。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(gdb) n</span><br><span class="line">16		LEAQ	8(SP), SI	// argv</span><br><span class="line">(gdb) n</span><br><span class="line">17		JMP	runtime·rt0_go(SB)</span><br><span class="line">(gdb) n</span><br><span class="line">runtime.rt0_go () at /usr/local/go/src/runtime/asm_amd64.s:89</span><br><span class="line">89		MOVQ	DI, AX		// argc</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
+<p>runtime·rt0_go函数还真复杂，鬼都看不懂，跟着注释慢慢来吧。首先第一部分是将寄存器中的命令行参数信息读取出来，经过调整后再重新写入到栈当中。（对！没错！就是从栈空间读取出来之后在重新写入栈当中，不知道为什么这么干！暂时没看懂）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">TEXT runtime·rt0_go(SB),NOSPLIT,$0</span><br><span class="line">    // copy arguments forward on an even stack</span><br><span class="line">    MOVQ	DI, AX		// argc</span><br><span class="line">    MOVQ	SI, BX		// argv</span><br><span class="line">    SUBQ	$(4*8+7), SP		// 2args 2auto</span><br><span class="line">    ANDQ	$~15, SP</span><br><span class="line">    MOVQ	AX, 16(SP)</span><br><span class="line">    MOVQ	BX, 24(SP)</span><br></pre></td></tr></table></figure>
+<p>这部分是初始化g0的部分。g0是第一个创建的goroutine，负责调度。这里初始化的是全局的g0。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">TEXT runtime·rt0_go(SB),NOSPLIT,$0</span><br><span class="line">    // ...上面的代码...</span><br><span class="line">    // create istack out of the given (operating system) stack.</span><br><span class="line">    // _cgo_init may update stackguard.</span><br><span class="line">    MOVQ	$runtime·g0(SB), DI</span><br><span class="line">    LEAQ	(-64*1024+104)(SP), BX</span><br><span class="line">    MOVQ	BX, g_stackguard0(DI)</span><br><span class="line">    MOVQ	BX, g_stackguard1(DI)</span><br><span class="line">    MOVQ	BX, (g_stack+stack_lo)(DI)</span><br><span class="line">    MOVQ	SP, (g_stack+stack_hi)(DI)</span><br></pre></td></tr></table></figure>
+<p>中间有一段看不懂，跳过。这里是初始化m0以及将m0和g0关联在一起。m0是一个系统级线程，goroutine必须附在m上才能够被执行任务代码。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">TEXT runtime·rt0_go(SB),NOSPLIT,$0</span><br><span class="line">// ...上面的代码...</span><br><span class="line">// 中间的看不懂，跳过...</span><br><span class="line">	LEAQ	runtime·m0+m_tls(SB), DI</span><br><span class="line">	CALL	runtime·settls(SB)</span><br><span class="line">// 中间的看不懂，跳过...</span><br><span class="line">ok:</span><br><span class="line">    // set the per-goroutine and per-mach &quot;registers&quot;</span><br><span class="line">    get_tls(BX)</span><br><span class="line">    LEAQ	runtime·g0(SB), CX</span><br><span class="line">    MOVQ	CX, g(BX)</span><br><span class="line">    LEAQ	runtime·m0(SB), AX</span><br><span class="line"></span><br><span class="line">    // save m-&gt;g0 = g0</span><br><span class="line">    MOVQ	CX, m_g0(AX)</span><br><span class="line">    // save m0 to g0-&gt;m</span><br><span class="line">    MOVQ	AX, g_m(CX)</span><br><span class="line"></span><br><span class="line">    CLD				// convention is D is always left cleared</span><br><span class="line">    CALL	runtime·check(SB)</span><br></pre></td></tr></table></figure>
+<p>这部分又把命令行参数信息从栈中拷贝出来放到AX寄存器里面了，紧接着就是调用runtime·args来将从栈里面读取出来的命令行参数信息赋值到go运行时对应的变量当中，之后就可以调用os.Args变量来获取参数了。runtime.osinit函数是获取cpu数量和内存页大小等信息。runtime·schedinit函数是重头戏，这个函数会初始化诸如内存分配器，垃圾回收器等等工作。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">TEXT runtime·rt0_go(SB),NOSPLIT,$0</span><br><span class="line">    // ...上面的代码...</span><br><span class="line">    MOVL	16(SP), AX		// copy argc</span><br><span class="line">    MOVL	AX, 0(SP)</span><br><span class="line">    MOVQ	24(SP), AX		// copy argv</span><br><span class="line">    MOVQ	AX, 8(SP)</span><br><span class="line">    CALL	runtime·args(SB)</span><br><span class="line">    CALL	runtime·osinit(SB)</span><br><span class="line">    CALL	runtime·schedinit(SB)</span><br></pre></td></tr></table></figure>
+<p>最后一部分就是要执行runtime.main的部分。runtime.mainPC应该是保存runtime.main函数的起始地址。然后将这个地址读取出来放到AX寄存器，压栈，命令行参数大小也压产。接下来就是调用runtime·newproc创建一个goroutine运行在m上面。开始执行runtime.main函数，runtime.main函数中会调用main_main函数，这个函数连接到main.main函数，也就是主函数。最终就会进入到用户逻辑，也就是main.main函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">TEXT runtime·rt0_go(SB),NOSPLIT,$0</span><br><span class="line">    // ...上面的代码...</span><br><span class="line">    // create a new goroutine to start program</span><br><span class="line">    MOVQ	$runtime·mainPC(SB), AX		// entry</span><br><span class="line">    PUSHQ	AX</span><br><span class="line">    PUSHQ	$0			// arg size</span><br><span class="line">    CALL	runtime·newproc(SB)</span><br><span class="line">    POPQ	AX</span><br><span class="line">    POPQ	AX</span><br><span class="line"></span><br><span class="line">    // start this M</span><br><span class="line">    CALL	runtime·mstart(SB)</span><br><span class="line">    CALL	runtime·abort(SB)	// mstart should never return</span><br><span class="line">    RET</span><br><span class="line">DATA	runtime·mainPC+0(SB)/8,$runtime·main(SB)</span><br><span class="line">GLOBL	runtime·mainPC(SB),RODATA,$8</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>大致流程图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">收集命令行参数</span><br><span class="line">    |</span><br><span class="line">    v</span><br><span class="line">初始化g0</span><br><span class="line">    |</span><br><span class="line">    v</span><br><span class="line">初始化m0</span><br><span class="line">    |</span><br><span class="line">    v</span><br><span class="line">g0和m0相关联</span><br><span class="line">    |</span><br><span class="line">    v</span><br><span class="line">g0启动，调用runtime.args把命令行参数复制到运行时全局变量当中</span><br><span class="line">    |</span><br><span class="line">    v</span><br><span class="line">调用runtime.osinit函数，收集处理器个数，系统默认内存页的大小等信息</span><br><span class="line">    |</span><br><span class="line">    v</span><br><span class="line">调用runtime·schedinit函数初始化调度器，包括内存分配器，垃圾回收器等等</span><br><span class="line">    |</span><br><span class="line">    v</span><br><span class="line">将runtime.main函数指针压栈，参数压栈，然后调用runtime.newproc创建一个新的goroutine，</span><br><span class="line">这个goroutine用于执行main.main函数。事实上runtime.main函数中会执行runtime.main_main函数，</span><br><span class="line">而这个runtime.main_main函数会连接到main.main函数，也就是用户逻辑中的main函数</span><br><span class="line">    |</span><br><span class="line">    v</span><br><span class="line">调用runtime·mstart启动m0，g0和m0已经关联在一起了。然后开始调度，包含main.main函数的goroutine</span><br><span class="line">被调度之后开始执行用户代码</span><br></pre></td></tr></table></figure>
+
+<p>所以，最开始调用runtime.osinit，runtime.args，runtime.schedint，runtime.newproc等函数都是g0调用的。g0的作用是负责创建新的goroutine，调度等等。（golang中goroutine没有父子依赖关系，所以不会像进程那样有父子进程的关系。go的goroutine是相互独立的）</p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><h4 id="命令行参数获取"><a href="#命令行参数获取" class="headerlink" title="命令行参数获取"></a>命令行参数获取</h4><p>在用户程序中，调用os.Args这个变量可以获取到命令行参数，现在来看看这个命令行参数是怎么来的。在runtime.args函数打上断点，定位这个函数所在的文件位置。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b runtime.args</span><br><span class="line">Breakpoint 3 at 0x438b80: file /usr/local/go/src/runtime/runtime1.go, line 60.</span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure>
+<p>可以看到，runtime.args函数将从寄存器中读取到的命令行参数信息赋值给了全局变量argc和argv。此外还有几个相关的函数，我们先不用理会。<br>runtime/runtime1.go</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> (</span><br><span class="line">    argc <span class="keyword">int32</span></span><br><span class="line">    argv **<span class="keyword">byte</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// nosplit for use in linux startup sysargs</span></span><br><span class="line"><span class="comment">//go:nosplit</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">argv_index</span><span class="params">(argv **<span class="keyword">byte</span>, i <span class="keyword">int32</span>)</span> *<span class="title">byte</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> *(**<span class="keyword">byte</span>)(add(unsafe.Pointer(argv), <span class="keyword">uintptr</span>(i)*sys.PtrSize))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">args</span><span class="params">(c <span class="keyword">int32</span>, v **<span class="keyword">byte</span>)</span></span> &#123;</span><br><span class="line">    argc = c <span class="comment">// 参数个数</span></span><br><span class="line">    argv = v <span class="comment">// 命令行参数</span></span><br><span class="line">    sysargs(c, v)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">goargs</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> GOOS == <span class="string">&quot;windows&quot;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    argslice = <span class="built_in">make</span>([]<span class="keyword">string</span>, argc)</span><br><span class="line">    <span class="keyword">for</span> i := <span class="keyword">int32</span>(<span class="number">0</span>); i &lt; argc; i++ &#123;</span><br><span class="line">        argslice[i] = gostringnocopy(argv_index(argv, i))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以写个简单的程序，调用os.Args变量，跳转定义后来到os/proc.go文件中。这里就是全局变量Args的声明。可以看到，Args在一个init函数中初始化。我们先不管init函数是怎么调用的，先看看runtime_args函数。这个函数在这个文件中没有定义，不过注释说明了在runtime包中。那么只需要在runtime包中找出相关实现。</p>
+<blockquote>
+<p>os/proc.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Args hold the command-line arguments, starting with the program name.</span></span><br><span class="line"><span class="keyword">var</span> Args []<span class="keyword">string</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> runtime.GOOS == <span class="string">&quot;windows&quot;</span> &#123;</span><br><span class="line">        <span class="comment">// Initialized in exec_windows.go.</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    Args = runtime_args()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">runtime_args</span><span class="params">()</span> []<span class="title">string</span> // <span class="title">in</span> <span class="title">package</span> <span class="title">runtime</span></span></span><br></pre></td></tr></table></figure>
+<p>使用grep查找，找到在runtime/runtime.go文件中。这里有声明了runtime.os_runtime_args函数连接到os.runtime_args函数。在调用这个runtime.os_runtime_args函数的时候返回一个slice。这个slice是追加argslice全局变量的。而这个全局变量argslice就是在最开始分析的runtime.goargs函数中创建的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@instance-64v1o5x9 ~]# grep -rn &quot;runtime_args&quot; /usr/local/go/src/runtime/</span><br><span class="line">/usr/local/go/src/runtime/runtime.go:58://go:linkname os_runtime_args os.runtime_args</span><br><span class="line">/usr/local/go/src/runtime/runtime.go:59:func os_runtime_args() []string &#123; return append([]string&#123;&#125;, argslice...) &#125;</span><br><span class="line">[root@instance-64v1o5x9 ~]# </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>runtime/runtime.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> argslice []<span class="keyword">string</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//go:linkname os_runtime_args os.runtime_args</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">os_runtime_args</span><span class="params">()</span> []<span class="title">string</span></span> &#123; <span class="keyword">return</span> <span class="built_in">append</span>([]<span class="keyword">string</span>&#123;&#125;, argslice...) &#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么，runtime.goargs函数是什么时候被调用的呢？答案是在runtime.shedinit函数中被调用的，也就是在g0调用runtime.args函数之后调用runtime.shedinit函数，而runtime.shedinit函数中会调用runtime.goargs函数。之前os包中的init函数则是在调用runtime.main函数的时候会被调用，注意，此时用户逻辑的main.main函数没有被调用。所以，os.Args的来源过程如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">g0调用runtime.args函数将命令行参数信息拷贝到全局变量argc和argv</span><br><span class="line">    |</span><br><span class="line">    v</span><br><span class="line">g0调用runtime.schedinit函数，其中runtime.schedinit函数调用runtime.goargs创建argslice变量并初始化</span><br><span class="line">    |</span><br><span class="line">    v</span><br><span class="line">之后就是执行runtime.main函数，调用os包中init函数</span><br><span class="line">    |</span><br><span class="line">    v</span><br><span class="line">初始化os包的全局变量Args</span><br></pre></td></tr></table></figure>
+<p>上面的过程都是在main.main函数之前完成的</p>
+<h4 id="获取系统信息"><a href="#获取系统信息" class="headerlink" title="获取系统信息"></a>获取系统信息</h4><p>和定位runtime.args函数一样，定位runtime.osinit函数也是打上断点就行。然后就可以确定runtime.osinit函数是在runtime/os_linux.go函数里面。这个函数做的事情不同，就是获取cpu核心数量和系统内存页大小。</p>
+<blockquote>
+<p>runtime/os_linux.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">osinit</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 获取cpur核心数量</span></span><br><span class="line">    ncpu = getproccount()</span><br><span class="line">    <span class="comment">// 获取系统内存页大小</span></span><br><span class="line">    physHugePageSize = getHugePageSize()</span><br><span class="line">    osArchInit()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="初始化调度器"><a href="#初始化调度器" class="headerlink" title="初始化调度器"></a>初始化调度器</h4><p>runtime.schedinit函数内容很多，我精简了很多，因为其它我也看不懂。前面注释有说明引导启动的顺序，可以看到有说明在runtime.schedinit之后创建的goroutine是用来执行runtime.main函数的。runtime.schedinit函数中有初始化内存分配器，设置命令行参数，环境参数以及垃圾回收器等等操作。</p>
+<blockquote>
+<p>runtime/proc.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The bootstrap sequence is:</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">//	call osinit</span></span><br><span class="line"><span class="comment">//	call schedinit</span></span><br><span class="line"><span class="comment">//	make &amp; queue new G</span></span><br><span class="line"><span class="comment">//	call runtime·mstart</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// The new G calls runtime·main.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">schedinit</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 程序启动的时候获取到的就是g0</span></span><br><span class="line">	_g_ := getg()</span><br><span class="line">	<span class="keyword">if</span> raceenabled &#123;</span><br><span class="line">		_g_.racectx, raceprocctx0 = raceinit()</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="comment">// 这里是最大m的数量，也就是线程的最大数量</span></span><br><span class="line">	sched.maxmcount = <span class="number">10000</span></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="comment">// 内存分配器初始化</span></span><br><span class="line">	mallocinit()</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="comment">// 命令行参数</span></span><br><span class="line">    goargs()</span><br><span class="line">    <span class="comment">// 环境参数</span></span><br><span class="line">	goenvs()</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="comment">// 垃圾回收器初始化</span></span><br><span class="line">    gcinit()</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（runtime.mstart这部分有点懵，先略过。不过可以确定的是，接下来执行的就是runtime.main函数）</p>
+<p><strong>调用runtime.main</strong><br>runtime.main函数最开始会先确定goroutine栈的上限，然后启动后台监控程序。接着开启GC，并启动一个goroutine在后台一直阻塞，直到有垃圾回收唤醒这个goroutine开始进入for循环执行回收工作。后面就是开始调用main.main函数了。</p>
+<blockquote>
+<p>runtime/stack.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> maxstacksize <span class="keyword">uintptr</span> = <span class="number">1</span> &lt;&lt; <span class="number">20</span> <span class="comment">// enough until runtime.main sets it for real</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>runtime/proc.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//go:linkname main_main main.main</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main_main</span><span class="params">()</span></span></span><br><span class="line"><span class="comment">// mainStarted indicates that the main M has started.</span></span><br><span class="line"><span class="keyword">var</span> mainStarted <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// The main goroutine.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	g := getg()</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="comment">// 64位平台goroutine持有的栈最大能增长到1GB</span></span><br><span class="line">    <span class="comment">// 32位平台则是250MB</span></span><br><span class="line">	<span class="keyword">if</span> sys.PtrSize == <span class="number">8</span> &#123;</span><br><span class="line">		maxstacksize = <span class="number">1000000000</span></span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		maxstacksize = <span class="number">250000000</span></span><br><span class="line">	&#125;</span><br><span class="line">    <span class="comment">// Allow newproc to start new Ms.</span></span><br><span class="line">    <span class="comment">// 这个在runtime.newproc1函数中会用到</span></span><br><span class="line">    <span class="comment">// 在初始化阶段，因为runtime.main函数执行要晚于</span></span><br><span class="line">    <span class="comment">// runtime.newproc1函数，所以在runtime.newproc1中</span></span><br><span class="line">    <span class="comment">// mainStarted值为false</span></span><br><span class="line">	mainStarted = <span class="literal">true</span></span><br><span class="line">    <span class="comment">// 启动后台监控程序，用于定期垃圾回收，并发调度信息等</span></span><br><span class="line">	<span class="keyword">if</span> GOARCH != <span class="string">&quot;wasm&quot;</span> &#123; <span class="comment">// no threads on wasm yet, so no sysmon</span></span><br><span class="line">		systemstack(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">			newm(sysmon, <span class="literal">nil</span>)</span><br><span class="line">		&#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">	<span class="keyword">if</span> g.m != &amp;m0 &#123;</span><br><span class="line">		throw(<span class="string">&quot;runtime.main not on m0&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="comment">// 开启GC，有一个goroutine在后台一直循环</span></span><br><span class="line">    gcenable()</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">	doInit(&amp;runtime_inittask) <span class="comment">// must be before defer</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">	main_init_done = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">bool</span>)</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">	doInit(&amp;main_inittask)</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">	fn := main_main </span><br><span class="line">	fn() <span class="comment">// 执行runtime.main函数</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">	exit(<span class="number">0</span>)</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不过有一点不明白的是，init函数是怎么被调用的。根据《Go语言学习笔记》，init函数会在main.main函数之前被执行，不过没看出来在哪里，懵逼~~~。不过可以搞个例程来看看init函数到底是怎么被调用的。这个程序的结构如下，main.main函数导入first包，而first包又导入second包，但是second包不导入third包。其中second包中定义了多个init函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">init_test</span><br><span class="line">|</span><br><span class="line">+---main.go</span><br><span class="line">|</span><br><span class="line">+---first</span><br><span class="line">      |</span><br><span class="line">      +---first.go</span><br><span class="line">      |</span><br><span class="line">      +---second</span><br><span class="line">            |</span><br><span class="line">            +---second.go</span><br><span class="line">            |</span><br><span class="line">            +---third</span><br><span class="line">                  |</span><br><span class="line">                  +---third.go</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>main.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;init_test/first&quot;</span></span><br><span class="line">	<span class="string">&quot;runtime&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	_ = first.First</span><br><span class="line">	fmt.Println(<span class="string">&quot;start main...&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;main init, goroutine id: &quot;</span>, runtime.GetGOroutineID())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>first.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> first</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;init_test/first/second&quot;</span></span><br><span class="line">	<span class="string">&quot;runtime&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> First <span class="keyword">int</span> = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	_ = second.Second</span><br><span class="line">	fmt.Println(<span class="string">&quot;first init, goroutine id: &quot;</span>, runtime.GetGOroutineID())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>second.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> second</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;runtime&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Second <span class="keyword">int</span> = <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;second init, goroutine id: &quot;</span>, runtime.GetGOroutineID())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;second&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;third&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>third.go</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> third</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;runtime&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;third init, goroutine id: &quot;</span>, runtime.GetGOroutineID())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果。可以看到，最开始执行的init函数时second包中的init函数，最后才是main包中的init函数。而且定义多个init函数也不会报错。但是third包中的init函数没有被执行，因为这个包没有被其它包导入。<strong>因此，只有被导入的包的init函数才会自动执行。而且，这些所有的init函数都是在同一个goruotine被调用的</strong>，还需要注意一点，main.main函数是在init函数都执行之后才会执行。最后，可总结为，init函数的执行顺序和依赖关系，定义顺序有关。所以，尽量只用init函数做局部初始化，而非全局。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">second init, goroutine id:  1</span><br><span class="line">second</span><br><span class="line">third</span><br><span class="line">first init, goroutine id:  1</span><br><span class="line">main init, goroutine id:  1</span><br><span class="line">start main...</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/07/29/data_structure_recursion/" rel="prev" title="递归">
+                  <i class="fa fa-chevron-left"></i> 递归
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/08/02/golang_module/" rel="next" title="Golang之module使用">
+                  Golang之module使用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

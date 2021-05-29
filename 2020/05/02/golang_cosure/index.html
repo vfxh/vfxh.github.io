@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="匿名函数匿名函数就是一个没有函数名的函数字面量，可以直接调用，也可以当作返回值赋值给一个变量。Go会给匿名函数提供一个随机符号，用来标识一个匿名函数。如果匿名函数是在一个函数内部声明并且赋值给一个变量，那么不同的匿名函数的地址是不同的，即使匿名函数的结构相同，它们的地址也不同。 12345678910111213func main() &amp;#123;    a :&#x3D; func() &amp;#123;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang之闭包">
+<meta property="og:url" content="http://example.com/2020/05/02/golang_cosure/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="匿名函数匿名函数就是一个没有函数名的函数字面量，可以直接调用，也可以当作返回值赋值给一个变量。Go会给匿名函数提供一个随机符号，用来标识一个匿名函数。如果匿名函数是在一个函数内部声明并且赋值给一个变量，那么不同的匿名函数的地址是不同的，即使匿名函数的结构相同，它们的地址也不同。 12345678910111213func main() &amp;#123;    a :&#x3D; func() &amp;#123;">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.678Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/05/02/golang_cosure/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;05&#x2F;02&#x2F;golang_cosure&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;05&#x2F;02&#x2F;golang_cosure&#x2F;&quot;,&quot;title&quot;:&quot;Golang之闭包&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Golang之闭包 | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">匿名函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AD%E5%8C%85"><span class="nav-number">2.</span> <span class="nav-text">闭包</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/02/golang_cosure/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Golang之闭包
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-05-02 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-02T00:00:00+08:00">2020-05-02</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="匿名函数"><a href="#匿名函数" class="headerlink" title="匿名函数"></a>匿名函数</h3><p>匿名函数就是一个没有函数名的函数字面量，可以直接调用，也可以当作返回值赋值给一个变量。Go会给匿名函数提供一个随机符号，用来标识一个匿名函数。如果匿名函数是在一个函数内部声明并且赋值给一个变量，那么不同的匿名函数的地址是不同的，即使匿名函数的结构相同，它们的地址也不同。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    a := <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;a&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    b := <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;b&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    c := <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;c&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println(a, b, c)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>打印出</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a: <span class="number">0x49df20</span> b: <span class="number">0x49dfb0</span> c: <span class="number">0x49e040</span></span><br></pre></td></tr></table></figure>
+<p>但是如果是某个外部函数返回的匿名函数，那么它们的地址是相同的。因为是字面量，没有分配内存，所以返回的匿名函数其实就是同一个，并没有创建新的匿名函数</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    f1 := returnFunc()</span><br><span class="line">    f2 := returnFunc()</span><br><span class="line">    fmt.Println(<span class="string">&quot;f1:&quot;</span>, f1, <span class="string">&quot;f2:&quot;</span>, f2)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">returnFunc</span><span class="params">()</span> <span class="title">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;&#125;</span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+<p>打印出</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f1: <span class="number">0x49de70</span> f2: <span class="number">0x49de70</span></span><br></pre></td></tr></table></figure>
+<h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p>闭包就是函数和引用环境的结合体，真抽象，还是看例子比较容易理解</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    f := test(<span class="number">1</span>)</span><br><span class="line">    f()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">(x <span class="keyword">int</span>)</span> <span class="title">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;test x addr: &quot;</span>, &amp;x)</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        x++</span><br><span class="line">        fmt.Println(x)</span><br><span class="line">        fmt.Println(<span class="string">&quot;closure x addr: &quot;</span>, &amp;x, <span class="string">&quot;| x value: &quot;</span>, x)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印出</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">test x addr:  <span class="number">0xc0000100b0</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line">closure x addr:  <span class="number">0xc0000100b0</span> | x value:  <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>从结果就知道变量x在test中的地址和main函数中的地址是一样，也就是说返回的闭包引用了test函数的局部变量x，使得变量x延长了生命周期，一直持续到main函数中，直到main函数结束。当然，这个返回的匿名函数是一个字面量，无论返回多少次它的地址都是一样的。但是x则不然，因为x的创建是由test函数决定的，也就是调用多次test返回的字面量的时候都会创建一个新的变量x，所以x的地址是不同的。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    f := test(<span class="number">1</span>) <span class="comment">// 调用test，创建一个局部变量x</span></span><br><span class="line">    f()</span><br><span class="line">    f2 := test(<span class="number">1</span>) <span class="comment">// 再次调用test，又创建了一个x</span></span><br><span class="line">    f2()</span><br><span class="line">    f2()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印出</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">test x addr:  <span class="number">0xc0000100b0</span> <span class="comment">// 第一次调用test的x地址</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line">closure x addr:  <span class="number">0xc0000100b0</span> | x value:  <span class="number">2</span></span><br><span class="line">test x addr:  <span class="number">0xc0000100f0</span> <span class="comment">// 第二次调用的x地址，和第一次调用test的x地址不同，因为每次调用test都会创建新的x</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line">closure x addr:  <span class="number">0xc0000100f0</span> | x value:  <span class="number">2</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line">closure x addr:  <span class="number">0xc0000100f0</span> | x value:  <span class="number">3</span></span><br><span class="line">f addr:  <span class="number">0x49dfb0</span> | f2 addr:  <span class="number">0x49dfb0</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，调用test之后返回的匿名函数，然后执行多次这个匿名函数，x的变量的地址都是相同的。但是多次调用test函数返回的匿名函数，执行之后x是不同的。因为多次调用test函数返回的都是同一个匿名函数，所以返回的匿名函数是相同的。</p>
+<p><strong>闭包在for循环中的坑</strong><br>for循环的循环变量是固定一个变量，闭包引用这个变量就会有坑</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> funcs []<span class="function"><span class="keyword">func</span><span class="params">()</span></span></span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">    funcs = <span class="built_in">append</span>(funcs, <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">            fmt.Println(&amp;i, i)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> _, fn := <span class="keyword">range</span> funcs &#123;</span><br><span class="line">        fn()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>直观上执行这个程序的时候会打印出：0，1，2，3，4。然而并不是。<br>原因是i是一个固定的变量，它在for执行的过程中都是同一个地址。在把匿名函数增加到slice中的时候，都是引用的同一个变量i。由于i被匿名函数引用并且没有立即执行，i的生命周期就被延长了。当for循环结束之后i变成了5，所以最后打印出来的数据就是：5，5，5，5，5</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 可以看到，i的地址都是一样的</span></span><br><span class="line"><span class="number">0xc0000100b0</span> <span class="number">5</span></span><br><span class="line"><span class="number">0xc0000100b0</span> <span class="number">5</span></span><br><span class="line"><span class="number">0xc0000100b0</span> <span class="number">5</span></span><br><span class="line"><span class="number">0xc0000100b0</span> <span class="number">5</span></span><br><span class="line"><span class="number">0xc0000100b0</span> <span class="number">5</span></span><br></pre></td></tr></table></figure>
+<p>解决的办法就是把i赋值给一个局部变量，创建新的变量，然后让每个匿名函数引用它。这样，最后所引用的变量就不会是同一个了。（其实匿名函数是同一个，但是引用的变量不同）</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> funcs []<span class="function"><span class="keyword">func</span><span class="params">()</span></span></span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">        x := i</span><br><span class="line">        funcs = <span class="built_in">append</span>(funcs, <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">            fmt.Println(&amp;i, i)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> _, fn := <span class="keyword">range</span> funcs &#123;</span><br><span class="line">        fn()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印出来，可以看到引用的变量地址是不一样的</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0xc0000100b0</span> <span class="number">0</span></span><br><span class="line"><span class="number">0xc0000100b8</span> <span class="number">1</span></span><br><span class="line"><span class="number">0xc0000100c0</span> <span class="number">2</span></span><br><span class="line"><span class="number">0xc0000100c8</span> <span class="number">3</span></span><br><span class="line"><span class="number">0xc0000100d0</span> <span class="number">4</span></span><br></pre></td></tr></table></figure>
+<p>闭包对于性能不好，所以追求性能高的程序，慎重使用</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/05/02/golang_defer/" rel="prev" title="Golang之defer">
+                  <i class="fa fa-chevron-left"></i> Golang之defer
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/05/golang_array_slice/" rel="next" title="Golang之数组和slice">
+                  Golang之数组和slice <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

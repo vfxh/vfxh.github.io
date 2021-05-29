@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="C语言可以用offsetof函数来获取结构体成员的偏移量   基于Fedora32 64位系统  简介现代计算机的内存空间是按照字节来划分的，但计算机系统对于基本类型的数据存放在内存的地址有限制。计算机系统会要求这些数据的存放起始地址是某个数的倍数（2、4或8等等），这个就是内存对齐。而CPU在访问数据时候，并不是按照一个字节一个字节来访问的，而是按照多个字节组合作为访问单位来周期性性访问。这个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内存对齐">
+<meta property="og:url" content="http://example.com/2020/06/05/golang_memory_alignment/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="C语言可以用offsetof函数来获取结构体成员的偏移量   基于Fedora32 64位系统  简介现代计算机的内存空间是按照字节来划分的，但计算机系统对于基本类型的数据存放在内存的地址有限制。计算机系统会要求这些数据的存放起始地址是某个数的倍数（2、4或8等等），这个就是内存对齐。而CPU在访问数据时候，并不是按照一个字节一个字节来访问的，而是按照多个字节组合作为访问单位来周期性性访问。这个">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-06-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.678Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/06/05/golang_memory_alignment/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;06&#x2F;05&#x2F;golang_memory_alignment&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;06&#x2F;05&#x2F;golang_memory_alignment&#x2F;&quot;,&quot;title&quot;:&quot;内存对齐&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>内存对齐 | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AF%B9%E9%BD%90"><span class="nav-number">2.</span> <span class="nav-text">为什么要对齐</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E8%A7%84%E5%88%99"><span class="nav-number">3.</span> <span class="nav-text">内存对齐规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.</span> <span class="nav-text">内存对齐示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Golang%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90"><span class="nav-number">5.</span> <span class="nav-text">Golang内存对齐</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/05/golang_memory_alignment/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          内存对齐
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-06-05 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-05T00:00:00+08:00">2020-06-05</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>C语言可以用offsetof函数来获取结构体成员的偏移量</p>
+</blockquote>
+<blockquote>
+<p>基于Fedora32 64位系统</p>
+</blockquote>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>现代计算机的内存空间是按照字节来划分的，但计算机系统对于基本类型的数据存放在内存的地址有限制。计算机系统会要求这些数据的存放起始地址是某个数的倍数（2、4或8等等），这个就是内存对齐。而CPU在访问数据时候，并不是按照一个字节一个字节来访问的，而是按照多个字节组合作为访问单位来周期性性访问。这个多个字节组合一般是：2个字节、4个字节、8个字节甚至是16，32个字节。而这些访问的单位被称为内存存取粒度。</p>
+<blockquote>
+<p>CPU存取示意图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 内存中并不是按照一个字节一个字节排列</span><br><span class="line">// 类似于这样</span><br><span class="line"></span><br><span class="line">         0   1   2   3   4   5   6   7</span><br><span class="line">       +---+---+---+---+---+---+---+---+</span><br><span class="line">data   |   |   |   |   |   |   |   |   |</span><br><span class="line">       +---+---+---+---+---+---+---+---+</span><br><span class="line"></span><br><span class="line">// 而是按照一个块一个块存取的</span><br><span class="line">// 假设存取粒度是4，那么就像这样</span><br><span class="line"></span><br><span class="line">         0   1   2   3       4   5   6   7</span><br><span class="line">       +---+---+---+---+   +---+---+---+---+</span><br><span class="line">data   |   |   |   |   |   |   |   |   |   |</span><br><span class="line">       +---+---+---+---+   +---+---+---+---+</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="为什么要对齐"><a href="#为什么要对齐" class="headerlink" title="为什么要对齐"></a>为什么要对齐</h3><p>假设CPU存取粒度为4，要读取一个int32（4个字节）的变量，根据内存存取粒度为4的情况，每一个周期读取数据都要读取4个字节。假设现在没有内存对齐，并且这个int32类型的变量数据随意存放，假设它的存储起始地址是1，那么这个数据占据的内存地址就是1，2，3，4。现在要从0地址开始读取，一个周期读取4个字节，包括0，1，2，3。但是int32变量的数据还包括地址为4的数据，那么就需要进行迭第二个周期读取，读取包括4，5，6，7。然后将不需要的字节剔除，就是把0，5，6，7这个四个地址的字节剔除，最后剩下的1，2，3地址的数据块和地位是4的数据块组合得到int32变量的数据。</p>
+<blockquote>
+<p>没有内存对齐读取数据示意图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"> memoery</span><br><span class="line"></span><br><span class="line">0 +---+&lt;------+</span><br><span class="line">  |   |       |   erase address 0                   </span><br><span class="line">1 +---+       |                       1 +---+-----------------+</span><br><span class="line">  | \ |      first read ------------&gt;   | \ |                 | </span><br><span class="line">2 +---+       |                       2 +---+                 |           1 +---+ </span><br><span class="line">  | \ |       |                         | \ |                 v  merge      | \ |                </span><br><span class="line">3 +---+&lt;------+                       3 +---+                 +---------&gt; 2 +---+</span><br><span class="line">  | \ |                                 | \ |                 ^             | \ |</span><br><span class="line">4 +---+&lt;------+                         +---+                 |           3 +---+  </span><br><span class="line">  | \ |       | erase address 5,6,7                           |             | \ |</span><br><span class="line">5 +---+       |                       4 +---+-----------------+           4 +---+</span><br><span class="line">  |   |     second read ------------&gt;   | \ |                               | \ |</span><br><span class="line">6 +---+       |                         +---+                               +---+</span><br><span class="line">  |   |       |</span><br><span class="line">7 +---+       |</span><br><span class="line">  |   |       |</span><br><span class="line">  +---+&lt;------+</span><br></pre></td></tr></table></figure>
+
+<p>从示意图上看，没有内存对齐机制。那么在存取粒度是4的情况下读取一个int32变量的数据，大概需要3个步骤。1. 读取前一部分数据，剔除不需要的数据。2. 读取后一部分的数据，剔除不需要的数据。3。 合并两个数据块，合成需要的最终数据块。</p>
+<p>而有了内存对齐机制之后，数据就只能按照对齐规则存放在内存当中。CPU读取数据的时候就可以一次性读取全部数据，就不会有额外的操作，提高了效率。比如上面的例子，CPU按照存取粒度为4读取数据，一个周期读取4个字节。而int32变量刚好是4字节，在内存对齐的机制下，这个变量的存储地址只能是4的倍数，所以CPU一个周期就可以全部读取出来。</p>
+<blockquote>
+<p>示意图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// 假设起始地址是0，存取粒度是4</span><br><span class="line"></span><br><span class="line"> memory</span><br><span class="line"></span><br><span class="line">0 +---+&lt;----------+                  0 +---+           </span><br><span class="line">  | \ |           |                    | \ |</span><br><span class="line">1 +---+           |                  1 +---+</span><br><span class="line">  | \ |           v                    | \ |</span><br><span class="line">2 +---+           +----read once---&gt; 2 +---+</span><br><span class="line">  | \ |           ^                    | \ |</span><br><span class="line">3 +---+           |                  3 +---+</span><br><span class="line">  | \ |           |                    | \ |   </span><br><span class="line">4 +---+&lt;----------+                    +---+</span><br><span class="line">  |   |</span><br><span class="line">5 +---+</span><br><span class="line">  |   |</span><br><span class="line">6 +---+</span><br><span class="line">  |   |</span><br><span class="line">7 +---+</span><br><span class="line">  |   |</span><br><span class="line">  +---+</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="内存对齐规则"><a href="#内存对齐规则" class="headerlink" title="内存对齐规则"></a>内存对齐规则</h3><blockquote>
+<p>C语言部分</p>
+</blockquote>
+<p>不同平台有不同的默认内存对齐值，所以一般使用预处理指令*#pragma pack(n)*来指定按照n个字节对齐。n的取值有：1，2，4，8等等，也就是其指定的对齐系数取值是2^n，n取值&gt;=0。其上限…我不知道。（应该是基础类型的最大类型长度，即使再往上也没有意义。当然，这是我猜的~~ ^_^）</p>
+<p>结构体对齐规则</p>
+<blockquote>
+<p>结构体有效对齐系数 = min[结构体成员中类型最大的长度, 指定对齐系数(或者默认对齐系数)]</p>
+</blockquote>
+<ol>
+<li>结构体第一个成员的偏移量为0，之后的每个成员相对于首地址的偏移量都是<em>该成员类型大小和有效对齐系数两者之间较小值</em>的整数倍。如果有需要，成员之间会被编译器填充字节。</li>
+<li>结构体的总大小为能够容纳所有成员数据的有效对齐系数的最小整数倍，并且按照有效对齐系数对齐。如果有需要编译器会在最后一个成员后面填充字节。</li>
+</ol>
+<p>对于第二调规则的解释：</p>
+<blockquote>
+<p>有一个结构体A，A作为另一个结构体B的内嵌成员。那么B的成员A相对于B的首地址偏移量就是：<em>A的有效对齐系数和B的指定的对齐系数中较小的那个的整数倍</em></p>
+</blockquote>
+<p>例程</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(8)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">inner</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> b;</span><br><span class="line">    <span class="keyword">char</span> c[<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">long</span> d;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(4)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">outside</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">inner</span> <span class="title">b</span>;</span></span><br><span class="line">    <span class="keyword">long</span> c;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br></pre></td></tr></table></figure>
+<p>在历程中，结构体<em>struct inner</em>指定的对齐系数是8，其成员类型最大长度也是8，所以<em>struct inner</em>的有效对齐系数就是8。因此，在结构体<em>struct outside</em>中，成员b相对于首地址的偏移量就是4的整数倍。因为<em>struct outside</em>的指定对齐系数是4，所以<em>struct inner</em>在<em>struct outside</em>的有效对齐系数就是4。</p>
+<h3 id="内存对齐示例"><a href="#内存对齐示例" class="headerlink" title="内存对齐示例"></a>内存对齐示例</h3><blockquote>
+<p>结构体例子</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 12 bytes</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(4)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pkg</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a; <span class="comment">// 1 byte</span></span><br><span class="line">    <span class="keyword">int</span> b;  <span class="comment">// 4 byte</span></span><br><span class="line">    <span class="keyword">char</span> c; <span class="comment">// 1 byte</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br></pre></td></tr></table></figure>
+
+<p>首先确定有效对齐系数：结构体的有效对齐系数是结构体中成员类型大小最大的值和指定对齐值（或默认对齐值）较小的那一个。结构体指定对齐值是4，结构体中类型最大的是int，也就是4，所以有效对齐系数是4。</p>
+<blockquote>
+<p>分析</p>
+</blockquote>
+<p>因为上面的结构体指定对齐值是4，而结构体类型长度最大的是int，也就是4。所以，有效对齐系数是4。<br>得到有效对齐系数之后就可以对结构体成员进行分析了：</p>
+<ol>
+<li>对于成员a：根据规则1，a的偏移量是0，占第用0单元；</li>
+<li>对于成员b：有效对齐系数是4，b自身的类型大小是4，所以偏移量是4的整数倍。所以b的起始地址从第4个单元开始，占用4，5，6，7四个单元；</li>
+<li>对于成员c：有效对齐系数是4，c自身的类型大小是1，所以偏移量是1的整数倍。因此c的起始地址从第8单元开始，c占用一个字节，也就是第8单元；</li>
+</ol>
+<p>这个时候需要注意，成员b占用的单元是从第4单元开始的。也就是说1，2，3这三个单元是空出来的，编译器需要对这三个单元进行字节填充。这样才能保证成员b是从第4单元开始，也就是偏移量是4的整数倍。<br>然后开始计算结构体整体大小。a成员占用一个单元，之后填充3个单元。b占用4个单元，不需要填充。c成员占用一个单元，一共是9个字节。因为有效对齐系数是4，所以结构体也按照4字节对齐。根据<em>结构体的总大小为有效对齐系数的最小整数倍</em>的规则，应该占用12个字节（这样才可以既符合结构体内存对齐，又能存储所有成员数据）。所以c后面需要再填充3个字节。</p>
+<blockquote>
+<p>结构体<em>struct pkg</em>的内存布局</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 横向展开      </span><br><span class="line">                0x7fff009aafcc</span><br><span class="line">                |</span><br><span class="line">                v</span><br><span class="line">                |&lt;------b------&gt;|</span><br><span class="line">+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">| a | \ | \ | \ | b | b | b | b | c | \ | \ | \ |</span><br><span class="line">+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">^                               ^</span><br><span class="line">|                               |</span><br><span class="line">0x7fff009aafc8                  0x7fff009aafd0</span><br></pre></td></tr></table></figure>
+
+<p>用代码来验证是不是这个样子</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buff[<span class="number">12</span>] = &#123;<span class="string">&#x27;\0&#x27;</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pkg</span> * <span class="title">p</span> =</span> (struct pkg *)(buff);</span><br><span class="line">    p-&gt;a = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">    p-&gt;b = <span class="number">123</span>;</span><br><span class="line">    p-&gt;c = <span class="string">&#x27;c&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 成员b占用4个字节</span></span><br><span class="line">    <span class="keyword">char</span> dst[<span class="number">4</span>] = &#123;<span class="string">&#x27;\0&#x27;</span>&#125;;</span><br><span class="line">    <span class="comment">// b的起始地址相对于结构体首地址偏移量是4</span></span><br><span class="line">    <span class="comment">// 所以从首地址偏移4个字节的位置开始拷贝4个字节到dst数组中</span></span><br><span class="line">    <span class="built_in">memcpy</span>(dst, buff+<span class="number">4</span>, <span class="number">4</span>);</span><br><span class="line">    <span class="comment">// 转成int类型变量</span></span><br><span class="line">    <span class="keyword">int</span> n = *(<span class="keyword">int</span>*)(dst);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 结构体首地址</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pkg    addr: %p\n&quot;</span>, p);</span><br><span class="line">    <span class="comment">// a成员相对于结构体首地址偏移量是0</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;a: %c\taddr: %p\n&quot;</span>, *(buff+<span class="number">0</span>), &amp;p-&gt;a);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;b: %d\taddr: %p\n&quot;</span>, n, &amp;p-&gt;b);	</span><br><span class="line">    <span class="comment">// c成员相对于结构体首地址偏移量是8</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;c: %c\taddr: %p\n&quot;</span>, *(buff+<span class="number">8</span>), &amp;p-&gt;c);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;size: %ld\n&quot;</span>, <span class="keyword">sizeof</span>(struct pkg));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>根据打印结果，就很清楚地看到各个成员之间的地址偏移量。a相对于首地址的偏移量是0，也就是a的起始地址和结构体的起始地址是一致的。b相对于首地址偏移量是4，而c则是相对于首地址偏移量是8。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pkg    addr: 0x7ffef9dbbcf8</span><br><span class="line">a: a    addr: 0x7ffef9dbbcf8</span><br><span class="line">b: 123  addr: 0x7ffef9dbbcfc</span><br><span class="line">c: c    addr: 0x7ffef9dbbd00</span><br><span class="line">size: 12</span><br></pre></td></tr></table></figure>
+
+<p>再看一个例子</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(4)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pkg1</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a;</span><br><span class="line">    <span class="keyword">char</span> b;</span><br><span class="line">    <span class="keyword">int</span> c;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(4)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pkg2</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line">    <span class="keyword">char</span> b;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 8</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pkg1 size: %ld\n&quot;</span>, <span class="keyword">sizeof</span>(struct pkg1));</span><br><span class="line">    <span class="comment">// 8</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pkg2 size: %ld\n&quot;</span>, <span class="keyword">sizeof</span>(struct pkg2));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个例子最后打印结果都是8，但是它们各自的内存布局是不同的。具体看图示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// struct pkg1</span><br><span class="line">                |&lt;------c------&gt;|</span><br><span class="line">+---+---+---+---+---+---+---+---+</span><br><span class="line">| a | b | \ | \ | c | c | c | c |</span><br><span class="line">+---+---+---+---+---+---+---+---+</span><br><span class="line"></span><br><span class="line">// struct pkg2</span><br><span class="line"></span><br><span class="line">|&lt;------a------&gt;|</span><br><span class="line">+---+---+---+---+---+---+---+---+</span><br><span class="line">| a | a | a | a | b | c | \ | \ |</span><br><span class="line">+---+---+---+---+---+---+---+---+</span><br></pre></td></tr></table></figure>
+
+<p>到目前为止都是按照4个字节对齐，那么试试其它字节对齐如何，使用的还是上面第一个例程。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 依次是8字节对齐，2字节对齐，1字节对齐</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(8)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pkg</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a; </span><br><span class="line">    <span class="keyword">int</span> b;  </span><br><span class="line">    <span class="keyword">char</span> c; </span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line">...</span><br><span class="line">打印结果</span><br><span class="line">a: a</span><br><span class="line">b: <span class="number">123</span></span><br><span class="line">c: c</span><br><span class="line">size: <span class="number">12</span></span><br><span class="line">---------------------------------------</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(2)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pkg</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a; </span><br><span class="line">    <span class="keyword">int</span> b;  </span><br><span class="line">    <span class="keyword">char</span> c; </span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line">...</span><br><span class="line">打印结果</span><br><span class="line">a: a</span><br><span class="line">b: <span class="number">6488064</span></span><br><span class="line">c: </span><br><span class="line">size: <span class="number">8</span></span><br><span class="line">----------------------------------------</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(1)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pkg</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a; </span><br><span class="line">    <span class="keyword">int</span> b;  </span><br><span class="line">    <span class="keyword">char</span> c; </span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line">...</span><br><span class="line">打印结果</span><br><span class="line">a: a</span><br><span class="line">b: <span class="number">25344</span></span><br><span class="line">c: </span><br><span class="line">size: <span class="number">6</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，指定8个字节对齐，最后得出的结果和指定4个字节对齐是一样的结果。其原因是实际的有效对齐系数并不是指定的对齐值的公式：</p>
+<blockquote>
+<p>结构体有效对齐系数 = min[结构体成员中类型最大的长度, 指定对齐值(或者默认对齐值)]</p>
+</blockquote>
+<p>结构体<em>struct pkg</em>的成员中类型最大的长度是int，也就是4个字节，也指定对齐值长度相比自然是4较小。所以有效对齐系数就是4，所以结构体<em>struct pkg</em>指定8个字节和指定4个字节对齐是一样的效果。<br>但是后面两个就神奇了，一个指定2字节对齐，一个指定1字节对齐。虽然a的值能够正确打印出来，但是b和c的值却没有打印出正确值，结构体的大小也不同。不用说，结构体的内存布局改变了，所以按照之前的对齐系数来获取数据就会出错。</p>
+<blockquote>
+<p>内存布局示意图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 指定2字节对齐</span><br><span class="line"></span><br><span class="line">        |&lt;------b------&gt;|</span><br><span class="line">+---+---+---+---+---+---+---+---+</span><br><span class="line">| a | \ | b | b | b | b | c | \ |</span><br><span class="line">+---+---+---+---+---+---+---+---+</span><br><span class="line"></span><br><span class="line">// 指定1字节对齐</span><br><span class="line"></span><br><span class="line">    |&lt;------b------&gt;|</span><br><span class="line">+---+---+---+---+---+---+</span><br><span class="line">| a | b | b | b | b | c |</span><br><span class="line">+---+---+---+---+---+---+</span><br></pre></td></tr></table></figure>
+<p>现在分析一下</p>
+<ol>
+<li>对于指定2字节对齐的情况，根据有效对齐系数的规则可以得出有效对齐系数是2，因为int的类型大小是4。4比2小，取较小值那就是2。a依然是相对于首地址偏移0的位置，占用一个字节，所以a占用了第0单元。而b是4个字节，根据原则1，b距首地址的偏移量是2的整数倍，所以是从第2个单元开始。因此第1单元为空，填充字节。又因为整个结构体的大小是能够容纳所有成员数据的有效值的最小整数倍，因此结构体大小为2*4，也就是8。这就需要c后面填充一个字节才符合内存对齐机制。</li>
+<li>对于指定1个字节对齐的情况，其有效对齐系数是1。所以就不需要填充字节，直接按照结构体的各个成员对应的类型大小来存储就可以了。</li>
+</ol>
+<p>不过对于1字节，2字节对齐这种情况，CPU取出数据就麻烦了很多。就和文章的开头的例子一样，b成员占用4个字节。存取粒度为1或者为2都需要多次读取数据才能够将一个成员的所有数据取出来，这样效率很慢。所以尽量指定合适的存取系数（粒度），这样CPU存取数据的时候一次就可以完成，从而提高了效率。</p>
+<blockquote>
+<p>8对齐的例子，要涉及到有8字节的类型，这样才能判断结构体最大类型和指定对齐值的最小值来判断。</p>
+</blockquote>
+<p>继续举例子</p>
+<blockquote>
+<p>从别处抄来的，也懒得自己写了，分析就行</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(4)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pkg2</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a;</span><br><span class="line">    <span class="keyword">double</span> b; <span class="comment">// 8字节</span></span><br><span class="line">    <span class="keyword">int</span> c; <span class="comment">// 4字节</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(2)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pkg3</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a;</span><br><span class="line">    <span class="keyword">double</span> b;</span><br><span class="line">    <span class="keyword">int</span> c;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(4)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pkg4</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a[<span class="number">5</span>];</span><br><span class="line">    <span class="keyword">double</span> b;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(2)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pkg5</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a[<span class="number">5</span>];</span><br><span class="line">    <span class="keyword">double</span> b;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(4)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pkg6</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a;</span><br><span class="line">    <span class="keyword">char</span> b[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(4)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pkg7</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a;    </span><br><span class="line">    <span class="keyword">char</span> b[<span class="number">3</span>]; </span><br><span class="line">    <span class="keyword">char</span> c;    </span><br><span class="line">    <span class="keyword">int</span> d;     </span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(4)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pkg8</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> x1;   </span><br><span class="line">    <span class="keyword">short</span> x2;  </span><br><span class="line">    <span class="keyword">float</span> x3;  </span><br><span class="line">    <span class="keyword">char</span> x4;     </span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;2: %ld\n&quot;</span>, <span class="keyword">sizeof</span>(struct pkg2)); <span class="comment">// 16</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;3: %ld\n&quot;</span>, <span class="keyword">sizeof</span>(struct pkg3)); <span class="comment">// 14</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;4: %ld\n&quot;</span>, <span class="keyword">sizeof</span>(struct pkg4)); <span class="comment">// 16</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;5: %ld\n&quot;</span>, <span class="keyword">sizeof</span>(struct pkg5)); <span class="comment">// 14</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;6: %ld\n&quot;</span>, <span class="keyword">sizeof</span>(struct pkg6)); <span class="comment">// 5</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;7: %ld\n&quot;</span>, <span class="keyword">sizeof</span>(struct pkg7)); <span class="comment">// 12</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;8: %ld\n&quot;</span>, <span class="keyword">sizeof</span>(struct pkg8)); <span class="comment">// 12</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果分析，内存布局</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">// pkg2 #pragma pack(4)</span><br><span class="line">                |&lt;--------------b--------------&gt;|&lt;------c------&gt;|</span><br><span class="line">+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">| a | / | / | / | b | b | b | b | b | b | b | b | c | c | c | c |</span><br><span class="line">+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line"></span><br><span class="line">// pkg3 #pragma pack(2)</span><br><span class="line"></span><br><span class="line">        |&lt;--------------b--------------&gt;|&lt;------c------&gt;|</span><br><span class="line">+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">| a | / | b | b | b | b | b | b | b | b | c | c | c | c |</span><br><span class="line">+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line"></span><br><span class="line">// pkg4 #pragma pack(4)</span><br><span class="line"></span><br><span class="line">|&lt;--------a[5]----------&gt;|           |&lt;--------------b--------------&gt;|</span><br><span class="line">+----+----+----+----+----+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">| a0 | a1 | a2 | a3 | a4 | \ | \ | \ | b | b | b | b | b | b | b | b |</span><br><span class="line">+----+----+----+----+----+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line"></span><br><span class="line">// pkg5 #pragma pack(2)</span><br><span class="line"></span><br><span class="line">|&lt;--------a[5]----------&gt;|   |&lt;--------------b--------------&gt;|</span><br><span class="line">+----+----+----+----+----+---+---+---+---+---+---+---+---+---+</span><br><span class="line">| a0 | a1 | a2 | a3 | a4 | \ | b | b | b | b | b | b | b | b |</span><br><span class="line">+----+----+----+----+----+---+---+---+---+---+---+---+---+---+</span><br><span class="line"></span><br><span class="line">// pkg6 #pragma pack(4)</span><br><span class="line"></span><br><span class="line">    |&lt;----b[3]----&gt;|</span><br><span class="line">+---+----+----+----+---+</span><br><span class="line">| a | b0 | b1 | b2 | c |</span><br><span class="line">+---+----+----+----+---+</span><br><span class="line"></span><br><span class="line">// pkg7 #pragma pack(4)</span><br><span class="line"></span><br><span class="line">    |&lt;----b[3]----&gt;|               |&lt;------d------&gt;|</span><br><span class="line">+---+----+----+----+---+---+---+---+---+---+---+---+</span><br><span class="line">| a | b0 | b1 | b2 | c | \ | \ | \ | d | d | d | d |</span><br><span class="line">+---+----+----+----+---+---+---+---+---+---+---+---+</span><br><span class="line"></span><br><span class="line">// pkg8 #pragma pack(4)</span><br><span class="line"></span><br><span class="line">        |&lt;--b--&gt;|&lt;------c------&gt;|</span><br><span class="line">+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">| a | \ | b | b | c | c | c | c | d | \ | \ | \ | </span><br><span class="line">+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>pkg2分析</p>
+</blockquote>
+<p>先确定有效对齐系数。指定的对齐值是4，pkg2结构体成员中数据类型长度最大为double，也就是8。根据有效对齐系数原则，可知有效对齐系数是4。结构体第一个成员偏移量是0，a的类型是char，占一个字节。而b的类型是double，占8个字节。根据规则1，b相对于首地址的偏移量是有效对齐系数4的整数倍，也就是4。所以a和b之间需要填充三个字节。c的类型是4，所以c但相对于首地址的偏移量是有效对齐系数4的倍数，也就是从12开始。最后确定结构体的大小，也就是1+3+8+4 = 16，正好是4的倍数，所以不需要填充字节。</p>
+<blockquote>
+<p>pkg6 分析</p>
+</blockquote>
+<p>还是先确定有效对齐系数。指定对齐值是4，但是pkg6中最大类型长度是char的长度，也就是1。所以，有效对齐系数是1，而不管数组有多长。因此a，b，c三个成员都是紧挨在一起存储。最后结构体大小也是能够存储所有成员的最小有效对齐系数的倍数，也就是5（1*5）。</p>
+<p>判断默认对齐系数的例子。如果默认对齐系数是4，那么就打印出16，如果是8，那么就打印出24。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pkg</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line">    <span class="keyword">double</span> b;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%ld\n&quot;</span>, <span class="keyword">sizeof</span>(struct pkg));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不同内存对齐系数的内存布局</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 对齐系数是4</span><br><span class="line"></span><br><span class="line">|&lt;------a------&gt;|&lt;--------------b--------------&gt;|</span><br><span class="line">+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">| a | a | a | a | b | b | b | b | b | b | b | b | c | \ | \ | \ |</span><br><span class="line">+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 对齐系数是8</span><br><span class="line"></span><br><span class="line">+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">| a | a | a | a | \ | \ | \ | \ | b | b | b | b | b | b | b | b | c | \ | \ | \ | \ | \ | \ | \ |</span><br><span class="line">+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span><br></pre></td></tr></table></figure>
+
+<p>对于默认对齐系数是4的情况，其有效对齐系数是4。所以除了结构体第一个成员之外，之后的成员相对于首地址的偏移量都是4的倍数，所以a和b之间不用填充字节。而结构体的总大小也是4的倍数，所以需要在c的后面填充3个字节。<br>对于默认对齐系数是8的情况，其有效对齐系数是8。所以a和b之间需要填充4个字节，才能保证b的起始位置是8的倍数。同样c后面需要填充7个字节才能保证结构体是按照8来对齐的。</p>
+<blockquote>
+<p>嵌套结构体</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(8)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">inner</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> b;</span><br><span class="line">    <span class="keyword">char</span> c[<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">long</span> d;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(4)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">outside</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">inner</span> <span class="title">b</span>;</span></span><br><span class="line">    <span class="keyword">long</span> c;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br></pre></td></tr></table></figure>
+<p>对于嵌套结构体，优先对齐内嵌结构体，然后再对齐外层结构体。</p>
+<blockquote>
+<p>对齐内嵌结构体</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// size 16</span><br><span class="line"></span><br><span class="line">    |&lt;------c[4]-------&gt;|           |&lt;--------------d--------------&gt;|</span><br><span class="line">+---+----+----+----+----+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">| b | c0 | c1 | c2 | c3 | \ | \ | \ | d | d | d | d | d | d | d | d | </span><br><span class="line">+---+----+----+----+----+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>嵌套结构体内存布局示意图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">                |&lt;-----------------------struct inner------------------------------&gt;|</span><br><span class="line">                |                                                                   |</span><br><span class="line">                |   |&lt;------c[4]-------&gt;|           |&lt;--------------d--------------&gt;|&lt;--------------c--------------&gt;|</span><br><span class="line">+---+---+---+---+---+----+----+----+----+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">| a | \ | \ | \ | b | c0 | c1 | c2 | c3 | \ | \ | \ | d | d | d | d | d | d | d | d | c | c | c | c | c | c | c | c |</span><br><span class="line">+---+---+---+---+---+----+----+----+----+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">|&lt;------------------------------------------------------struct outside---------------------------------------------&gt;|</span><br></pre></td></tr></table></figure>
+<p>验证例程</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buff[<span class="number">28</span>] = &#123;<span class="string">&#x27;\0&#x27;</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 各个成员赋值</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">outside</span> *<span class="title">p</span> =</span> (struct outside *)(buff);</span><br><span class="line">    p-&gt;a = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">    p-&gt;b.b = <span class="string">&#x27;b&#x27;</span>;</span><br><span class="line">    p-&gt;b.d = <span class="number">1111</span>;</span><br><span class="line">    p-&gt;c = <span class="number">222</span>;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *str = <span class="string">&quot;inn&quot;</span>;</span><br><span class="line">    <span class="comment">// 只拷贝3个字节，不拷贝最后一个&#x27;\0&#x27;</span></span><br><span class="line">    <span class="built_in">memcpy</span>(p-&gt;b.c, str, <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取内嵌结构体b的成员c</span></span><br><span class="line">    <span class="keyword">char</span> bcbuff[<span class="number">4</span>] = &#123;<span class="string">&#x27;\0&#x27;</span>&#125;;</span><br><span class="line">    <span class="built_in">memcpy</span>(bcbuff, buff+<span class="number">5</span>, <span class="number">4</span>);</span><br><span class="line">    <span class="comment">// 获取内嵌结构体b的成员d</span></span><br><span class="line">    <span class="keyword">char</span> bdbuff[<span class="number">8</span>] = &#123;<span class="string">&#x27;\0&#x27;</span>&#125;;</span><br><span class="line">    <span class="built_in">memcpy</span>(bdbuff, buff+<span class="number">12</span>, <span class="number">8</span>);</span><br><span class="line">    <span class="comment">// 获取外部结构体c的成员</span></span><br><span class="line">    <span class="keyword">char</span> cbuff[<span class="number">8</span>] = &#123;<span class="string">&#x27;\n&#x27;</span>&#125;;</span><br><span class="line">    <span class="built_in">memcpy</span>(cbuff, buff+<span class="number">20</span>, <span class="number">8</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;a: %c\n&quot;</span>, *(buff+<span class="number">0</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pb: %c\n&quot;</span>, *(buff+<span class="number">4</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pc: %s\n&quot;</span>, bcbuff);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pd: %ld\n&quot;</span>, *(<span class="keyword">long</span>*)(bdbuff));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;c: %ld\n&quot;</span>, *(<span class="keyword">long</span>*)(cbuff));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;size: %ld\n&quot;</span>, <span class="keyword">sizeof</span>(struct outside));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a: a</span><br><span class="line">pb: b</span><br><span class="line">pc: inn</span><br><span class="line">pd: 1111</span><br><span class="line">c: 222</span><br><span class="line">size: 28</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>分析<br>内嵌结构体的类型最大成员的类型长度是8，而指定的对齐系数是8，所以结构体<em>struct inner</em>的对齐系数就是8，最后得出的结构体大小就是16。而在结构体<em>struct outside</em>中，其指定对齐系数是4。根据规则2，内嵌成员b相对于首地址的偏移量就是4的倍数。因此成员a和内嵌结构体之间需要填充3个字节。至于后面的c成员，按照规则1就知道它的存储位置了。</p>
+</blockquote>
+<p>现在，考虑结构体<em>struct outside</em>指定对齐系数是8又是什么情况。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(8)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">outside</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">inner</span> <span class="title">b</span>;</span></span><br><span class="line">    <span class="keyword">long</span> c;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line">...</span><br><span class="line"><span class="comment">// 修改后的相关代码</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取内嵌结构体b的成员c</span></span><br><span class="line">    <span class="keyword">char</span> bcbuff[<span class="number">4</span>] = &#123;<span class="string">&#x27;\0&#x27;</span>&#125;;</span><br><span class="line">    <span class="built_in">memcpy</span>(bcbuff, buff+<span class="number">9</span>, <span class="number">4</span>);</span><br><span class="line">    <span class="comment">// 获取内嵌结构体b的成员d</span></span><br><span class="line">    <span class="keyword">char</span> bdbuff[<span class="number">8</span>] = &#123;<span class="string">&#x27;\0&#x27;</span>&#125;;</span><br><span class="line">    <span class="built_in">memcpy</span>(bdbuff, buff+<span class="number">16</span>, <span class="number">8</span>);</span><br><span class="line">    <span class="comment">// 获取外部结构体c的成员</span></span><br><span class="line">    <span class="keyword">char</span> cbuff[<span class="number">8</span>] = &#123;<span class="string">&#x27;\n&#x27;</span>&#125;;</span><br><span class="line">    <span class="built_in">memcpy</span>(cbuff, buff+<span class="number">24</span>, <span class="number">8</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;a: %c\n&quot;</span>, *(buff+<span class="number">0</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;bb: %c\n&quot;</span>, *(buff+<span class="number">8</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;bc: %s\n&quot;</span>, bcbuff);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;bd: %ld\n&quot;</span>, *(<span class="keyword">long</span>*)(bdbuff));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;c: %ld\n&quot;</span>, *(<span class="keyword">long</span>*)(cbuff));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;size: %ld\n&quot;</span>, <span class="keyword">sizeof</span>(struct outside));</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a: a</span><br><span class="line">bb: b</span><br><span class="line">bc: inn</span><br><span class="line">bd: 1111</span><br><span class="line">c: 222</span><br><span class="line">size: 32</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>修改代码后的内存布局</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 内嵌结构体的布局和修改之前的一致</span><br><span class="line"></span><br><span class="line">                                |&lt;-----------------------struct inner------------------------------&gt;|</span><br><span class="line">                                |                                                                   |</span><br><span class="line">                                |   |&lt;------c[4]-------&gt;|           |&lt;--------------d--------------&gt;|&lt;--------------c--------------&gt;|</span><br><span class="line">+---+---+---+---+---+---+---+---+---+----+----+----+----+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">| a | \ | \ | \ | \ | \ | \ | \ | b | c0 | c1 | c2 | c3 | \ | \ | \ | d | d | d | d | d | d | d | d | c | c | c | c | c | c | c | c | </span><br><span class="line">+---+---+---+---+---+---+---+---+---+----+----+----+----+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">|&lt;--------------------------------------------------------------struct outside-----------------------------------------------------&gt;|</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>修改代码后的分析<br>内嵌结构体和修改之前一致，大小同样是16。但是修改之后代码之后的外层结构体<em>struct outside</em>就变成了指定的内存对齐系数为8了。也就是影响了内嵌结构体<em>struct inner</em>相对于外部结构体<em>struct outside</em>的首地址偏移量。内嵌结构体有效对齐系数是8，外部结构体的有效对齐系数也是8（<em>struct outside</em>结构体有个成员类型为long，所以其有效对齐系数是8）。因此，<em>struct outside</em>的成员b相对于首地址的偏移量就是8的整数倍，也就是第8个单元开始。根据对齐规则，最终的结构体大小为32。</p>
+</blockquote>
+<p>再改一次，这次改的是内嵌结构体<em>struct inner</em>的最大类型成员的类型长度，把d的类型改成int。并且根据新的内存布局情况修改相应的偏移量，其它不变。看看会发生什么情况。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(8)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">inner</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> b;</span><br><span class="line">    <span class="keyword">char</span> c[<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">int</span> d;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(8)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">outside</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">inner</span> <span class="title">b</span>;</span></span><br><span class="line">    <span class="keyword">long</span> c;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buff[<span class="number">28</span>] = &#123;<span class="string">&#x27;\0&#x27;</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 各个成员赋值</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">outside</span> *<span class="title">p</span> =</span> (struct outside *)(buff);</span><br><span class="line">    p-&gt;a = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">    p-&gt;b.b = <span class="string">&#x27;b&#x27;</span>;</span><br><span class="line">    p-&gt;b.d = <span class="number">1111</span>;</span><br><span class="line">    p-&gt;c = <span class="number">222</span>;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *str = <span class="string">&quot;inn&quot;</span>;</span><br><span class="line">    <span class="comment">// 只拷贝3个字节，不拷贝最后一个&#x27;\0&#x27;</span></span><br><span class="line">    <span class="built_in">memcpy</span>(p-&gt;b.c, str, <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取内嵌结构体b的成员c</span></span><br><span class="line">    <span class="keyword">char</span> bcbuff[<span class="number">4</span>] = &#123;<span class="string">&#x27;\0&#x27;</span>&#125;;</span><br><span class="line">    <span class="built_in">memcpy</span>(bcbuff, buff+<span class="number">5</span>, <span class="number">4</span>);</span><br><span class="line">    <span class="comment">// 获取内嵌结构体b的成员d</span></span><br><span class="line">    <span class="keyword">char</span> bdbuff[<span class="number">4</span>] = &#123;<span class="string">&#x27;\0&#x27;</span>&#125;;</span><br><span class="line">    <span class="built_in">memcpy</span>(bdbuff, buff+<span class="number">12</span>, <span class="number">4</span>);</span><br><span class="line">    <span class="comment">// 获取外部结构体c的成员</span></span><br><span class="line">    <span class="keyword">char</span> cbuff[<span class="number">8</span>] = &#123;<span class="string">&#x27;\n&#x27;</span>&#125;;</span><br><span class="line">    <span class="built_in">memcpy</span>(cbuff, buff+<span class="number">16</span>, <span class="number">8</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;a: %c\n&quot;</span>, *(buff+<span class="number">0</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;bb: %c\n&quot;</span>, *(buff+<span class="number">4</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;bc: %s\n&quot;</span>, bcbuff);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;bd: %d\n&quot;</span>, *(<span class="keyword">int</span>*)(bdbuff));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;c: %ld\n&quot;</span>, *(<span class="keyword">long</span>*)(cbuff));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;size: %ld\n&quot;</span>, <span class="keyword">sizeof</span>(struct outside));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a: a</span><br><span class="line">bb: b</span><br><span class="line">bc: inn</span><br><span class="line">bd: 1111</span><br><span class="line">c: 222</span><br><span class="line">size: 24</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>第二次修改的内存布局</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 修改*struct inner*结构体成员的类型后，其内存布局也变了</span><br><span class="line">// size 12</span><br><span class="line"></span><br><span class="line">    |&lt;------c[4]-------&gt;|&lt;------d------&gt;|</span><br><span class="line">+---+----+----+----+----+---+---+---+---+</span><br><span class="line">| b | c0 | c1 | c2 | c3 | d | d | d | d |</span><br><span class="line">+---+----+----+----+----+---+---+---+---+</span><br><span class="line"></span><br><span class="line">// 整体内存布局</span><br><span class="line"></span><br><span class="line">                |&lt;-----------struct inner--------------&gt;|</span><br><span class="line">                |                                       |</span><br><span class="line">                |   |&lt;------c[4]-------&gt;|&lt;------d------&gt;|&lt;--------------c--------------&gt;|</span><br><span class="line">+---+---+---+---+---+----+----+----+----+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">| a | \ | \ | \ | b | c0 | c1 | c2 | c3 | d | d | d | d | c | c | c | c | c | c | c | c |</span><br><span class="line">+---+---+---+---+---+----+----+----+----+---+---+---+---+---+---+---+---+---+---+---+---+</span><br><span class="line">|&lt;--------------------------------struct outside---------------------------------------&gt;|</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>第二次修改分析<br><em>struct inner</em>结构体成员d的类型修改之后，这个结构体的有效对齐系数就是4，而不是8了。因为结构体有效对齐系数是<em>指定或者默认的对齐系数</em>和<em>结构体成员的最大类型长度</em>两者之间的较小值，因为8比4要大，所以它的有效对齐系数是4。因此，<em>struct inner</em>结构体是按照4字节来对齐的。那么接下来就是确定<em>struct inner</em>在<em>struct outside</em>中相对于首地址的偏移量。由于<em>struct outside</em>指定的对齐系数是8，并且它的成员最大类型长度也是8（long），所以结构体<em>struct outside</em>是按照8字节对齐。但是<em>struct inner</em>结构体的有效对齐系数是4，根据规则1。<em>struct outside</em>成员b相对于首地址的偏移量就是4的整数倍。所以，<em>struct outside</em>成员a和<em>struct inner</em>成员b之间需要填充3个字节，才能符合内存对齐机制。</p>
+</blockquote>
+<h3 id="Golang内存对齐"><a href="#Golang内存对齐" class="headerlink" title="Golang内存对齐"></a>Golang内存对齐</h3><blockquote>
+<p>golang类型大小（基于64位平台）</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">类型</th>
+<th align="left">大小</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">bool</td>
+<td align="left">1 byte</td>
+</tr>
+<tr>
+<td align="left">intN, uintN, floatN</td>
+<td align="left">N/8 byte</td>
+</tr>
+<tr>
+<td align="left">int, uint, uintptr</td>
+<td align="left">8 byte</td>
+</tr>
+<tr>
+<td align="left">*T</td>
+<td align="left">8 byte</td>
+</tr>
+<tr>
+<td align="left">string</td>
+<td align="left">16 byte（数据和长度）</td>
+</tr>
+<tr>
+<td align="left">[]T</td>
+<td align="left">24 byte（数据，长度，容量）</td>
+</tr>
+<tr>
+<td align="left">map</td>
+<td align="left">8 byte</td>
+</tr>
+<tr>
+<td align="left">func</td>
+<td align="left">8 byte</td>
+</tr>
+<tr>
+<td align="left">chan</td>
+<td align="left">8 byte</td>
+</tr>
+<tr>
+<td align="left">interface</td>
+<td align="left">16 byte（类型，值）</td>
+</tr>
+</tbody></table>
+<p>golang应该有对应的编译指令来指定对齐系数的，不过目前没找不到。因此，在默认的情况下，它是按照平台（CPU）来确定默认对齐系数的。</p>
+<blockquote>
+<p>64位 8个字节<br>32位 4个字节</p>
+</blockquote>
+<blockquote>
+<p>例程</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">type</span> pkg <span class="keyword">struct</span> &#123;</span><br><span class="line">      a <span class="keyword">bool</span></span><br><span class="line">      b <span class="keyword">int32</span></span><br><span class="line">      c <span class="keyword">int8</span></span><br><span class="line">      d <span class="keyword">int64</span></span><br><span class="line">      e <span class="keyword">byte</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    obj := pkg&#123;&#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;pkg size: %d\talign: %d\n&quot;</span>, unsafe.Sizeof(obj), unsafe.Alignof(obj))</span><br><span class="line">    fmt.Printf(<span class="string">&quot;a size: %d\toffset: %d\talign: %d\n&quot;</span>, unsafe.Sizeof(obj.a), unsafe.Offsetof(obj.a), unsafe.Alignof(obj.a))</span><br><span class="line">    fmt.Printf(<span class="string">&quot;b size: %d\toffset: %d\talign: %d\n&quot;</span>, unsafe.Sizeof(obj.b), unsafe.Offsetof(obj.b), unsafe.Alignof(obj.b))</span><br><span class="line">    fmt.Printf(<span class="string">&quot;c size: %d\toffset: %d\talign: %d\n&quot;</span>, unsafe.Sizeof(obj.c), unsafe.Offsetof(obj.c), unsafe.Alignof(obj.c))</span><br><span class="line">    fmt.Printf(<span class="string">&quot;d size: %d\toffset: %d\talign: %d\n&quot;</span>, unsafe.Sizeof(obj.d), unsafe.Offsetof(obj.d), unsafe.Alignof(obj.d))</span><br><span class="line">    fmt.Printf(<span class="string">&quot;e size: %d\toffset: %d\talign: %d\n&quot;</span>, unsafe.Sizeof(obj.e), unsafe.Offsetof(obj.e), unsafe.Alignof(obj.e))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pkg size: 32    align: 8</span><br><span class="line">a size: 1       offset: 0       align: 1</span><br><span class="line">b size: 4       offset: 4       align: 4</span><br><span class="line">c size: 1       offset: 8       align: 1</span><br><span class="line">d size: 8       offset: 16      align: 8</span><br><span class="line">e size: 1       offset: 24      align: 1</span><br></pre></td></tr></table></figure>
+<p>golnag中有几个函数很方便，可以打印出结构体的有效对齐系数和各个成员的自身相对于结构体的对齐值，以及相对于结构体首地址的偏移量。这个和上文C语言分析是一样的逻辑，内存布局也是类似的。只不过有些golang的类型会有所不同，比如slice或者interface等，它们底层也是一个结构体。只不过抽象了而已，按照结构体嵌套对齐方式也是一样的。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>应该把类型长度较大的成员排在前面，减少字节填充的单元，这样就可以使得同一结构体的占用的内存较小。</p>
+<blockquote>
+<p>比如调整golang例程的结构体的成员顺序</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> pkg <span class="keyword">struct</span> &#123;</span><br><span class="line">  d <span class="keyword">int64</span></span><br><span class="line">  b <span class="keyword">int32</span></span><br><span class="line">  a <span class="keyword">bool</span></span><br><span class="line">  c <span class="keyword">int8</span></span><br><span class="line">  e <span class="keyword">byte</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其余代码不改变，结构体的大小减少成原来的二分之一。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pkg size: 16    align: 8</span><br><span class="line">a size: 1       offset: 12      align: 1</span><br><span class="line">b size: 4       offset: 8       align: 4</span><br><span class="line">c size: 1       offset: 13      align: 1</span><br><span class="line">d size: 8       offset: 0       align: 8</span><br><span class="line">e size: 1       offset: 14      align: 1</span><br></pre></td></tr></table></figure>
+
+
+<blockquote>
+<p>改天有时间试试32位系统，以及共用体的部分，应该有惊喜</p>
+</blockquote>
+<p>参考资料</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/30007037">https://zhuanlan.zhihu.com/p/30007037</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/53413177">https://zhuanlan.zhihu.com/p/53413177</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/cclethe/article/details/79659590">https://blog.csdn.net/cclethe/article/details/79659590</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/friendbkf/article/details/45896723">https://blog.csdn.net/friendbkf/article/details/45896723</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/06/01/data_structure_array_linked_table/" rel="prev" title="数组和链表">
+                  <i class="fa fa-chevron-left"></i> 数组和链表
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/06/11/golang_memory_management/" rel="next" title="Golang之内存管理">
+                  Golang之内存管理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

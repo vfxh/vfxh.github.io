@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="栈栈是一种先进后出的数据结构，入口和出口都在同一端，称为栈顶，所有操作都在栈顶进行。例如：进栈顺序是：1 2 3 4。出栈的顺序就是倒着过来：4 3 2 1。栈模型 123456push  pop   |    ^  v    |+---------+|  stack  |+---------+ 一个空栈模型（这里的栈顶和栈底和操作系统里的栈顶和栈底不是一个意思，这里额栈顶是指入栈和出栈的一端，栈">
+<meta property="og:type" content="article">
+<meta property="og:title" content="栈和队列">
+<meta property="og:url" content="http://example.com/2020/05/22/data_structure_stack_queue/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="栈栈是一种先进后出的数据结构，入口和出口都在同一端，称为栈顶，所有操作都在栈顶进行。例如：进栈顺序是：1 2 3 4。出栈的顺序就是倒着过来：4 3 2 1。栈模型 123456push  pop   |    ^  v    |+---------+|  stack  |+---------+ 一个空栈模型（这里的栈顶和栈底和操作系统里的栈顶和栈底不是一个意思，这里额栈顶是指入栈和出栈的一端，栈">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.678Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/05/22/data_structure_stack_queue/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;05&#x2F;22&#x2F;data_structure_stack_queue&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;05&#x2F;22&#x2F;data_structure_stack_queue&#x2F;&quot;,&quot;title&quot;:&quot;栈和队列&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>栈和队列 | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%88"><span class="nav-number">1.</span> <span class="nav-text">栈</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.1.</span> <span class="nav-text">数组实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.</span> <span class="nav-text">链表实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%9F%E5%88%97"><span class="nav-number">2.</span> <span class="nav-text">队列</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E5%AE%9E%E7%8E%B0-1"><span class="nav-number">2.1.</span> <span class="nav-text">数组实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%A6%E4%B8%80%E7%A7%8D%E6%95%B0%E7%BB%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.2.</span> <span class="nav-text">另一种数组实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%E5%AE%9E%E7%8E%B0-1"><span class="nav-number">2.3.</span> <span class="nav-text">链表实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/22/data_structure_stack_queue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          栈和队列
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-05-22 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-22T00:00:00+08:00">2020-05-22</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h3><p>栈是一种先进后出的数据结构，入口和出口都在同一端，称为栈顶，所有操作都在栈顶进行。例如：进栈顺序是：1 2 3 4。出栈的顺序就是倒着过来：4 3 2 1。<br>栈模型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">push  pop </span><br><span class="line">  |    ^</span><br><span class="line">  v    |</span><br><span class="line">+---------+</span><br><span class="line">|  stack  |</span><br><span class="line">+---------+</span><br></pre></td></tr></table></figure>
+<p>一个空栈模型<br>（这里的栈顶和栈底和操作系统里的栈顶和栈底不是一个意思，这里额栈顶是指入栈和出栈的一端，栈底是另一端）</p>
+<blockquote>
+<p>用top指向最新的元素位置，因为这是一个空栈，所以top指向栈以外的地方</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">栈顶---&gt;</span><br><span class="line">        |    |</span><br><span class="line">        +----+</span><br><span class="line">        |    |</span><br><span class="line">        +----+</span><br><span class="line">        |    |</span><br><span class="line">        +----+</span><br><span class="line">        |    |</span><br><span class="line">栈低---&gt;+----+ </span><br><span class="line">              &lt;---top</span><br></pre></td></tr></table></figure>
+<p>入栈（压栈）</p>
+<blockquote>
+<p>新的元素入栈之后，top向栈顶方向移动，指向新的元素的位置，这样最新入栈的元素就是栈顶元素。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">                       5进栈      </span><br><span class="line">                       |</span><br><span class="line">                       v</span><br><span class="line">|    |              |    |          |    |</span><br><span class="line">+----+              +----+          +----+ </span><br><span class="line">|    |              |    |          |  5 |&lt;---top</span><br><span class="line">+----+              +----+          +----+ </span><br><span class="line">|    |              |  1 |&lt;---top   |  1 | </span><br><span class="line">+----+              +----+          +----+ </span><br><span class="line">|  2 |&lt;---top       |  2 |          |  2 |</span><br><span class="line">+----+              +----+          +----+ </span><br></pre></td></tr></table></figure>
+<p>出栈</p>
+<blockquote>
+<p>元素出栈会从栈顶弹出，然后top向栈底方向移动一个位置</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">   5 </span><br><span class="line">   ^</span><br><span class="line">   | </span><br><span class="line">|    |                  |    |              </span><br><span class="line">+----+                  +----+</span><br><span class="line">|    |&lt;---top           |    |</span><br><span class="line">+----+                  +----+</span><br><span class="line">|  1 |                  |  1 |&lt;---top</span><br><span class="line">+----+                  +----+</span><br><span class="line">|  2 |                  |  2 | </span><br><span class="line">+----+                  +----+</span><br></pre></td></tr></table></figure>
+<h4 id="数组实现"><a href="#数组实现" class="headerlink" title="数组实现"></a>数组实现</h4><p>结构体定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">stack</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> cap;    <span class="comment">// 容量</span></span><br><span class="line">    <span class="keyword">int</span> len;    <span class="comment">// 当前元素个数</span></span><br><span class="line">    <span class="keyword">int</span> top;    <span class="comment">// 栈顶元素</span></span><br><span class="line">    <span class="keyword">int</span> *<span class="built_in">array</span>; <span class="comment">// 底层数组</span></span><br><span class="line">&#125; Stack, *Sptr;</span><br></pre></td></tr></table></figure>
+<p>几个错误处理函数，没什么好说的，垃圾代码，浪费青春！！！</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">exitErr</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *errMsg)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;%s\n&quot;</span>, errMsg);</span><br><span class="line">    <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">iSOutOfMemory</span><span class="params">(<span class="keyword">void</span> *ptr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ptr == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        exitErr(<span class="string">&quot;out of memoery&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">isInit</span><span class="params">(<span class="keyword">void</span> *ptr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ptr == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        exitErr(<span class="string">&quot;list not init&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>初始化</p>
+<blockquote>
+<p>数组实现模型<br>初始化的时候将top赋值为-1，表示没有任何元素，为空栈。栈顶为数组的索引递增的方向，栈底就是数组索引0的地方。压栈的时候top向索引递增的方向移动，出栈的时候向索引递减的方向移动。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">index   0    1    2    3    4</span><br><span class="line">      +----+----+----+----+----+</span><br><span class="line">      |    |    |    |    |    |</span><br><span class="line">      +----+----+----+----+----+</span><br><span class="line">    ^</span><br><span class="line">    |</span><br><span class="line">    top</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> zeroIndex = <span class="number">-1</span>;</span><br><span class="line"><span class="comment">// 创建</span></span><br><span class="line"><span class="function">Sptr <span class="title">create</span><span class="params">(<span class="keyword">int</span> cap)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 初始化stack结构</span></span><br><span class="line">    Sptr ptr = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Stack));</span><br><span class="line">    iSOutOfMemory(ptr);</span><br><span class="line">    <span class="built_in">memset</span>(ptr, <span class="number">0</span>, <span class="keyword">sizeof</span>(Stack));</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 初始化参数</span></span><br><span class="line">    ptr-&gt;cap = cap;</span><br><span class="line">    ptr-&gt;len = <span class="number">0</span>;</span><br><span class="line">    ptr-&gt;top = zeroIndex; <span class="comment">// 下标为0指向第一个元素，没有元素指向-1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化底层数组 </span></span><br><span class="line">    ptr-&gt;<span class="built_in">array</span> = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * ptr-&gt;cap);</span><br><span class="line">    iSOutOfMemory(ptr);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ptr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>压栈</p>
+<blockquote>
+<p>假设压栈的el值是5。先判断数组是否已经满了，如果还有空间，那么先将top的值递增，然后以top作为要赋值的数组下标</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// 移动top</span><br><span class="line">index   0    1    2    3    4</span><br><span class="line">      +----+----+----+----+----+</span><br><span class="line">      |    |    |    |    |    |</span><br><span class="line">      +----+----+----+----+----+</span><br><span class="line">         ^</span><br><span class="line">         |</span><br><span class="line">        top</span><br><span class="line"></span><br><span class="line">// 赋值</span><br><span class="line">index   0    1    2    3    4</span><br><span class="line">      +----+----+----+----+----+</span><br><span class="line">      |  5 |    |    |    |    |</span><br><span class="line">      +----+----+----+----+----+</span><br><span class="line">         ^</span><br><span class="line">         |</span><br><span class="line">        top</span><br><span class="line"></span><br><span class="line">// 栈满</span><br><span class="line">// 此时top == len(array) - 1</span><br><span class="line">index   0    1    2    3    4</span><br><span class="line">      +----+----+----+----+----+</span><br><span class="line">      |  5 |  3 |  7 |  6 |  9 |</span><br><span class="line">      +----+----+----+----+----+</span><br><span class="line">                             ^</span><br><span class="line">                             |</span><br><span class="line">                             top</span><br></pre></td></tr></table></figure>
+<p>压栈的时候需要先判断栈是否已满，如果不满就执行压栈逻辑</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">push</span><span class="params">(Sptr ptr, <span class="keyword">int</span> el)</span> </span>&#123;</span><br><span class="line">    isInit(ptr);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断是否还有空间</span></span><br><span class="line">    <span class="comment">// 这里用ptr-&gt;top == ptr-&gt;cap - 1也可以</span></span><br><span class="line">    <span class="keyword">if</span> (ptr-&gt;len == ptr-&gt;cap) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;el[%d] push filed!\n&quot;</span>);</span><br><span class="line">        exitErr(<span class="string">&quot;stack full!&quot;</span>);</span><br><span class="line">    &#125;    </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 增加元素</span></span><br><span class="line">    ptr-&gt;<span class="built_in">array</span>[++ptr-&gt;top] = el;</span><br><span class="line">    ++ptr-&gt;len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>出栈</p>
+<blockquote>
+<p>出栈的时候top往前移，指向前一个元素就可以了。因为是数组，出栈的元素没法释放内存，不过用top来限定也就无所谓了</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 将top向索引递减的方向移动一个位置</span><br><span class="line">index   0    1    2    3    4</span><br><span class="line">      +----+----+----+----+----+</span><br><span class="line">      |  5 |  3 |  7 |  6 | \\ |</span><br><span class="line">      +----+----+----+----+----+</span><br><span class="line">                        ^</span><br><span class="line">                        |</span><br><span class="line">                        top</span><br></pre></td></tr></table></figure>
+<p>出栈的时候先判断栈是否为空，如果不空就执行出栈逻辑</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 出栈</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pop</span><span class="params">(Sptr ptr)</span> </span>&#123;</span><br><span class="line">    isInit(ptr);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断栈是否为空</span></span><br><span class="line">    <span class="keyword">if</span> (ptr-&gt;len == <span class="number">0</span>) &#123;</span><br><span class="line">        exitErr(<span class="string">&quot;stack is empty&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 出栈元素</span></span><br><span class="line">    <span class="keyword">int</span> el = ptr-&gt;<span class="built_in">array</span>[ptr-&gt;top--];</span><br><span class="line">    --ptr-&gt;len;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pop: %d\n&quot;</span>, el);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="链表实现"><a href="#链表实现" class="headerlink" title="链表实现"></a>链表实现</h4><p>链表实现的模型和开头的栈模型差不多，和数组实现不同的时候是：链表实现不用担心满栈的问题，在内存允许的前提下，栈的容量可以无限增长<br>相关结构体定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 节点结构体</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span>* <span class="title">next</span>;</span></span><br><span class="line">&#125; Node, *NodePtr;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 栈结构</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Stack</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> len;      <span class="comment">// 栈的元素数量</span></span><br><span class="line">    NodePtr top;  <span class="comment">// 指向栈顶</span></span><br><span class="line">&#125; Stack, *Sptr;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>工具函数</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">exitErr</span><span class="params">(<span class="keyword">void</span>* ptr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ptr == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;ptr is NULL\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">stackEmpty</span><span class="params">(NodePtr ptr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ptr == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;stack is empty\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>链式栈模型</p>
+<blockquote>
+<p>链式栈就是一条链表，压栈和出栈和普通单向链表的增加和删除节点一样，只不过增加和删除节点都在同一端进行而已</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">// 空栈</span><br><span class="line">// 空栈top指针指向NULL，可以根据这个来判断栈是否为空</span><br><span class="line"></span><br><span class="line">    top</span><br><span class="line">     |</span><br><span class="line">     v</span><br><span class="line">    NULL</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 压栈</span><br><span class="line">// 压栈的时候采用前插入法，把新的节点插入到链表的头部位置</span><br><span class="line"></span><br><span class="line">// 4入栈            // 5入栈</span><br><span class="line">    top                 top</span><br><span class="line">     |                   |</span><br><span class="line">     v                   v</span><br><span class="line">   +----+              +----+</span><br><span class="line">   | 4  |              |  5 |</span><br><span class="line">   +----+              +----+</span><br><span class="line">     |                   |   </span><br><span class="line">     v                   v</span><br><span class="line">    NULL               +----+</span><br><span class="line">                       |  4 |</span><br><span class="line">                       +----+</span><br><span class="line">                         |</span><br><span class="line">                         v</span><br><span class="line">                        NULL  </span><br><span class="line"></span><br><span class="line">// 出栈</span><br><span class="line">// 出栈也是和链表删除头节点的操作相同，top指针指向当前栈顶节点的下一个节点，然后释放当掉当前的栈顶结点</span><br><span class="line">// 5出栈</span><br><span class="line">        +---top                     top</span><br><span class="line">        |                            |</span><br><span class="line">        |  +----+                    v</span><br><span class="line">        |  |  5 |&lt;----free         +----+</span><br><span class="line">        |  +----+                  |  4 |</span><br><span class="line">        |                          +----+</span><br><span class="line">        +----+                       |</span><br><span class="line">             |                       v</span><br><span class="line">             v                      NULL</span><br><span class="line">           +----+</span><br><span class="line">           |  4 |</span><br><span class="line">           +----+</span><br><span class="line">             |</span><br><span class="line">             v</span><br><span class="line">            NULL</span><br></pre></td></tr></table></figure>
+<p>链式栈初始化</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Sptr <span class="title">createStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Sptr ptr = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Stack));</span><br><span class="line">    exitErr(ptr);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化</span></span><br><span class="line">    ptr-&gt;len = <span class="number">0</span>;</span><br><span class="line">    ptr-&gt;top = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ptr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>初始化之后就像这个样子</p>
+<blockquote>
+<p>len表示的是当前栈的结点数量，top就是栈顶指针，指向一条链表</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">        +-----+------+</span><br><span class="line">ptr----&gt;|  <span class="number">0</span>  | top--|----&gt;<span class="literal">NULL</span></span><br><span class="line">        +-----+------+    </span><br></pre></td></tr></table></figure>
+<p>压栈</p>
+<blockquote>
+<p>当当前的栈为空的时候，top指针直接指向新的结点，然后新的结点的next指针指向NULL</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 空栈增加结点</span><br><span class="line">        +-----+------+  (1)   +---+-------+  (2)</span><br><span class="line">ptr----&gt;|  1  | top--|-------&gt;| 5 | next--|-------&gt;NULL</span><br><span class="line">        +-----+------+        +---+-------+</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>非空栈压栈的时候，先是新结点指向当前栈顶结点，然后栈顶top指针指向新的结点</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">        +---+-------+   (1)</span><br><span class="line">        | 6 | next--|---------+</span><br><span class="line">        +---+-------+         |  </span><br><span class="line">                              v</span><br><span class="line">        +-----+------+        +---+-------+ </span><br><span class="line">ptr----&gt;|  1  | top--|---x---&gt;| 5 | next--|-------&gt;NULL</span><br><span class="line">        +-----+------+        +---+-------+</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                            +---+-------+   (1)</span><br><span class="line">                         +-&gt;| 6 | next--|-----+</span><br><span class="line">                         |  +---+-------+     |  </span><br><span class="line">                         |(2)                 v</span><br><span class="line">        +-----+------+   |                    +---+-------+ </span><br><span class="line">ptr----&gt;|  2  | top--|---+                    | 5 | next--|-------&gt;NULL</span><br><span class="line">        +-----+------+                        +---+-------+</span><br></pre></td></tr></table></figure>
+<p>压栈示例代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">push</span><span class="params">(Sptr ptr, <span class="keyword">int</span> el)</span> </span>&#123;</span><br><span class="line">    NodePtr node = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    exitErr(node);</span><br><span class="line">    node-&gt;data = el;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 空栈</span></span><br><span class="line">    <span class="keyword">if</span> (ptr-&gt;top == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ptr-&gt;top = node;</span><br><span class="line">        node-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;  <span class="comment">// 非空栈</span></span><br><span class="line">        node-&gt;next = ptr-&gt;top;</span><br><span class="line">        ptr-&gt;top = node;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ++ptr-&gt;len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>出栈</p>
+<blockquote>
+<p>出栈之前先判断当前栈是否为空，如果不为空top指针就指向当前栈顶结点的下一个结点，然后释放当前栈顶结点。新指向的结点成为栈顶结点。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">                        +------------------------+</span><br><span class="line">                        |                        |</span><br><span class="line">                        |                        v</span><br><span class="line">        +-----+------+  |     +---+-------+      +---+-------+ </span><br><span class="line">ptr----&gt;|  1  | top--|--+     | 6 | next--|-----&gt;| 5 | next--|-------&gt;NULL</span><br><span class="line">        +-----+------+        +---+-------+      +---+-------+</span><br><span class="line">                              ^</span><br><span class="line">                              |</span><br><span class="line">                              free</span><br></pre></td></tr></table></figure>
+<p>出栈示例代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pop</span><span class="params">(Sptr ptr)</span> </span>&#123;</span><br><span class="line">    exitErr(ptr);</span><br><span class="line">    stackEmpty(ptr-&gt;top);</span><br><span class="line"></span><br><span class="line">    NodePtr node = ptr-&gt;top;</span><br><span class="line">    ptr-&gt;top = ptr-&gt;top-&gt;next;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;el: %d pop\n&quot;</span>, node-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(node);</span><br><span class="line">    --ptr-&gt;len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h3><p>队列是一种先进先出的数据结构，入口和出口在两端。入口端只能入队，出口端只能出队。一般把出队的一端称为队头，入队的一端称为队尾。如果压栈的顺序是：1 2 3 4，那么出栈的顺序就是：1 2 3 4<br>队列模型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">            +-------+</span><br><span class="line">&lt;--Dequeue--| Queue |&lt;--Enqueue--</span><br><span class="line">            +-------+</span><br></pre></td></tr></table></figure>
+<h4 id="数组实现-1"><a href="#数组实现-1" class="headerlink" title="数组实现"></a>数组实现</h4><p>数组队列模型</p>
+<blockquote>
+<p>用一个容量为6的数组作为队列，下面是空队列的表示<br>front指向对头，rear指向队尾。当队列为空的时候，front和rear指向同一个位置</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">   rear</span><br><span class="line">   |</span><br><span class="line">+-----+-----+-----+-----+-----+-----+</span><br><span class="line">|     |     |     |     |     |     |</span><br><span class="line">+-----+-----+-----+-----+-----+-----+</span><br><span class="line">   |</span><br><span class="line">   front</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>入队</p>
+<blockquote>
+<p>rear指向下一个空位，给新的元素执行位置</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+-----+-----+-----+-----+-----+-----+</span><br><span class="line">|  1  |     |     |     |     |     |</span><br><span class="line">+-----+-----+-----+-----+-----+-----+</span><br><span class="line">   |     |</span><br><span class="line">   front  rear</span><br></pre></td></tr></table></figure>
+<p>满队</p>
+<blockquote>
+<p>根据当前实现，当队列元素个数达到len(array)-1时，就判定队列已满</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+-----+-----+-----+-----+-----+-----+</span><br><span class="line">|  1  |  2  |  3  |  4  |  5  |     |</span><br><span class="line">+-----+-----+-----+-----+-----+-----+</span><br><span class="line">   |                             |</span><br><span class="line">   front                          rear</span><br></pre></td></tr></table></figure>
+<p>出队</p>
+<blockquote>
+<p>出队一个元素，这个时候队列已经有空位了。但是rear指向数组的最后一个位置，如果再递增rear就会出现数组越界，程序错误。所以，需要把rear指向新的数组的开始处，形成一个循环队列。新rear的值用一个公式得出：(rear+1) % len(array)，并且当(rear+1) % len(array) == front时就表示队列已满。<br>对于m和n都都不为负数的情况下，可以有以下规律：<br>有x = m % n，则：0 &lt;= x &lt; n, x = m - nc, 其中c大于等于0的整数<br>比如：0 % 6 == 0，1 % 6 == 1 … 6 % 6 == 0, 7 % 6 == 1 依次循环</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+-----+-----+-----+-----+-----+-----+</span><br><span class="line">|     |  2  |  3  |  4  |  5  |     |</span><br><span class="line">+-----+-----+-----+-----+-----+-----+</span><br><span class="line">         |                       |</span><br><span class="line">         front                    rear</span><br></pre></td></tr></table></figure>
+<p>再入队一个元素</p>
+<blockquote>
+<p>这个时候队列已满，由上面的公式：(rear + 1) % len(array) == front，代入rear和front的值就是：(0 + 1) % 6 == 1，所以队列满</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+-----+-----+-----+-----+-----+-----+</span><br><span class="line">|     |  2  |  3  |  4  |  5  |  6  |</span><br><span class="line">+-----+-----+-----+-----+-----+-----+</span><br><span class="line">   |     |                       </span><br><span class="line">   rear  front                    </span><br></pre></td></tr></table></figure>
+<p>为什么需要留出一个空位？</p>
+<blockquote>
+<p>根据当前的实现，需要根绝上面给出的公式来判定队列是否已经满的原因。当然不用这种方式也可以，后面再讨论。</p>
+</blockquote>
+<p>结构体定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">queue</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> cap;     <span class="comment">// 数组容量</span></span><br><span class="line">    <span class="keyword">int</span> len;     <span class="comment">// 当前元素个数</span></span><br><span class="line">    <span class="keyword">int</span> rear;    <span class="comment">// 尾下标</span></span><br><span class="line">    <span class="keyword">int</span> front;   <span class="comment">// 头下标</span></span><br><span class="line">    <span class="keyword">int</span>* <span class="built_in">array</span>;  <span class="comment">// 底层数组</span></span><br><span class="line">&#125; Queue, *Qptr;</span><br></pre></td></tr></table></figure>
+<p>判断指针是否为空，没什么好讲的</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">isNullPtr</span><span class="params">(<span class="keyword">void</span>* ptr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ptr == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;ptr is NULL&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>初始化</p>
+<blockquote>
+<p>初始化的时候给结构体的数组分配合适的内存，然后将rear和front两个成员都赋值0，表示队列为空。len表示当前的元素个数，也初始化为0。cap表示数组的容量，赋值给定的count。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Qptr <span class="title">createQueue</span><span class="params">(<span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">    Qptr q = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Queue));</span><br><span class="line">    isNullPtr(q);</span><br><span class="line">    <span class="built_in">memset</span>(q, <span class="number">0</span>, <span class="keyword">sizeof</span>(Queue));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (count &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        count = <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化底层数组</span></span><br><span class="line">    q-&gt;<span class="built_in">array</span> = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * count);</span><br><span class="line">    isNullPtr(q-&gt;<span class="built_in">array</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化各项参数</span></span><br><span class="line">    q-&gt;cap = count;</span><br><span class="line">    q-&gt;len = <span class="number">0</span>;</span><br><span class="line">    q-&gt;front = q-&gt;rear = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> q;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>入队</p>
+<blockquote>
+<p>在更新rear成员的值的时候，不能直接递增rear的值。队列不涉及循环的时候没什么问题，但是涉及到循环队列的时候必须进行求模运算，让rear的值达到数组的最大长度的时候从0开始。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">push</span><span class="params">(Qptr qptr, <span class="keyword">int</span> el)</span> </span>&#123;</span><br><span class="line">    isNullPtr(qptr);</span><br><span class="line">    isNullPtr(qptr-&gt;<span class="built_in">array</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断队列是否已满</span></span><br><span class="line">    <span class="keyword">if</span> ((qptr-&gt;rear + <span class="number">1</span>) % qptr-&gt;cap == qptr-&gt;front) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;queue full!!\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 入队</span></span><br><span class="line">    qptr-&gt;<span class="built_in">array</span>[qptr-&gt;rear] = el;</span><br><span class="line">    qptr-&gt;rear = (qptr-&gt;rear + <span class="number">1</span>) % qptr-&gt;cap;</span><br><span class="line">    ++qptr-&gt;len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>出队</p>
+<blockquote>
+<p>根绝当前的思路和实现，rear和front值相等的时候就是空队列。更新front的值的时候也需要根据公式来计算，让front值能够循环。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pop</span><span class="params">(Qptr qptr)</span> </span>&#123;</span><br><span class="line">    isNullPtr(qptr);</span><br><span class="line">    isNullPtr(qptr-&gt;<span class="built_in">array</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断队列是否为空</span></span><br><span class="line">    <span class="keyword">if</span> (qptr-&gt;rear == qptr-&gt;front) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;empty queue\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;el[%d] dequeue\n&quot;</span>, qptr-&gt;<span class="built_in">array</span>[qptr-&gt;front]);</span><br><span class="line">        qptr-&gt;front = (qptr-&gt;front + <span class="number">1</span>) % qptr-&gt;cap;</span><br><span class="line">        --qptr-&gt;len;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="另一种数组实现"><a href="#另一种数组实现" class="headerlink" title="另一种数组实现"></a>另一种数组实现</h4><blockquote>
+<p>有时间再搞搞</p>
+</blockquote>
+<h4 id="链表实现-1"><a href="#链表实现-1" class="headerlink" title="链表实现"></a>链表实现</h4><p>结构体定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 链表节点</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span>* <span class="title">next</span>;</span></span><br><span class="line">&#125; Node, *NodePtr;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 队列</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Queue</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> len;              <span class="comment">// 队列当前元素个数</span></span><br><span class="line">    NodePtr rear, front;  <span class="comment">// 头尾指针</span></span><br><span class="line">&#125; Queue, *Qptr;</span><br></pre></td></tr></table></figure>
+<p>链式队列模型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">// 空队，头尾指针都指向NULL</span><br><span class="line"></span><br><span class="line">front-----&gt;NULL&lt;-----rear</span><br><span class="line"></span><br><span class="line">// 非空队链式队列模型，front指针指向第一个节点，rear指针指向最后一个节点</span><br><span class="line"></span><br><span class="line">    +-----+     +-----+     +-----+</span><br><span class="line">    |  4  |----&gt;|  2  |----&gt;|  6  |----&gt;NULL</span><br><span class="line">    +-----+     +-----+     +-----+</span><br><span class="line">       ^                       ^</span><br><span class="line">       |                       |</span><br><span class="line">       front                   rear</span><br><span class="line"></span><br><span class="line">// 入队，入队时在rear处增加节点，也就是把节点插入链表的末尾，然后rear指针指向新插入的节点</span><br><span class="line"></span><br><span class="line">                                    (2) +-----+  (1)</span><br><span class="line">                                    +--&gt;|  9  |------+</span><br><span class="line">                                    |   +-----+      |</span><br><span class="line">                                    |                |</span><br><span class="line">    +-----+     +-----+     +-----+ |                v   </span><br><span class="line">    |  4  |----&gt;|  2  |----&gt;|  6  |-+------x--------&gt;NULL</span><br><span class="line">    +-----+     +-----+     +-----+</span><br><span class="line">       ^                       ^</span><br><span class="line">       |                       |</span><br><span class="line">       front                   rear</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    +-----+     +-----+     +-----+     +-----+       </span><br><span class="line">    |  4  |----&gt;|  2  |----&gt;|  6  |----&gt;|  9  |-----&gt;NULL</span><br><span class="line">    +-----+     +-----+     +-----+     +-----+</span><br><span class="line">       ^                                   ^</span><br><span class="line">       |                                   |</span><br><span class="line">       front                               rear</span><br><span class="line"></span><br><span class="line">// 出队，出队是在front处删除一个节点，然后把front指针指向下一个节点</span><br><span class="line"></span><br><span class="line">    +-----+     +-----+     +-----+     +-----+       </span><br><span class="line">    |  4  |--x-&gt;|  2  |----&gt;|  6  |----&gt;|  9  |-----&gt;NULL</span><br><span class="line">    +-----+     +-----+     +-----+     +-----+</span><br><span class="line">       ^                                   ^</span><br><span class="line">       |                                   |</span><br><span class="line">       front                               rear</span><br><span class="line"></span><br><span class="line">    +-----+     +-----+     +-----+     +-----+       </span><br><span class="line">    |  4  |     |  2  |----&gt;|  6  |----&gt;|  9  |-----&gt;NULL</span><br><span class="line">    +-----+     +-----+     +-----+     +-----+</span><br><span class="line">       ^           ^                       ^</span><br><span class="line">       |           |                       |</span><br><span class="line">       free        front                   rear</span><br></pre></td></tr></table></figure>
+<p>工具函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">isNullPtr</span><span class="params">(<span class="keyword">void</span>* ptr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ptr == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;null ptr\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>初始化</p>
+<blockquote>
+<p>初始化把Queue的各个成员都设置为空，这个时候表示队列的链表没有</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 初始化函数的表示</span><br><span class="line">// 当前队列为空，所以len的值为0，front和rear都指向NULL</span><br><span class="line"></span><br><span class="line">            +-------+-------+------+</span><br><span class="line">qptr-------&gt;| len:0 | front | rear |</span><br><span class="line">            +-------+---|---+--|---+</span><br><span class="line">                        |      |</span><br><span class="line">                        v      v </span><br><span class="line">                        --NULL--</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Qptr <span class="title">create</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Qptr qptr = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Queue));</span><br><span class="line">    isNullPtr(qptr);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化</span></span><br><span class="line">    qptr-&gt;len = <span class="number">0</span>;</span><br><span class="line">    qptr-&gt;front = qptr-&gt;rear = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> qptr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>入队</p>
+<blockquote>
+<p>先判断队列是否为空，如果为空，那么front和rear指针都指向这个节点。如果不为空，那么就把新节点插入链表尾部，rear指向它。下面是队列为空的情况模型，链表不为空的情况上面已经提到了。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 队列为空的情况模型</span><br><span class="line"></span><br><span class="line">    +-----+</span><br><span class="line">    |  5  |----&gt;NULL</span><br><span class="line">    +-----+</span><br><span class="line">     ^   ^    </span><br><span class="line">     |   |</span><br><span class="line">  front  rear</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">enqueue</span><span class="params">(Qptr ptr, <span class="keyword">int</span> el)</span> </span>&#123;</span><br><span class="line">    isNullPtr(ptr);</span><br><span class="line"></span><br><span class="line">    NodePtr node = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    isNullPtr(node);</span><br><span class="line">    node-&gt;data = el;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ptr-&gt;front == ptr-&gt;rear &amp;&amp; ptr-&gt;front == <span class="literal">NULL</span>) &#123;  <span class="comment">// 空队列</span></span><br><span class="line">        node-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">        ptr-&gt;front = ptr-&gt;rear = node;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;  <span class="comment">// 非空队列</span></span><br><span class="line">        node-&gt;next = ptr-&gt;rear-&gt;next;</span><br><span class="line">        ptr-&gt;rear-&gt;next = node;</span><br><span class="line">        ptr-&gt;rear = node;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;el[%d] enqueue\n&quot;</span>, el);</span><br><span class="line">    ++ptr-&gt;len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>出队</p>
+<blockquote>
+<p>出队的时候首先要判断是否为空队，如果不为空队就正常删除链表的头节点，然后front指针指向下一个节点。但是队列只有一个节点的时候，删除这个节点之后front和rear指针都指向NULL。当前实现front和rear指向相同有两种情况，一个是空队，一个是只有一个节点，所有需要进一步判断。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dequeue</span><span class="params">(Qptr ptr)</span> </span>&#123;</span><br><span class="line">    isNullPtr(ptr);</span><br><span class="line"></span><br><span class="line">    NodePtr node = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span> (ptr-&gt;front == ptr-&gt;rear) &#123;</span><br><span class="line">        <span class="comment">// 空队列</span></span><br><span class="line">        <span class="keyword">if</span> (ptr-&gt;front == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;empty queue\n&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;  <span class="comment">// 只有一个节点的队列</span></span><br><span class="line">            node = ptr-&gt;front;</span><br><span class="line">            ptr-&gt;front = ptr-&gt;rear = <span class="literal">NULL</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        node = ptr-&gt;front;</span><br><span class="line">        ptr-&gt;front = ptr-&gt;front-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;el[%d] dequeue\n&quot;</span>, node-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(node);</span><br><span class="line">    --ptr-&gt;len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>栈就是先进后出的数据结构，队列就是先进先出的数据结构。理解这两种数据结构还是蛮重要的，对于语言底层原理的理解和其它数据结构的使用都有意义。比如golang中的defer特性，就是和栈一样的特性。同一作用域下的多个defer声明的执行顺序和栈一样，都是先进后出的。二叉树的非递归遍历也需要用到栈和队列。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/05/20/golang_concurrency_schedule/" rel="prev" title="Golang并发调度">
+                  <i class="fa fa-chevron-left"></i> Golang并发调度
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/22/database_relation_data_model/" rel="next" title="数据库之关系数据模型">
+                  数据库之关系数据模型 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

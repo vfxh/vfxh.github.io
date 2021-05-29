@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="简介Golang中字符串是一个不可变的字节序列，本身是一个复合结构。结构有两个成员，一个是字节序列地址的变量Data，另一个是当前字节序列的字符个数Len。这个字节序列不会像C那样以NULL结尾。字符串的默认值是””。 1234type StringHeader struct &amp;#123;    Data uintptr    Len  int&amp;#125; 字符串和字节slice字符串可以用sli">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang之字符串">
+<meta property="og:url" content="http://example.com/2020/05/05/golang_string/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="简介Golang中字符串是一个不可变的字节序列，本身是一个复合结构。结构有两个成员，一个是字节序列地址的变量Data，另一个是当前字节序列的字符个数Len。这个字节序列不会像C那样以NULL结尾。字符串的默认值是””。 1234type StringHeader struct &amp;#123;    Data uintptr    Len  int&amp;#125; 字符串和字节slice字符串可以用sli">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.678Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/05/05/golang_string/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;05&#x2F;05&#x2F;golang_string&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;05&#x2F;05&#x2F;golang_string&#x2F;&quot;,&quot;title&quot;:&quot;Golang之字符串&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Golang之字符串 | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%92%8C%E5%AD%97%E8%8A%82slice"><span class="nav-number">2.</span> <span class="nav-text">字符串和字节slice</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%98%AF%E4%B8%8D%E5%8F%AF%E5%8F%98%E7%9A%84"><span class="nav-number">3.</span> <span class="nav-text">字符串是不可变的</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/05/golang_string/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Golang之字符串
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-05-05 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-05T00:00:00+08:00">2020-05-05</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>Golang中字符串是一个不可变的字节序列，本身是一个复合结构。结构有两个成员，一个是字节序列地址的变量Data，另一个是当前字节序列的字符个数Len。这个字节序列不会像C那样以NULL结尾。字符串的默认值是””。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">type StringHeader struct &#123;</span><br><span class="line">    Data uintptr</span><br><span class="line">    Len  int</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="字符串和字节slice"><a href="#字符串和字节slice" class="headerlink" title="字符串和字节slice"></a>字符串和字节slice</h3><p>字符串可以用slice的形式来获取其中一部分字节序列，但是slice的形式底层引用的数组还是原来的字符串。并且，字符串是不可以修改的。为什么呢？原因是字符串作为一个值存储在内存当中，并没有给它分配内存空间，所以就无法获取它的地址。（谁知道为什么会这样？？我也不知道这个解释对不对！！！）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">func <span class="function"><span class="title">stringAndSlice</span></span>() &#123;</span><br><span class="line">	str := <span class="string">&quot;hello world&quot;</span></span><br><span class="line">	str2 := str[:5]</span><br><span class="line">    // 不可以修改，cannot assign to str2[0]</span><br><span class="line">    // str2[0] = <span class="string">&#x27;H&#x27;</span></span><br><span class="line">    // 并且不可以获取元素的地址</span><br><span class="line">    // addr := &amp;str2[0]</span><br><span class="line">	fmt.Printf(<span class="string">&quot;str addr: %#v\tstr: %s\n&quot;</span>, *(*reflect.StringHeader)(unsafe.Pointer(&amp;str)), str)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;str2 addr: %#v\tstr2: %s\n&quot;</span>, *(*reflect.SliceHeader)(unsafe.Pointer(&amp;str2)), str2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>简单记下这行代码的意思</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*(*reflect.StringHeader)(unsafe.Pointer(&amp;str))</span><br></pre></td></tr></table></figure>
+<p>unsafe.Pointer，任何类型的指针都可以转成这个类型，可以说这个通用的指针类型。并且unsafe.Pointer可以转为任意类型的指针。但是不能通过unsafe.Pointer变量来间接访问指针所指向的那个对象，因为不知道这个指针的具体类型，所以需要强制转成相应的类型。在这里就是转成reflect.StringHeader类型，然后外层的*号就是解引用转成reflect.StringHeader类型的指针变量。<br>打印出</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">str addr: reflect.StringHeader&#123;Data:0x4cf3da, Len:11&#125;                   str: hello world</span><br><span class="line">str2 addr: reflect.SliceHeader&#123;Data:0x4cf3da, Len:5, Cap:5043162&#125;       str2: hello</span><br></pre></td></tr></table></figure>
+<p>字符串还可以追加到字节slice里</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">func <span class="function"><span class="title">strAppendToBysSlice</span></span>() &#123;</span><br><span class="line">	var bys []byte</span><br><span class="line">	str := <span class="string">&quot;hello world&quot;</span></span><br><span class="line">	bys = append(bys, str...)</span><br><span class="line">	fmt.Println(string(bys))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="字符串是不可变的"><a href="#字符串是不可变的" class="headerlink" title="字符串是不可变的"></a>字符串是不可变的</h3><p>字符串是不可变的，不过转成[]byte是可以修改其中的某个字符，但那就是两个不同的字节序列了，它们的地址变了。在转成的[]byte修改的时候就发生内存复制，重新分配内存，是两个不同的对象。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">func <span class="function"><span class="title">modify</span></span>() &#123;</span><br><span class="line">	str := <span class="string">&quot;hello world&quot;</span></span><br><span class="line">	bys := []byte(str)</span><br><span class="line">	bys[0] = <span class="string">&#x27;H&#x27;</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;str addr: %#v\tstr: %s\n&quot;</span>, *(*reflect.StringHeader)(unsafe.Pointer(&amp;str)), str)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;bys addr: %#v\tbys: %s\n&quot;</span>, *(*reflect.SliceHeader)(unsafe.Pointer(&amp;bys)), string(bys))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印出</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">str addr: reflect.StringHeader&#123;Data:0x4cf3da, Len:11&#125;                   str: hello world</span><br><span class="line">bys addr: reflect.SliceHeader&#123;Data:0xc00007ded0, Len:11, Cap:32&#125;        bys: Hello world</span><br></pre></td></tr></table></figure>
+<p>可以看到str的Data保存的地址和bys保存的地址不一致，说明这是两个不同的对象。<br>不过有一种方法可以避免在转换的时候内存复制。这样可以提高性能，但是不安全。（为什么不安全？？？）<br>(老夫有个疑惑？？)<br>(为什么直接用变量赋值就会发生内存复制，而用解引用地址的时候不会？？？？)<br>(有待考究！！！！)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">func <span class="function"><span class="title">test</span></span>() &#123;</span><br><span class="line">	str1 := <span class="string">&quot;hello world&quot;</span></span><br><span class="line">    // 不过这种方法不安全，为什么？？？</span><br><span class="line">	str2 := *(*string)(unsafe.Pointer(&amp;str1))</span><br><span class="line">	// 也可以用这种方法</span><br><span class="line">	// str2 := *(&amp;str1)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;str1 addr: %#v\tstr1: %s\n&quot;</span>, *(*reflect.StringHeader)(unsafe.Pointer(&amp;str1)), str1)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;str2 addr: %#v\tstr2: %s\n&quot;</span>, *(*reflect.StringHeader)(unsafe.Pointer(&amp;str2)), str2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/05/05/linux_gdb_usage/" rel="prev" title="Linux之GDB的使用">
+                  <i class="fa fa-chevron-left"></i> Linux之GDB的使用
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/05/golang_make_and_new/" rel="next" title="Golang之make和new">
+                  Golang之make和new <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

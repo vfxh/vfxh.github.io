@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="接口简介接口即约定。接口就是一个方法集合，只要任何类型实现了一个接口的全部方法，那么就说这个类型实现了这个接口。接口并不实现方法，它只包含方法的声明。另外，Golang的接口做了以下限制：  不能有字段，接口只能包含方法的声明或者什么都不包含 不能定义自己的方法，并且接口只能包含方法声明而不能实现 接口可以内嵌 类型实现接口，是按照类型的方法集来判断的  接口实现根据接口的规则，如果一个类型实现了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang之接口">
+<meta property="og:url" content="http://example.com/2020/05/10/golang_interface/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="接口简介接口即约定。接口就是一个方法集合，只要任何类型实现了一个接口的全部方法，那么就说这个类型实现了这个接口。接口并不实现方法，它只包含方法的声明。另外，Golang的接口做了以下限制：  不能有字段，接口只能包含方法的声明或者什么都不包含 不能定义自己的方法，并且接口只能包含方法声明而不能实现 接口可以内嵌 类型实现接口，是按照类型的方法集来判断的  接口实现根据接口的规则，如果一个类型实现了">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.678Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/05/10/golang_interface/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;05&#x2F;10&#x2F;golang_interface&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;05&#x2F;10&#x2F;golang_interface&#x2F;&quot;,&quot;title&quot;:&quot;Golang之接口&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Golang之接口 | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">接口简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">接口实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3%E5%80%BC"><span class="nav-number">3.</span> <span class="nav-text">接口值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B5%8C%E5%85%A5%E6%8E%A5%E5%8F%A3"><span class="nav-number">4.</span> <span class="nav-text">嵌入接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E6%96%AD%E8%A8%80"><span class="nav-number">5.</span> <span class="nav-text">类型断言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E5%88%86%E6%94%AF"><span class="nav-number">6.</span> <span class="nav-text">类型分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%95%E5%B1%82%E6%9C%BA%E5%88%B6"><span class="nav-number">7.</span> <span class="nav-text">底层机制</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/10/golang_interface/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Golang之接口
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-05-10 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-10T00:00:00+08:00">2020-05-10</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="接口简介"><a href="#接口简介" class="headerlink" title="接口简介"></a>接口简介</h3><p>接口即约定。接口就是一个方法集合，只要任何类型实现了一个接口的全部方法，那么就说这个类型实现了这个接口。接口并不实现方法，它只包含方法的声明。另外，Golang的接口做了以下限制：</p>
+<ol>
+<li>不能有字段，接口只能包含方法的声明或者什么都不包含</li>
+<li>不能定义自己的方法，并且接口只能包含方法声明而不能实现</li>
+<li>接口可以内嵌</li>
+<li>类型实现接口，是按照类型的方法集来判断的</li>
+</ol>
+<h3 id="接口实现"><a href="#接口实现" class="headerlink" title="接口实现"></a>接口实现</h3><p>根据接口的规则，如果一个类型实现了接口的所有方法，那么就说这个类型实现了这个接口。更准确地说，一个类型的方法集实现了接口。那么这个类型才是真正实现了这个接口。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> tester <span class="keyword">interface</span> &#123;</span><br><span class="line">    printInfo()</span><br><span class="line">    sprintInfo() <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> stru <span class="keyword">struct</span> &#123; a <span class="keyword">int</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s stru)</span> <span class="title">printInfo</span><span class="params">()</span></span>&#123; fmt.Println(s.a)&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *stru)</span> <span class="title">sprintInfo</span><span class="params">()</span> <span class="title">string</span></span> &#123;<span class="keyword">return</span> fmt.Sprintf(<span class="string">&quot;%d&quot;</span>, s.a)&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s stru</span><br><span class="line">    <span class="comment">// 报错：stru does not implement tester (sprintfInfo method has pointer receiver)</span></span><br><span class="line">    <span class="keyword">var</span> t tester = s </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>根据方法集的规则，类型stru仅包含接收者为stru的方法。所以，实例s的方法集只有printInfo这个方法，并没有包含sprintInfo()这个方法。所以，stru没有实现这个接口。相反的，*stru类型的方法集包含接收者是stru类型和*stru类型的方法。所以*stru实例实现了tester接口。</p>
+<blockquote>
+<p>这里要特别区分调用方法和接口实现的问题。调用方法的时候值可以通过隐式转换来调用接收者为指针类型的方法，反之亦然。但是接口实现不一样，至于为什么，不知道！！！</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    s := &amp;stru&#123;a:<span class="number">10</span>&#125;</span><br><span class="line">    <span class="comment">// s实现了tester接口，所以可以赋值给tester的实例</span></span><br><span class="line">    <span class="keyword">var</span> t tester = s</span><br><span class="line">    t.printInfo()</span><br><span class="line">    fmt.Println(t.sprintInfo())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于没有任何方法声明的接口称为空接口，因为没有方法，所以所有的类型都实现了接口。任何类型的实例都可以赋值给空接口。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a <span class="keyword">int</span></span><br><span class="line"><span class="keyword">var</span> inter <span class="keyword">interface</span>&#123;&#125; = a</span><br></pre></td></tr></table></figure>
+<h3 id="接口值"><a href="#接口值" class="headerlink" title="接口值"></a>接口值</h3><p>一个接口值可以分为两部分。一部分是接口动态值的类型，一部分是接口动态值的副本。接口的默认值是nil，一个值为nil的接口，它的动态类型和动态值都为nil。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">              <span class="literal">nil</span>接口的表示</span><br><span class="line">              +---------+</span><br><span class="line">dynamic <span class="keyword">type</span>  |    <span class="literal">nil</span>  |</span><br><span class="line">              +---------+</span><br><span class="line">dynamic value |    <span class="literal">nil</span>  |</span><br><span class="line">              +---------+</span><br></pre></td></tr></table></figure>
+<p>当给接口赋值时，就会便变成下面这个样子。如果动态类型是指针类型，那么动态值就是指向对象的指针的一份副本。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">              +----------+</span><br><span class="line">dynamic <span class="keyword">type</span>  | *os.File |</span><br><span class="line">              +----------+            os.File</span><br><span class="line">dynamic value |    *-----|---------&gt; +--------+    </span><br><span class="line">              +----------+           +--------+</span><br></pre></td></tr></table></figure>
+<p>用反射来验证一下</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">verify</span><span class="params">(t tester)</span></span> &#123;</span><br><span class="line">    fmt.Printf(<span class="string">&quot;%v\n&quot;</span>, reflect.TypeOf(t))</span><br><span class="line">    fmt.Printf(<span class="string">&quot;%#v\n&quot;</span>, reflect.ValueOf(t))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    ptr := &amp;stru&#123;a:<span class="number">10</span>&#125;</span><br><span class="line">    verify(ptr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果。可以看到，接口的动态类型是*stru类型，而值是指向stru结构的指针</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">*main.stru</span><br><span class="line">&amp;main.stru&#123;a:<span class="number">10</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>接口的比较<br>如果接口的动态类型一值并且动态值相等，那么接口之间是相等的。但是有一个前提，那就是接口的值必须可以比较。如果是不能比较的类型，那么就会panic。比如map或者slice比较，就会panic。<br>slice和map都是不可以直接比较的，所以执行==或者!=操作都会panic，即使它们的动态类型一致。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> i1, i2 <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">    fmt.Println(i1 == i2) <span class="comment">// true</span></span><br><span class="line">    i1, i2 = <span class="number">100</span>, <span class="number">100</span></span><br><span class="line">    fmt.Println(i1 == i2) <span class="comment">// true</span></span><br><span class="line">    <span class="comment">//i1, i2 = []int&#123;1&#125;, []int&#123;2&#125; // panic: runtime error: comparing uncomparable type []int</span></span><br><span class="line">    i1, i2 = <span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span>&#123;&#125;, <span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span>&#123;&#125;</span><br><span class="line">    fmt.Println(i1==i2) <span class="comment">// panic: runtime error: comparing uncomparable type map[int]int</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>需要特别注意的是，接口再运行时才会动态检测接口的合法性，在编译期是无法检测出来的。还有一个坑，就是接口值不是nil，但是动态值为nil的问题。<br>这段代码在编译期间是没有任何语法错误的，但是在运行期间就会panic。原因是：形参t接收的实参s，它的类型不为空。所以接口t的动态类型部分就是*stru，但是实参s并没有分配内存，它依然是个空指针。由于t的动态类型部位nil，判断逻辑t != nil为true。当执行t.printInfo()的时候就panic了，t的动态类型是nil，不panic才怪。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">check</span><span class="params">(t tester)</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;type: &quot;</span>, reflect.TypeOf(t))</span><br><span class="line">    fmt.Println(<span class="string">&quot;value: &quot;</span>, reflect.ValueOf(t))</span><br><span class="line">    <span class="keyword">if</span> t != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="comment">// panic: value method main.stru.printInfo called using nil *stru pointer</span></span><br><span class="line">        t.printInfo()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s *stru</span><br><span class="line">    check(s)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span>:  *main.stru</span><br><span class="line">value:  &lt;<span class="literal">nil</span>&gt;</span><br><span class="line"><span class="built_in">panic</span>: value method main.stru.printInfo called using <span class="literal">nil</span> *stru pointer</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="嵌入接口"><a href="#嵌入接口" class="headerlink" title="嵌入接口"></a>嵌入接口</h3><p>内嵌接口要求目标类型不仅要实现外层接口的方法，还需要实现内嵌接口的方法。简而言之，目标类型的方法集中必须包含外层接口和内嵌接口的全部方法才是实现了该接口。另外，嵌入接口之后，外层接口和内嵌接口不能包含同名的方法。并且不能嵌入自身或者循环内嵌。</p>
+<p>需要注意一点的是，外层接口变量可以隐式转成内嵌接口类型，但是反过来不行。比如下面例程中的inner接口变量inn不可以赋值给outsider接口类型，因为这个inner接口没有outsiderInfo方法。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> inner <span class="keyword">interface</span>&#123; innerInfo() &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> outsider <span class="keyword">interface</span> &#123;</span><br><span class="line">    inner</span><br><span class="line">    outsiderInfo()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> integer <span class="keyword">int</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(integer)</span> <span class="title">innerInfo</span><span class="params">()</span></span>     &#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(*integer)</span> <span class="title">outsiderInfo</span><span class="params">()</span></span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> i integer</span><br><span class="line">    <span class="keyword">var</span> o outsider = &amp;i</span><br><span class="line">    o.innerInfo()</span><br><span class="line">    o.outsiderInfo()</span><br><span class="line">    <span class="comment">// ..............</span></span><br><span class="line">    <span class="keyword">var</span> ii integer</span><br><span class="line">    <span class="keyword">var</span> inn inner = ii</span><br><span class="line">    <span class="comment">// cannot use inn (variable of type inner) as outsider value in variable declaration: missing method outsiderInfo</span></span><br><span class="line">    <span class="keyword">var</span> _ outsider = inn</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="类型断言"><a href="#类型断言" class="headerlink" title="类型断言"></a>类型断言</h3><p>类型断言可以接口变量还原成指定的原始类型，或者用来判断某个对象是否实现了具体的接口类型。假设x是接口对象，而T是需要还原成的特定类型。那么断言可以写成：v := x.(T)。假如断言成功，v就是还原成的T类型对象，假如断言不成功就会panic。所以，断言一般使用ok模式。这样可以判断出是否断言成功，即使断言失败也不会panic。<br>断言用于还原成指定的具体类型。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s <span class="keyword">string</span> = <span class="string">&quot;hello world&quot;</span></span><br><span class="line">    <span class="keyword">var</span> x <span class="keyword">interface</span>&#123;&#125; = s</span><br><span class="line">    v, ok := x.(<span class="keyword">string</span>)</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;the type of x is not string&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// type: string     value: hello world</span></span><br><span class="line">    fmt.Printf(<span class="string">&quot;type: %v\tvalue: %v\n&quot;</span>, reflect.TypeOf(v), v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然，不用空接口也可以，都是一样的道理。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s *stru</span><br><span class="line">    <span class="keyword">var</span> t tester = s</span><br><span class="line">    v, ok := t.(*stru)</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println(v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>断言用于判断对象是否实现了接口。由于类型stru并没有实现接口tester，所以这里会断言失败。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    s := stru&#123;a:<span class="number">10</span>&#125;</span><br><span class="line">    <span class="keyword">var</span> x <span class="keyword">interface</span>&#123;&#125; = s</span><br><span class="line">    v, ok := x.(tester)</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;x is not tester&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println(reflect.TypeOf(v), v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将实例s的类型改成指针类型*stru就可以了</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    s := &amp;stru&#123;a:<span class="number">10</span>&#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*main.stru &amp;&#123;<span class="number">10</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>雨痕的Go语言笔记中有一个比较有意思的例子，就是用函数实现作为一个对象赋值给接口。函数实现之后本身可视为对象，其类型就是函数的签名。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> i <span class="keyword">interface</span>&#123;&#125; = <span class="function"><span class="keyword">func</span><span class="params">(x <span class="keyword">int</span>)</span> <span class="title">string</span></span> &#123;</span><br><span class="line">        <span class="keyword">return</span> fmt.Sprintf(<span class="string">&quot;%d&quot;</span>, x)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> _, ok := i.(<span class="function"><span class="keyword">func</span><span class="params">(<span class="keyword">int</span>)</span> <span class="title">string</span>); !<span class="title">ok</span></span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;is not func(int) string&quot;</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;yes&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="类型分支"><a href="#类型分支" class="headerlink" title="类型分支"></a>类型分支</h3><p>类型断言的ok模式对于断言一次很方便，但是如果要匹配多个类型分支就很繁琐了，使用类型分支就清晰很多。类型分支有两种方式，一是不需要断言后的值：switch x.(type) {…}。二是需要断言后的值：switch v := x.(type) {…}。其中type是固定值，只能写成type。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s *stru</span><br><span class="line">    <span class="keyword">var</span> t tester = s</span><br><span class="line">    <span class="keyword">switch</span> v := t.(<span class="keyword">type</span>) &#123;</span><br><span class="line">    <span class="keyword">case</span> *stru:</span><br><span class="line">        fmt.Println(<span class="string">&quot;*stru&quot;</span>, v)</span><br><span class="line">    <span class="keyword">case</span> <span class="literal">nil</span>:</span><br><span class="line">        fmt.Println(<span class="string">&quot;nil&quot;</span>, v)</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        fmt.Println(<span class="string">&quot;not all&quot;</span>, v)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：类型分支离不允许使用fallthrough！！！！</p>
+</blockquote>
+<h3 id="底层机制"><a href="#底层机制" class="headerlink" title="底层机制"></a>底层机制</h3><p>我们可以使用上面的一个例子来看看接口底层的实现，用gdb调试就可以知道。打上断点后运行，然后查看接口变量的类型，就可以看到接口类型运行时就是runtime.iface结构。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// go build -gcflags=&quot;-l -N&quot; main.go</span></span><br><span class="line"><span class="comment">// gdb main</span></span><br><span class="line"></span><br><span class="line">(gdb) l</span><br><span class="line"><span class="number">1</span>	<span class="keyword">package</span> main</span><br><span class="line"><span class="number">2</span>	</span><br><span class="line"><span class="number">3</span>	<span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"><span class="number">4</span>	</span><br><span class="line"><span class="number">5</span>	<span class="keyword">type</span> tester <span class="keyword">interface</span> &#123;</span><br><span class="line"><span class="number">6</span>		printInfo()</span><br><span class="line"><span class="number">7</span>		sprintInfo() <span class="keyword">string</span></span><br><span class="line"><span class="number">8</span>	&#125;</span><br><span class="line"><span class="number">9</span>	</span><br><span class="line"><span class="number">10</span>	<span class="keyword">type</span> stru <span class="keyword">struct</span>&#123; a <span class="keyword">int</span> &#125;</span><br><span class="line">(gdb) l</span><br><span class="line"><span class="number">11</span>	</span><br><span class="line"><span class="number">12</span>	<span class="function"><span class="keyword">func</span> <span class="params">(s stru)</span> <span class="title">printInfo</span><span class="params">()</span></span>          &#123; fmt.Println(s.a) &#125;</span><br><span class="line"><span class="number">13</span>	<span class="function"><span class="keyword">func</span> <span class="params">(s *stru)</span> <span class="title">sprintInfo</span><span class="params">()</span> <span class="title">string</span></span> &#123; <span class="keyword">return</span> fmt.Sprintf(<span class="string">&quot;%d&quot;</span>, s.a) &#125;</span><br><span class="line"><span class="number">14</span>	</span><br><span class="line"><span class="number">15</span>	<span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"><span class="number">16</span>		s := <span class="built_in">new</span>(stru)</span><br><span class="line"><span class="number">17</span>		<span class="keyword">var</span> t tester = s</span><br><span class="line"><span class="number">18</span>		<span class="built_in">print</span>(t)</span><br><span class="line"><span class="number">19</span>	&#125;</span><br><span class="line">(gdb) b <span class="number">17</span></span><br><span class="line">Breakpoint <span class="number">1</span> at <span class="number">0x4933d0</span>: file /root/golang/<span class="keyword">interface</span>.<span class="keyword">go</span>, line <span class="number">17.</span></span><br><span class="line">(gdb) r</span><br><span class="line">Starting program: /root/golang/<span class="keyword">interface</span> </span><br><span class="line">[New LWP <span class="number">1422483</span>]</span><br><span class="line">[New LWP <span class="number">1422484</span>]</span><br><span class="line"></span><br><span class="line">Thread <span class="number">1</span> <span class="string">&quot;interface&quot;</span> hit Breakpoint <span class="number">1</span>, main.main () at /root/golang/<span class="keyword">interface</span>.<span class="keyword">go</span>:<span class="number">17</span></span><br><span class="line"><span class="number">17</span>		<span class="keyword">var</span> t tester = s</span><br><span class="line">(gdb) info locals</span><br><span class="line">s = <span class="number">0xc00005cf50</span></span><br><span class="line">t = &#123;tab = <span class="number">0x4a0ea0</span>, data = <span class="number">0xc000050058</span>&#125;</span><br><span class="line">(gdb) ptype t</span><br><span class="line"><span class="keyword">type</span> = <span class="keyword">struct</span> runtime.iface &#123;</span><br><span class="line">    runtime.itab *tab;</span><br><span class="line">    void *data;</span><br><span class="line">&#125;</span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/05/10/golang_method/" rel="prev" title="Golang之方法">
+                  <i class="fa fa-chevron-left"></i> Golang之方法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/11/golang_concurrency/" rel="next" title="Golang之并发">
+                  Golang之并发 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

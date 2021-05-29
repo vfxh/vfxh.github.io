@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="树不同于链表这样子的线性结构，只能一对一或者一对零。树是一种非线性结构，一个结点可以对应一个结点，也可以对应多个节点，甚至可以对应零个结点。在数据结构中，树的定义是：有n（n&gt;&#x3D;0）个节点的有限集合。当n等于0的时候称为空树，在一颗非空的树由如下特点：  有且仅有一个特定的，称为根的节点 当n&gt;1的时候，其余节点可分为m（m&gt;0）个互不相交的有限集合，每一个集合本身又是一棵树，称">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树">
+<meta property="og:url" content="http://example.com/2020/07/03/data_structure_tree/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="树不同于链表这样子的线性结构，只能一对一或者一对零。树是一种非线性结构，一个结点可以对应一个结点，也可以对应多个节点，甚至可以对应零个结点。在数据结构中，树的定义是：有n（n&gt;&#x3D;0）个节点的有限集合。当n等于0的时候称为空树，在一颗非空的树由如下特点：  有且仅有一个特定的，称为根的节点 当n&gt;1的时候，其余节点可分为m（m&gt;0）个互不相交的有限集合，每一个集合本身又是一棵树，称">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/de57737af64560b44a742ac36f2e7fd9dfca4fd5/data_structure/tree_1.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/5d7a6fce73f6f15d8ef36c8ffbf31b394c7ed763/data_structure/tree_2.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/15fc835a0887e95391da455f220798b569ca21d0/data_structure/binary_tree.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/d94e4aa580205ed7dec6c3aad9f8faca36938de1/full_binary_tree.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/d94e4aa580205ed7dec6c3aad9f8faca36938de1/complete_binary_tree.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/70520f36b5c868e179c5468374baffbc742a5d58/link_store_tree_node.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/73abc5503db989baff4de9474ad5478c8e583b87/binary_tree_store_in_array.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/214222850b6b80e8e5856193e0646400c7ff3b8e/complete_binary_tree_node_store_in_array_unuse_index_0.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/0ce6c5da20a5e28fc879dd78f639018a1375aeea/data_structure/the_way_to_traversing_binary_tree.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/6d64db1f3d04ad96f7d74636886e6c69d510976f/data_structure/binary_tree_ABCDEFG.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/d71a2bd381eef4e0084c4398bb5dc327a5acaa72/data_structure/Complete%20leaf%20node.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/66301d8e484682cb92be8425c89acd624fe301b0/data_structure/complete_binary_tree_node.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/296be7ba1019de9db8829563584e8497b1554e22/data_structure/level_bianli_xxxxxxx.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/ccff41b357f795ba92195fa363901d319c08b746/data_structure/non-recursion_preorder_binary_tree.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/0f20f6c1124c1588c0bcf1a2db0cff3f17003ba1/data_structure/preorder_and_inorder_to_a_binary_tree_split_sub_tree.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/0e489de2911a98269cfdf1b8965cdd8c79e4cf5e/data_structure/binary_tree_ABCDEFGHI.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/221392f4a9770341bad82c9f9b53d6dabf081a56/data_structure/complement_full_binary_tree_2.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/5398a2a25a5f56ca931fb4898f7cb79bdac9a0bc/binary_search_tree.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/a7857d83476b2e12528c4bc99268e9bd849ac182/data_structure/binary_search_tree_exec_search_1.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/07fbc9a2767d4c132bbea1ab811e1de05ac79e1d/data_structure/binary_search_tree_insert.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/b75a0373e0619ad2927a6d8f031cfbef2ae91fe9/data_structure/delete_one_node_in_binary_search_tree.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/8cbeb42385f82beeea173a4491c27d3a1d2faa95/data_structure/delete_binary_tree_node.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/11c01375e9ef16f01dc7e0c8995f3f17b9c8480a/data_structure/xxxxxxxxxxxxxxxxxxxxxxx.png">
+<meta property="article:published_time" content="2020-07-02T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.678Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/vfxh/site-images/raw/de57737af64560b44a742ac36f2e7fd9dfca4fd5/data_structure/tree_1.png">
+
+
+<link rel="canonical" href="http://example.com/2020/07/03/data_structure_tree/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;07&#x2F;03&#x2F;data_structure_tree&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;07&#x2F;03&#x2F;data_structure_tree&#x2F;&quot;,&quot;title&quot;:&quot;树&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>树 | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">1.</span> <span class="nav-text">二叉树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">存储结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86"><span class="nav-number">1.2.</span> <span class="nav-text">二叉树的遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.1.</span> <span class="nav-text">递归遍历方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.2.</span> <span class="nav-text">非递归遍历方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E5%AE%83%E7%9F%A5%E8%AF%86%E7%82%B9"><span class="nav-number">1.2.3.</span> <span class="nav-text">其它知识点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%9F%A5%E6%89%BE%E6%A0%91"><span class="nav-number">1.3.</span> <span class="nav-text">二叉查找树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE"><span class="nav-number">1.3.1.</span> <span class="nav-text">查找</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%92%E5%85%A5"><span class="nav-number">1.3.2.</span> <span class="nav-text">插入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">1.3.3.</span> <span class="nav-text">删除</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AVL%E6%A0%91"><span class="nav-number">2.</span> <span class="nav-text">AVL树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86"><span class="nav-number">3.</span> <span class="nav-text">堆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-%E6%A0%91"><span class="nav-number">4.</span> <span class="nav-text">B-树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-%E6%A0%91-1"><span class="nav-number">5.</span> <span class="nav-text">B+树</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/07/03/data_structure_tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          树
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-07-03 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-03T00:00:00+08:00">2020-07-03</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>树不同于链表这样子的线性结构，只能一对一或者一对零。树是一种非线性结构，一个结点可以对应一个结点，也可以对应多个节点，甚至可以对应零个结点。在数据结构中，树的定义是：有n（n&gt;=0）个节点的有限集合。当n等于0的时候称为空树，在一颗非空的树由如下特点：</p>
+<ol>
+<li>有且仅有一个特定的，称为根的节点</li>
+<li>当n&gt;1的时候，其余节点可分为m（m&gt;0）个互不相交的有限集合，每一个集合本身又是一棵树，称为子树</li>
+</ol>
+<blockquote>
+<p>树的示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/de57737af64560b44a742ac36f2e7fd9dfca4fd5/data_structure/tree_1.png" alt="image"></p>
+<p>上图中，1是这棵树的根节点。根节点下有两个子节点，分别是2和3。没有子节点的节点称为树的叶子节点，在上图中，5，6，7，8，9这五个节点都没有子节点，所以是叶子节点。另外，根节点1的子节点2下面有很多个节点。它们共同的祖先都是2，如果以2为根节点，那么又是一棵树。称为根节点1的子树。当然，根节点1的另一个子节点3也可以作为子树的根节点，不过这棵树除了根节点3之外只有一个叶子节点。</p>
+<p>从根节点到叶节点分成不同的层级，就像下图所示。树的层级从根节点开始，根节点所在的层级为第一层，它的直接子节点为第二层（如下图的2和3节点所在的层级），依次类推。所以，下图中的树一共有5层。<em><strong>对于一颗树的任意节点n，从根节点到n节点的唯一路径长称为n节点的深度</strong></em>。比如下图中的节点2的深度为1，10的深度为4。而根节点的深度为0。<em><strong>还是对于一棵树的任意节点n，以节点n为根节点的树，从n到属于这个树的叶子的最长路径长称为n节点的高度</strong></em>。比如节点2，它到叶子节点的最长路径长是3，也就是节点2到节点10的路径长。所以，所有叶子的高度都为0。因此，<em><strong>一棵树的高度等于它的最深叶子的深度</strong></em>。又是对于一个树的任意节点，它直接衍生出来的直接下一层级的节点称为该节点的子节点（除了叶子节点），比如节点4和5是节点2的子节点。而衍生出该节点的直接上一层级的节点称为该节点的父节点（根节点除外），比如节点1是节点2的父节点。同一层级具有共同父节点的节点称为兄弟节点，比如节点4和5有共同的父节点2，或者节点7，8，9有共同的父节点4，它们都是彼此兄弟节点。</p>
+<blockquote>
+<p>树节点之间关系示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/5d7a6fce73f6f15d8ef36c8ffbf31b394c7ed763/data_structure/tree_2.png" alt="image"></p>
+<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><p>所谓二叉树就是每个节点至多只能有两个子节点，也可以有一个子节点或者一个子节点都没有。根据树的定义，没有子节点的节点称为叶子节点。一棵二叉树如下图所示。其中，每个节点至多只有两个字节。比如，根节点下有两个子节点，分别是2和3。2被称为根节点的左儿子，3被称为根节点的右儿子。以2为根节点的子树称为根节点1的左子树。</p>
+<blockquote>
+<p>二叉树示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/15fc835a0887e95391da455f220798b569ca21d0/data_structure/binary_tree.png" alt="image"></p>
+<p>满二叉树，顾名思义就是所有非叶子的节点都有两个子节点，简而言之就是每个分支都是满的。</p>
+<blockquote>
+<p>满二叉树示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/d94e4aa580205ed7dec6c3aad9f8faca36938de1/full_binary_tree.png" alt="image"></p>
+<p>完全二叉树指的是，最后一个节点之前的节点都是齐全的。有这样一个定义：<em><strong>对一个有n个节点的二叉树，按层级顺序编号，则所有节点的编号为从1到n。如果这个树所有节点和同样深度的满二叉树的编号为从1到n的节点位置相同，则这个二叉树为完全二叉树</strong></em>。有点虚，具体看下图。如果节点6补全它的右儿子节点，编号为13，那么这棵树也是完全二叉树。但是，如果节点6只有右儿子而缺少了左儿子，那就不能称为完全二叉树。因为节点11和节点13之间存在一个空位，缺了一个节点，不齐全。</p>
+<blockquote>
+<p>完全二叉树示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/d94e4aa580205ed7dec6c3aad9f8faca36938de1/complete_binary_tree.png" alt="image"></p>
+<h3 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h3><p>二叉树在内存中存储的结构有两种：一是链式存储，用链表实现。二是使用顺序存储，用数组实现。使用链式结构存储的二叉树每个节点至少有三个区域，与存储数据相关的区域，以及一个指向左儿子的指针域和一个指向右儿子的指针域。</p>
+<blockquote>
+<p>链式存储示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/70520f36b5c868e179c5468374baffbc742a5d58/link_store_tree_node.png" alt="image"></p>
+<blockquote>
+<p>数组存储示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/73abc5503db989baff4de9474ad5478c8e583b87/binary_tree_store_in_array.png" alt="image"></p>
+<p>在使用数组存储二叉树节点的时候，叶子节点，它的左右儿子所在的单元为空。所以，用数组存储普通二叉树会造成一定的空间浪费。用数组存储二叉树适合完全二叉树和满二叉树这样的特殊二叉树，因为它们的元素是连续的，不会造成中间数组某个单元出现空缺的现象。对于使用数组下标为0的单元存储节点的情况（也就是上图），<em><strong>对于一颗二叉树上的任意位置i，它的左儿子位于数组下标为2*i+1的位置上。它的右儿子则是位于数组下标为2*i+2的位置上。而这个i的父节点则是位于数组下标(i-1)/2的位置上（对于i所在的位置是右儿子，整数相除向下取整）</strong></em>。<br>不过，使用数组下标为0的位置存储二叉树节点的计算方式相对来说比较繁琐。将下标0的位置空出来不存储节点，其计算方式相对来说就简洁了很多。比如使用数组存储上面的完全二叉树，示意图就像下图这样。</p>
+<blockquote>
+<p>数组存储完全二叉树</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/214222850b6b80e8e5856193e0646400c7ff3b8e/complete_binary_tree_node_store_in_array_unuse_index_0.png" alt="image"></p>
+<p>空出下标为0的单元之后的计算方式：<em><strong>对于一颗二叉树任意节点在数组上下标为i，它的左儿子所在的下标是2i，它的右儿子所在的下标是2i+1，它的父节点所在的下标是i/2</strong></em>。</p>
+<h3 id="二叉树的遍历"><a href="#二叉树的遍历" class="headerlink" title="二叉树的遍历"></a>二叉树的遍历</h3><p>二叉树的遍历方式有四种，分别是先序遍历，中序遍历，后序遍历和层序遍历。先（前）序遍历指的是：<em><strong>先访问根节点，再访问左节点，最后访问右节点</strong></em>。中序遍历指的是：<em><strong>先访问左节点，再访问根节点，最后访问右节点</strong></em>。后序遍历指的是：<em><strong>先访问左节点，再访问右节点，最后访问根节点</strong></em>。层序遍历指的是：<em><strong>按照树的层次，从第一层级开始，依次往下。每一个层依次从左到右开始遍历，直到遍历完整棵树的方式</strong></em>。其中，层序遍历也叫广度优先遍历。而先，中，后三种遍历方式统称深度优先遍历。</p>
+<blockquote>
+<p>四种遍历方式示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/0ce6c5da20a5e28fc879dd78f639018a1375aeea/data_structure/the_way_to_traversing_binary_tree.png" alt="image"></p>
+<p>现在来用代码实现一下这四种遍历方式。首先是使用递归的方式实现遍历。不过递归遍历有个缺点，就是层序遍历无法使用递归方式。所以只能演示下先，中，后三种遍历的递归方式。下面是实验用的二叉树示意图，给出了链式和顺序的存储结构。</p>
+<blockquote>
+<p>实验二叉树示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/6d64db1f3d04ad96f7d74636886e6c69d510976f/data_structure/binary_tree_ABCDEFG.png" alt="image"></p>
+<h4 id="递归遍历方式"><a href="#递归遍历方式" class="headerlink" title="递归遍历方式"></a>递归遍历方式</h4><p>结构体声明，表示二叉树的一个节点。这个节点由三个部分组成。分别是存储数据的数据域，以及两个指向左右节点的指针域。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">BinaryTree</span>;</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">BinaryTree</span> <span class="title">bt</span>;</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">BinaryTree</span>* <span class="title">btptr</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">BinaryTree</span> &#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span>* data;</span><br><span class="line">    btptr left;</span><br><span class="line">    btptr right;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>为了方便，直接用数组转换为二叉树，数组存储的示意图上图已经给出。上文也提到过二叉树用顺序结构存储时的方式。这里使用的是不包含下标为0的位置，所以，对于节点i，它的左儿子是2*i的位置，右节点是2*i+1的位置。</p>
+<p>创建二叉树的时候有一点需要注意，就是在用手动输入数据的方式的时候需要将叶子节点补上，避免出错。不过这里使用的创建二叉树的方式可以不用全部补上叶子节点。因为使用数组转换成二叉树的方式，只要下标超过了当前数组的容量就直接返回空。所以使用数组转换成二叉树的方式，只需要将最后一个叶子节点之前的叶子节点补上就可以了。也就是说，使用当前数组转成二叉树的方式只要将叶子节点补上构成完全二叉树即可。</p>
+<blockquote>
+<p>手动输入补全叶子节点示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/d71a2bd381eef4e0084c4398bb5dc327a5acaa72/data_structure/Complete%20leaf%20node.png" alt="image"></p>
+<blockquote>
+<p>数组转换成二叉树补全节点示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/66301d8e484682cb92be8425c89acd624fe301b0/data_structure/complete_binary_tree_node.png" alt="image"></p>
+<blockquote>
+<p>使用先序遍历创建二叉树</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 先序递归创建二叉树</span></span><br><span class="line"><span class="function">btptr <span class="title">createBT</span><span class="params">(<span class="keyword">uint8_t</span> i, <span class="keyword">const</span> <span class="keyword">char</span>** arr, <span class="keyword">uint8_t</span> arrlen)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 下标超过数组范围时返回空</span></span><br><span class="line">    <span class="comment">// 或如果节点为空时用null代替</span></span><br><span class="line">    <span class="keyword">if</span> (i &gt;= arrlen || arr[i] == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    btptr root = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(bt));</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        errExit(<span class="string">&quot;out of memory&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 给节点赋值</span></span><br><span class="line">    root-&gt;data = arr[i];</span><br><span class="line">    <span class="comment">// 递归创建左子树</span></span><br><span class="line">    root-&gt;left = createBT(i * <span class="number">2</span>, arr, arrlen);</span><br><span class="line">    <span class="comment">// 递归创建右子树</span></span><br><span class="line">    root-&gt;right = createBT(i * <span class="number">2</span> + <span class="number">1</span>, arr, arrlen);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>递归遍历方式，没什么好说的，调整一下位置而已。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 先序遍历</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">preorder</span><span class="params">(btptr root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s &quot;</span>, root-&gt;data);</span><br><span class="line">        preorder(root-&gt;left);</span><br><span class="line">        preorder(root-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 中序遍历</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">inorder</span><span class="params">(btptr root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        inorder(root-&gt;left);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s &quot;</span>, root-&gt;data);</span><br><span class="line">        inorder(root-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 后序遍历</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">postorder</span><span class="params">(btptr root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        postorder(root-&gt;left);</span><br><span class="line">        postorder(root-&gt;right);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s &quot;</span>, root-&gt;data);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>测试函数</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 使用数组创建二叉树，必须要补上缺失的节点，构成完全二叉树，缺失的节点用空表示</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span>* arr[<span class="number">10</span>] = &#123;<span class="literal">NULL</span>, <span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>, <span class="string">&quot;C&quot;</span>, <span class="string">&quot;D&quot;</span>, <span class="string">&quot;E&quot;</span>, <span class="literal">NULL</span>, <span class="string">&quot;F&quot;</span>, <span class="literal">NULL</span>, <span class="string">&quot;G&quot;</span>&#125;;</span><br><span class="line">    btptr root = createBT(<span class="number">1</span>, arr, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pre: &quot;</span>);</span><br><span class="line">    preorder(root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;in: &quot;</span>);</span><br><span class="line">    inorder(root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;post: &quot;</span>);</span><br><span class="line">    postorder(root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pre: A B D G E C F</span><br><span class="line">in: D G B E A C F</span><br><span class="line">post: G D E B F C A</span><br></pre></td></tr></table></figure>
+
+<h4 id="非递归遍历方式"><a href="#非递归遍历方式" class="headerlink" title="非递归遍历方式"></a>非递归遍历方式</h4><p>非递归遍历方式需要使用其它数据结构来辅助，如栈，队列等数据结构。</p>
+<p><strong>层序遍历</strong></p>
+<p>层序遍历用队列来辅助，先将根节点入队。然后访问当前根节点数据，如果当前根节点的子节点不为空，那么就将子节点入队。这样，同一父节点的两个子节点总是左子节点的访问顺序优先于右子节点。因为父节点先入队，子节点后入队。父节点的访问顺序也优先于子节点，这就达到了从上之下，从左至右的目的。</p>
+<blockquote>
+<p>层序遍历例程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">levelOrder</span><span class="params">(btptr root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">queue</span>&lt;btptr&gt; qobj;</span><br><span class="line">    <span class="comment">// 根节点入队</span></span><br><span class="line">    qobj.push(root);</span><br><span class="line">    <span class="keyword">while</span> (!qobj.empty()) &#123;</span><br><span class="line">        <span class="comment">// 访问当前节点</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s &quot;</span>, qobj.front()-&gt;data);</span><br><span class="line">        <span class="comment">// 如果左儿子不为空，入队</span></span><br><span class="line">        <span class="keyword">if</span> (qobj.front()-&gt;left != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            qobj.push(qobj.front()-&gt;left);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果右儿子不为空，入队</span></span><br><span class="line">        <span class="keyword">if</span> (qobj.front()-&gt;right != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            qobj.push(qobj.front()-&gt;right);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 出队</span></span><br><span class="line">        qobj.pop();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>层序遍历步骤示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/296be7ba1019de9db8829563584e8497b1554e22/data_structure/level_bianli_xxxxxxx.png" alt="image"></p>
+<p><strong>先序遍历</strong><br>先序非递归方式使用栈来辅助，根据先序遍历的顺序；先是访问根节点，然后访问左子节点，最后是右子节点。所以，压入根节点之后立即弹出访问。因为栈是先进后出的数据结构，所以接下来需要将右子节压入再压入左子节点。这样，在下一次循环开始的时候，弹出来的就是左节点，访问之后又按照原来的顺序继续要入非空节点，这样才能达到先根节点，最左节点，最后右节点的顺序。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 先序遍历</span></span><br><span class="line"><span class="comment">// 根节点——&gt;左子树——&gt;右子树</span></span><br><span class="line"><span class="comment">// 使用栈来辅助，对于先序遍历，需要先压入根节点，再弹出访问</span></span><br><span class="line"><span class="comment">// 之后再压入右子节，最后才是左子节点。因为栈是先进后出的</span></span><br><span class="line"><span class="comment">// 所以需要先压入右子节点</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">preOrder</span><span class="params">(btptr root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">stack</span>&lt;btptr&gt; sobj;</span><br><span class="line">    btptr tmp = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="comment">// 根节点压栈</span></span><br><span class="line">    sobj.push(root);</span><br><span class="line">    <span class="keyword">while</span> (!sobj.empty()) &#123;</span><br><span class="line">        <span class="comment">// 访问栈顶元素（树的根节点或者子树的根节点）</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s &quot;</span>, sobj.top()-&gt;data);</span><br><span class="line">        <span class="comment">// 树的根节点或者子树的根节点出栈</span></span><br><span class="line">        tmp = sobj.top();</span><br><span class="line">        sobj.pop();</span><br><span class="line">        <span class="comment">// 如果右子树根节点（或节点）不为空</span></span><br><span class="line">        <span class="comment">// 右子树根节点压栈</span></span><br><span class="line">        <span class="keyword">if</span> (tmp-&gt;right != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            sobj.push(tmp-&gt;right);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果左子树根节点（或节点）不为空</span></span><br><span class="line">        <span class="comment">// 左子树根节点压栈</span></span><br><span class="line">        <span class="keyword">if</span> (tmp-&gt;left != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            sobj.push(tmp-&gt;left);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/ccff41b357f795ba92195fa363901d319c08b746/data_structure/non-recursion_preorder_binary_tree.png" alt="image"></p>
+<p><strong>中序遍历</strong></p>
+<p><strong>后序遍历</strong></p>
+<h4 id="其它知识点"><a href="#其它知识点" class="headerlink" title="其它知识点"></a>其它知识点</h4><p><strong>已知两种遍历访问重建唯一二叉树</strong></p>
+<p>对于二叉树的遍历顺序有个挺有意思的知识点，就是 <em><strong>已知先序和中序，或者中序和后序可以唯一确定一棵二叉树的结构。但是已知先序和后序不能唯一确定一颗二叉树的结构</strong></em>。通常这个问题是这样的，给出先序和中序遍历顺序，求后序遍历顺序。或者给出中序和后序遍历顺序，求先序遍历顺序。比如：一颗二叉树，已知先序遍历的顺序是：ABCDEFGHI，中序遍历的顺序是：BDCEAGFHI，求这个树的后序遍历。</p>
+<blockquote>
+<p>对于遍历顺序的，先序遍历的顺序第一个节点是根节点，后序遍历的顺序最后一个节点是根节点。根据这个特性，由此可以确定根节点。然后在中序遍历中找到根节点所在的位置，根据中序遍历的特性，位于根节点左边节点都是属于左子树的节点，位于根节点右边的节点都是右子树的节点。然后依次重复这个过程，直到确定最后的二叉树结构。</p>
+</blockquote>
+<p>根据给出的先序和中序遍历顺序推导后序遍历，这个过程首先要根据给出的遍历顺序来重建一颗唯一二叉树，然后得出后序遍历，具体思路。</p>
+<ol>
+<li>根据先序遍历的特性，可以得出A是根节点。然后就可以在中序遍历中找到这个根节点A，于是，左边的节点都是左子树的节点，如：BDCE。右边的节点都是右子树的节点，如：GFHI。这样，确定了根节点，也分离了左右子树。</li>
+<li>分离了左右子树之后开始递归分离子树的子树，直到分离成单个节点。按照先序遍历的顺序，根节点A之后是B，可以确信B就是左子树的根节点。然后在根据中序遍历，可知B只有右子树没有左子树。然后再返回来先序遍历，B之后是C。所以B的右子树的根节点就是C，这样B的右子树就分离出来了。根据中序遍历顺序，得到D是C的左节点，E是C的右节点。</li>
+<li>左子树构建完成之后开始分离右子树。根据先序遍历，根节点A的左子树遍历完之后的下一个节点就是右子树的根节点。所以，A的右子树根节点是F。然后在看中序遍历，得到G是F的左节点。HI是F的右子树节点。这个时候可以确定H是F右子树的根节点，I是H的子节点。那么I是H的右节点还是左节点呢。从先序是看不出来的，只能从中序遍历确定。根据中序遍历的特性，先左子树，再根节点，最后右子树。I排在H的后面，所以，I是H的右节点。</li>
+</ol>
+<p>最终构建的二叉树如下面两张图图所示。根据构建出来的二叉树可知其后序遍历是：DECBGIHFA。</p>
+<blockquote>
+<p>节点分离示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/0f20f6c1124c1588c0bcf1a2db0cff3f17003ba1/data_structure/preorder_and_inorder_to_a_binary_tree_split_sub_tree.png" alt="image"></p>
+<blockquote>
+<p>唯一二叉树构建示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/0e489de2911a98269cfdf1b8965cdd8c79e4cf5e/data_structure/binary_tree_ABCDEFGHI.png" alt="image"></p>
+<p>已知中序和后序遍历确定一颗唯一的二叉树和已知先序和中序确定唯一的二叉树方法类似，不同的是确定根节点是先序遍历的第一个节点，而后序遍历最后一个才是根节点。思路都差不过，找到规律就不难重新构建出来了。</p>
+<blockquote>
+<p>补全节点构成完全二叉树以便创建</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/221392f4a9770341bad82c9f9b53d6dabf081a56/data_structure/complement_full_binary_tree_2.png" alt="image"></p>
+<blockquote>
+<p>验证例程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 使用数组创建二叉树，必须要补上缺失的节点，构成完全二叉树，缺失的节点用空表示</span></span><br><span class="line">    <span class="comment">// const char* arr[10] = &#123;NULL, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, NULL, &quot;F&quot;, NULL,</span></span><br><span class="line">    <span class="comment">// &quot;G&quot;&#125;;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span>* arr[<span class="number">16</span>] = &#123;<span class="literal">NULL</span>, <span class="string">&quot;A&quot;</span>,  <span class="string">&quot;B&quot;</span>, <span class="string">&quot;F&quot;</span>, <span class="literal">NULL</span>, <span class="string">&quot;C&quot;</span>,  <span class="string">&quot;G&quot;</span>,  <span class="string">&quot;H&quot;</span>,</span><br><span class="line">                           <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="string">&quot;D&quot;</span>, <span class="string">&quot;E&quot;</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="string">&quot;I&quot;</span>&#125;;</span><br><span class="line">    btptr root = createBT(<span class="number">1</span>, arr, <span class="number">16</span>);</span><br><span class="line">    <span class="comment">// ...省略部分代码...</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pre: A B C D E F G H I</span><br><span class="line">in: B D C E A G F H I</span><br><span class="line">post: D E C B G I H F A</span><br></pre></td></tr></table></figure>
+
+<p><strong>二叉树遍历应用例子——表达式树</strong></p>
+<h3 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h3><p>二叉查找树有这样的特点，如果某个节点左右子节点都存在。那么它的左儿子节点的值小于该节点的值，它的右儿子节点的值则是大于该节点的值。所以，对于一颗二叉查找树的根节点，其左子树的所有结点的值都小于根节点的值，其右子树的值都大于根节点的值。***二叉查找树查找一个节点的平均时间复杂度是O(logN)***。</p>
+<blockquote>
+<p>二叉查找树示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/5398a2a25a5f56ca931fb4898f7cb79bdac9a0bc/binary_search_tree.png" alt="image"></p>
+<h4 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h4><p>根据二叉查找树的特性，查找一个节点相对于线性结构来说要快很多。比如链表，要查找一个特定的节点，即使该链表的每个节点的值都是经过排序的，它的查找平均复杂是O(N)。而二叉查找树则是O(logN)。当然，并非所有的线性结构都和链表一样，比如一个已经经过排序的数组，可以通过二分查找的方法来查找一个特定的元素，它的查找时间复杂度和二叉查找树的查找平均时间复杂度一样，都是O(logN)。</p>
+<p>现在，我们来看一下二叉查找树的查找过程，比如查找值为4的节点，分成三个步骤。</p>
+<ol>
+<li>首先将值4和树的根节点比较，4小于根节点的值6，根据二叉树的特性，查找的节点如果存在的话就在根节点的左子树当中</li>
+<li>比较根节点的左儿子。发现4比这个节点要大，这个时候向这个节点的右子树接着查找</li>
+<li>和它的右儿子比较，发现值相等，找到这个值为4的节点</li>
+</ol>
+<blockquote>
+<p>查找过程示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/a7857d83476b2e12528c4bc99268e9bd849ac182/data_structure/binary_search_tree_exec_search_1.png" alt="image"></p>
+<p>实现这个查找算法需要稍微改一下原来的程序，虽然存储的数据使用字符也可以，但是没有整数来得直观。还得需要注意一点，创建函数并没有处理数据重复的代码。这么做的原因是这里只探索原理，不会太深入细节。所以，构建后的二叉树各个节点的值必须是唯一的，而且是有效的（为了区分空叶子节点）。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置无效值</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EMPTY_ELEM -1</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">BinaryTree</span> &#123;</span></span><br><span class="line">    <span class="comment">// 数据域声明为int型</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    btptr left;</span><br><span class="line">    btptr right;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 先序递归创建二叉树</span></span><br><span class="line"><span class="function">btptr <span class="title">createBT</span><span class="params">(<span class="keyword">uint8_t</span> i, <span class="keyword">const</span> <span class="keyword">int</span>* arr, <span class="keyword">uint8_t</span> arrlen)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 防止下标超过数组范围时返回空</span></span><br><span class="line">    <span class="comment">// 或如果节点为空时用null代替</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// 这里只需将NULL替换成EMPTY_ELEM就可以了</span></span><br><span class="line">    <span class="keyword">if</span> (i &gt;= arrlen || arr[i] == EMPTY_ELEM) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    btptr root = (btptr)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(bt));</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        errExit(<span class="string">&quot;out of memory&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 给节点赋值</span></span><br><span class="line">    root-&gt;data = arr[i];</span><br><span class="line">    <span class="comment">// 递归创建左子树</span></span><br><span class="line">    root-&gt;left = createBT(i * <span class="number">2</span>, arr, arrlen);</span><br><span class="line">    <span class="comment">// 递归创建右子树</span></span><br><span class="line">    root-&gt;right = createBT(i * <span class="number">2</span> + <span class="number">1</span>, arr, arrlen);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用递归的方式实现不难，如果传进来的root为NULL，那么直接返回NULL表示el不存在。反之测试是否大于或小于当前节点值。如果大于，那么就递归查找右子树。如果小于，那么递归查找左子树。如果等于，那就说明找到该节点。即使元素不存在，当递归调用find函数最终root参数的值也为NULL。</p>
+<blockquote>
+<p>查找</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查找例程，递归</span></span><br><span class="line"><span class="comment">// 找到返回该数值所在的节点的指针，找不到返回NULL</span></span><br><span class="line"><span class="function">btptr <span class="title">find</span><span class="params">(btptr root, <span class="keyword">int</span> el)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (root-&gt;data &lt; el) &#123;</span><br><span class="line">        <span class="comment">// 如果大于当前节点值，说明可能在右子树中</span></span><br><span class="line">        <span class="keyword">return</span> find(root-&gt;right, el);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (root-&gt;data &gt; el) &#123;</span><br><span class="line">        <span class="comment">// 反之，该节点可能在左子树中</span></span><br><span class="line">        <span class="keyword">return</span> find(root-&gt;left, el);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 如果既不大于也不小于，那么肯定就是等于了</span></span><br><span class="line">        <span class="comment">// 直接返回当前节点</span></span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h4><p>插入操作和比较操作有些类似，插入操作同样需要查找节点。不同的是，插入操作在未找到当前给定值的节点的时候，就创建一个新的节点作为树的新节点。还是上面的二叉树模型作为基础，比如插入一个新的元素5。那么插入操作流程就像下面这个样子：</p>
+<ol>
+<li>将新元素值和根节点值比较，如果比根节点值小，那么就往左子树找空位。如果比根节点值大，那就往右子树找空位。依次递归，直到找到空位。</li>
+<li>找到插入的位置之后，构建新节点，赋值。并且将其左右指针置空，因为是新节点，自然就没有子节点了。最重要是还需要将新节点的父节点指针指向它，否则这个新节点就找不到了。</li>
+</ol>
+<blockquote>
+<p>如果想要存储多个相同的值，那么只需要在表示节点的结构体加一个用于统计相同值的字段即可。如果插入的值已经存在，那么就加1。在删除的时候就减1，等到这个字段值为0时表示当前节点值是最后一个，直接释放点这个节点的内存即可。</p>
+</blockquote>
+<blockquote>
+<p>查找插入过程</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/07fbc9a2767d4c132bbea1ab811e1de05ac79e1d/data_structure/binary_search_tree_insert.png" alt="image"></p>
+<p>那么，怎么让一个新插入的节点的父节点引用这个节点呢？一个可能的方式是：使用递归，返回这个节点的指针，然后父节点在保存这个指针的值到相应的指针域上。因为每一个节点都包含三个数据部分，数据域，左节点指针域和右节点指针域。</p>
+<p>在下面这个例程种，先是判断根节点root是否为空。如果为空，那么就创建一个新的节点，并初始化赋值。这也就是为什么插入操作可以用于创建一颗二叉排序树的原因。之后的两个if语句分支是判断给定的元素值是否大于当前根节点的值（如果进入到子树，根节点就是子树的根节点），来决定像哪个子树查找空位。根据递归的特性，最后root的值必定为NULL（前提是创建的时候叶子节点的左右儿子指针为NULL，才能判断），那么就可以创建一个新的节点，然后返回这个节点的指针。<br>最后需要注意一点的是，必须返回节点的指针，否则无法引用新建的节点。最后调用insert函数的时候，也需要将原来的根节点变量用来接收insert函数的返回值，避免出错。如：root = insert(root, el);</p>
+<blockquote>
+<p>插入例程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 插入例程，递归</span></span><br><span class="line"><span class="comment">// 其实也可以使用插入操作来创建一个二叉树</span></span><br><span class="line"><span class="comment">// 如果传进来的root为空，那么就创建根节点</span></span><br><span class="line"><span class="comment">// 后序传进来的数值不重复即可</span></span><br><span class="line"><span class="function">btptr <span class="title">insert</span><span class="params">(btptr root, <span class="keyword">int</span> el)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="comment">// 创建节点</span></span><br><span class="line">        root = (btptr)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(bt));</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            errExit(<span class="string">&quot;out of memory&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        root-&gt;data = el;</span><br><span class="line">        <span class="comment">// 新插入的节点是叶子节点，左右儿子都为空</span></span><br><span class="line">        root-&gt;left = root-&gt;right = <span class="literal">NULL</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (root-&gt;data &lt; el) &#123;  <span class="comment">// 大于根节点，往右子树</span></span><br><span class="line">        root-&gt;right = insert(root-&gt;right, el);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (root-&gt;data &gt; el) &#123;  <span class="comment">// 小于根节点，往左子树</span></span><br><span class="line">        root-&gt;left = insert(root-&gt;left, el);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 如果等于则什么都不做</span></span><br><span class="line">        <span class="comment">// 因为数据已经存在了</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h4><p>删除操作比较麻烦，需要考虑到删除一个节点之后如何维持父子节点之间相互关联，还有就是保证二叉树的特性：根节点的值大于全部左子树的节点值，根节点的值小于全部右子树的节点值。根据二叉树的特性，树的任意节点至多只有两个子节点。因此，删除节点可以分成三种情况：一是被删除的节点是叶子节点，二是被删除的节点有一个子节点（或左子树），三是被删除的节点有两个子节点（或两个子树，左右子树）。</p>
+<p>对于叶子节点，直接删除就可以了。但是对于有一个子节点的节点，需要将父节点的指向绕过被删除的节点，指向被删除节点的子节点。这个过程在下图给出。</p>
+<blockquote>
+<p>具有一个子节点删除示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/b75a0373e0619ad2927a6d8f031cfbef2ae91fe9/data_structure/delete_one_node_in_binary_search_tree.png" alt="iamge"></p>
+<p>接下来是删除具有两个子节点的情况。为了方便分析，我们改了下上图的二叉搜索树示意图，增加了一些新的节点，如下图。在这里，我们想要删除的节点是值为4的节点。一般的方法是，在值为4的节点的右子树中找出最小的值的节点，然后将这个值覆盖点值为4的节点。这样，我就完成了原先值为4的节点的操作。但是，覆盖掉之后，原先右子树中最小值的节点还存在。所以，我们还需要递归删除这个节点。因为第二次要删除的节点是最小值的节点，它已经不可能有左儿子了，要么有右儿子要么就是叶子节点。所以，第二次删除其实就是删除叶子节点或只有一个子节点的情况。</p>
+<blockquote>
+<p>具有两个子节点删除示意图</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/8cbeb42385f82beeea173a4491c27d3a1d2faa95/data_structure/delete_binary_tree_node.png" alt="image"></p>
+<blockquote>
+<p>删除例程（只有一个节点哪里不大明白，为什么不能使用!=）</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查找值最小的节点</span></span><br><span class="line"><span class="comment">// 用于辅助删除节点函数</span></span><br><span class="line"><span class="function">btptr <span class="title">findMin</span><span class="params">(btptr root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (root-&gt;left != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        root = root-&gt;left;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">btptr <span class="title">delNode</span><span class="params">(btptr root, <span class="keyword">int</span> el)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;not found\n&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (root-&gt;data &gt; el) &#123;</span><br><span class="line">        root-&gt;left = delNode(root-&gt;left, el);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (root-&gt;data &lt; el) &#123;</span><br><span class="line">        root-&gt;right = delNode(root-&gt;right, el);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (root-&gt;left != <span class="literal">NULL</span> &amp;&amp; root-&gt;right != <span class="literal">NULL</span>) &#123; <span class="comment">// 有两个子节点的情况</span></span><br><span class="line">        btptr min = findMin(root-&gt;right);  <span class="comment">// 找出右子树最小的节点</span></span><br><span class="line">        root-&gt;data = min-&gt;data;</span><br><span class="line">        root-&gt;right = delNode(root-&gt;right, min-&gt;data);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;  <span class="comment">// 有一个节点或没有节点的情况</span></span><br><span class="line">        btptr tmp = root;</span><br><span class="line">        <span class="keyword">if</span> (root-&gt;right == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            root = root-&gt;left;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (root-&gt;left == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            root = root-&gt;right;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;delete node: %d\n&quot;</span>, tmp-&gt;data);</span><br><span class="line">        <span class="comment">// 如果上面的if-else-if语句都不为真</span></span><br><span class="line">        <span class="comment">// 那么就是没有子节点，直接free掉</span></span><br><span class="line">        <span class="comment">// 即使有子节点，上面以及做处理了，也可以直接free掉</span></span><br><span class="line">        <span class="built_in">free</span>(tmp);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果删除次数较少的情况，可以使用懒惰删除。意思就是只需要将被删除的节点标记为‘已删除’状态，而不是真正的被删除。因为可能会有相同的节点再次插入树中，那么这个时候就可以省去创建节点和重复赋值的操作。</p>
+<p>虽然二叉搜索树在正常的情况下查找操作的时间复杂度是O(log N)，但是在极端情况下，它可能退化成单链表，其查找时间复杂度成了O(N)级别。这种情况如下图所示：AVL树就是为了解决这个问题。</p>
+<blockquote>
+<p>退化成单向链表的二叉查找树</p>
+</blockquote>
+<p><img src="https://gitee.com/vfxh/site-images/raw/11c01375e9ef16f01dc7e0c8995f3f17b9c8480a/data_structure/xxxxxxxxxxxxxxxxxxxxxxx.png" alt="image"></p>
+<h2 id="AVL树"><a href="#AVL树" class="headerlink" title="AVL树"></a>AVL树</h2><h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><h2 id="B-树"><a href="#B-树" class="headerlink" title="B-树"></a>B-树</h2><p>B-树是一种自平衡树，其每个节点可以有多个元素，如果每个节点至多只能由M个子节点，那么这个B-树称为M阶B-树。<br>M阶B-树的特点：</p>
+<ol>
+<li>所有叶子节点都处于同一层</li>
+<li>除了叶子节点之外，每个根节点至少有两个子树</li>
+<li>非根非叶子节点有k-1个元素和k个指向子树的指针（m/2 &lt;= k &lt;= m），叶子节点只有k-1个元素</li>
+<li>B-树的结构在插入删除的过程中是动态变化的，知道操作完成之后才能确定B-树的结构。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">// 一颗4阶B-树</span><br><span class="line">// 省略了指针域</span><br><span class="line">//</span><br><span class="line">// 1. 所有的叶子节点中的关键字都是有序的</span><br><span class="line">// 2. 两个相邻的关键字（k1,k2）的三个相间指针域（p1,p2,p3），通常的规律是：</span><br><span class="line">//    p1指向的节点所有关键字的值小于k1，p2指向的节点所有关键字大于k1小于k2，p3指向的节点所有关键字大于k2</span><br><span class="line"></span><br><span class="line">                                                         +--+--+--+</span><br><span class="line">                                                         |24|  |  |</span><br><span class="line">                                                         +--+--+--+</span><br><span class="line">                                                         |  |</span><br><span class="line">                                +------------------------+  +-------------------------------+</span><br><span class="line">                                |                                                           |</span><br><span class="line">                                v                                                           v</span><br><span class="line">                            +--+--+--+                                                  +--+--+--+</span><br><span class="line">                            |16|  |  |                                                  |51|  |  |</span><br><span class="line">                            +--+--+--+                                                  +--+--+--+</span><br><span class="line">                            |  |                                                        |  |</span><br><span class="line">                    +-------+  +-------------+                                  +-------+  +-------------+</span><br><span class="line">                    |                        |                                  |                        |</span><br><span class="line">                    v                        v                                  v                        v</span><br><span class="line">                +--+--+--+               +--+--+--+                         +--+--+--+               +--+--+--+</span><br><span class="line">                |11|  |  |               |22|  |  |                         |41|  |  |               |59|  |  |</span><br><span class="line">                +--+--+--+               +--+--+--+                         +--+--+--+               +--+--+--+</span><br><span class="line">                |  |                     |  |                               |  |                     |  |</span><br><span class="line">        +-------+  +-------+             |  +--------+              +-------+  +-------+             |  +--------+</span><br><span class="line">        |                  |             |           |              |                  |             |           |</span><br><span class="line">        v                  v             v           v              v                  v             v           v</span><br><span class="line">    +--+--+--+         +--+--+--+    +--+--+--+  +--+--+--+     +--+--+--+         +--+--+--+    +--+--+--+  +--+--+--+</span><br><span class="line">    |6 |  |  |         |12|  |  |    |17|18|  |  |23|  |  |     |31|  |  |         |42|  |  |    |58|  |  |  |60|61|  |</span><br><span class="line">    +--+--+--+         +--+--+--+    +--+--+--+  +--+--+--+     +--+--+--+         +--+--+--+    +--+--+--+  +--+--+--+</span><br></pre></td></tr></table></figure>
+
+<p><strong>查找</strong><br>执行查找的操作首先从根节点开始，比较当前节点中的关键字。如果找不到就选择合适的指针域往下一个节点。因为节点中的关键字是有序的，可以使用二分查找等查找算法来较少时间。比如查找24：从根节点开始，可以确定在右子树中。又因为24比41小，可以确定在当前根节点的左子树中。最后在叶子节点中找到24。当前的B-树只有3阶，顺序查找和二分查找没什么分别。但是阶很大的时候，二分查找的优势就出来了。</p>
+<p><strong>插入</strong><br>由于B-树的性质，插入操作就比较麻烦。在插入节点的时候，需要调整B-树使得保持平衡又不破坏B-树的性质。一种常规的做法是：分裂字节。如果一个节点元素已经满了，那么就需要分裂这个节点。使得其父节点多出一个子树。如果父节点的指针域也满了，那么就继续分裂，一直到树的根节点。当树的根节点也满了，那么就需要构建新的根节点。简而言之，B-树的这种插入方法就是自底向上构建树。直到所有插入操作完成之后，才能确定根节点的内容。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br></pre></td><td class="code"><pre><span class="line">// 1. 分裂子节点的情况</span><br><span class="line">//</span><br><span class="line">// 插入关键字13和14，这个时候叶子节点已经满了</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                                                         +--+--+--+</span><br><span class="line">                                                         |24|  |  |</span><br><span class="line">                                                         +--+--+--+</span><br><span class="line">                                                         |  |</span><br><span class="line">                                +------------------------+  +-------------------------------+</span><br><span class="line">                                |                                                           |</span><br><span class="line">                                v                                                           v</span><br><span class="line">                            +--+--+--+                                                  +--+--+--+</span><br><span class="line">                            |16|  |  |                                                  |51|  |  |</span><br><span class="line">                            +--+--+--+                                                  +--+--+--+</span><br><span class="line">                            |  |                                                        |  |</span><br><span class="line">                    +-------+  +-------------+                                  +-------+  +-------------+</span><br><span class="line">                    |                        |                                  |                        |</span><br><span class="line">                    v                        v                                  v                        v</span><br><span class="line">                +--+--+--+               +--+--+--+                         +--+--+--+               +--+--+--+</span><br><span class="line">                |11|  |  |               |22|  |  |                         |41|  |  |               |59|  |  |</span><br><span class="line">                +--+--+--+               +--+--+--+                         +--+--+--+               +--+--+--+</span><br><span class="line">                |  |                     |  |                               |  |                     |  |</span><br><span class="line">        +-------+  +-------+             |  +--------+              +-------+  +-------+             |  +--------+</span><br><span class="line">        |                  |             |           |              |                  |             |           |</span><br><span class="line">        v                  v             v           v              v                  v             v           v</span><br><span class="line">    +--+--+--+         +--+--+--+    +--+--+--+  +--+--+--+     +--+--+--+         +--+--+--+    +--+--+--+  +--+--+--+</span><br><span class="line">    |6 |  |  |         |12|13|14|    |17|18|  |  |23|  |  |     |31|  |  |         |42|  |  |    |58|  |  |  |60|61|  |</span><br><span class="line">    +--+--+--+         +--+--+--+    +--+--+--+  +--+--+--+     +--+--+--+         +--+--+--+    +--+--+--+  +--+--+--+</span><br><span class="line"></span><br><span class="line">// 插入15</span><br><span class="line">// 由于节点的元素已经满了，那么就需要将这个节点分裂。分裂的时候一般做法是根据阶的二分之一的位置分裂开。所以，12 13 14分裂成两个节点</span><br><span class="line">// 第一个节点关键字有12 13，第二个节点关键字是14 15。但是B-树的性质是非根非叶子节点的关键字是k，指针式k-1。父节点不符合。</span><br><span class="line">// 因为父节点只有一个元素11，分裂之后却有三个指针。所以，需要将原来分裂时的中间关键字11移到父节点中，才能保持B-树的特性</span><br><span class="line">//</span><br><span class="line">// 但是，这个方法不是很好。因为父节点关键字是11和13。而包含元素的12的节点就不能再插入关键字了。除非再次调整树的结构，这就需要耗费多一点的时间。</span><br><span class="line"></span><br><span class="line">                                                         +--+--+--+</span><br><span class="line">                                                         |24|  |  |</span><br><span class="line">                                                         +--+--+--+</span><br><span class="line">                                                         |  |</span><br><span class="line">                                +------------------------+  +-------------------------------+</span><br><span class="line">                                |                                                           |</span><br><span class="line">                                v                                                           v</span><br><span class="line">                            +--+--+--+                                                  +--+--+--+</span><br><span class="line">                            |16|  |  |                                                  |51|  |  |</span><br><span class="line">                            +--+--+--+                                                  +--+--+--+</span><br><span class="line">                            |  |                                                        |  |</span><br><span class="line">                    +-------+  +-------------+                                  +-------+  +-------------+</span><br><span class="line">                    |                        |                                  |                        |</span><br><span class="line">                    v                        v                                  v                        v</span><br><span class="line">                +--+--+--+               +--+--+--+                         +--+--+--+               +--+--+--+</span><br><span class="line">                |11|13|  |               |22|  |  |                         |41|  |  |               |59|  |  |</span><br><span class="line">                +--+--+--+               +--+--+--+                         +--+--+--+               +--+--+--+</span><br><span class="line">                |  |  |                  |  |                               |  |                     |  |</span><br><span class="line">        +-------+  |  +----+             |  +--------+              +-------+  +-------+             |  +--------+</span><br><span class="line">        |          |       |             |           |              |                  |             |           |</span><br><span class="line">        v          v       v             v           v              v                  v             v           v</span><br><span class="line">    +--+--+--+    +--+ +--+--+--+    +--+--+--+  +--+--+--+     +--+--+--+         +--+--+--+    +--+--+--+  +--+--+--+</span><br><span class="line">    |6 |  |  |    |12| |14|15|  |    |17|18|  |  |23|  |  |     |31|  |  |         |42|  |  |    |58|  |  |  |60|61|  |</span><br><span class="line">    +--+--+--+    +--+ +--+--+--+    +--+--+--+  +--+--+--+     +--+--+--+         +--+--+--+    +--+--+--+  +--+--+--+</span><br><span class="line"></span><br><span class="line">// 2. 分裂父节点的情况（3阶）</span><br><span class="line">// </span><br><span class="line">// 除了根节点还有一个空位置之外，其它节点都已经满了。这时候插入关键字18，因为比21要小，只能往左边的子树走。</span><br><span class="line">// 最后定位在左子树的最右边的叶子节点上。但是这个叶子节点关键字也已经满了，无法再插入新的关键字。</span><br><span class="line"></span><br><span class="line">                                  +--+--+</span><br><span class="line">                                  |21|  |</span><br><span class="line">                                  +--+--+</span><br><span class="line">                                  |  |</span><br><span class="line">                 +----------------+  +----------------------+</span><br><span class="line">                 |                                          |</span><br><span class="line">                 v                                          v</span><br><span class="line">              +--+--+                                    +--+--+</span><br><span class="line">              |10|15|                                    |38|57|                               </span><br><span class="line">              +--+--+                                    +--+--+</span><br><span class="line">              |  |  |                                    |  |  |</span><br><span class="line">    +---------+  |  +---------+               +----------+  |  +---------+</span><br><span class="line">    |            |            |               |             |            |</span><br><span class="line">    v            v            v               v             v            v</span><br><span class="line"> +--+--+      +--+--+      +--+--+         +--+--+       +--+--+      +--+--+                  </span><br><span class="line"> |1 |8 |      |11|12|      |16|17|         |22|23|       |41|52|      |58|59|</span><br><span class="line"> +--+--+      +--+--+      +--+--+         +--+--+       +--+--+      +--+--+ </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 按照分裂节点的思路，分裂出新的子节点。但是分裂之后就破坏了B-树的性质，依然行不通，因为出现了4个子树，就像下面这样。</span><br><span class="line"></span><br><span class="line">                                  +--+--+</span><br><span class="line">                                  |21|  |</span><br><span class="line">                                  +--+--+</span><br><span class="line">                                  |  |</span><br><span class="line">                 +----------------+  +----------------------+</span><br><span class="line">                 |                                          |</span><br><span class="line">                 v                                          v</span><br><span class="line">              +--+--+                                    +--+--+</span><br><span class="line">              |10|17|                                    |38|57|                               </span><br><span class="line">              +--+--+-------------+                      +--+--+</span><br><span class="line">              |  |  |             |                      |  |  |</span><br><span class="line">    +---------+  |  +-----+       |          +-----------+  |  +---------+</span><br><span class="line">    |            |        |       |          |              |            |</span><br><span class="line">    v            v        v       v          v              v            v</span><br><span class="line"> +--+--+      +--+--+  +--+--+ +--+--+    +--+--+        +--+--+      +--+--+                  </span><br><span class="line"> |1 |8 |      |11|12|  |15|16| |18|  |    |22|23|        |41|52|      |58|59|</span><br><span class="line"> +--+--+      +--+--+  +--+--+ +--+--+    +--+--+        +--+--+      +--+--+</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 这就需要向上继续分裂。将一个父节点，分裂成两个父节点。根节点有三个子树，这样就符合了。</span><br><span class="line">// 不过这样需要调整树根节点的关键字，保证三个指针指向的子树的关键字都处于 &lt; k1 &lt; k2 &lt; 这样的性质。</span><br><span class="line">// 所以，关键字15被移动到了树的根节点中。</span><br><span class="line"></span><br><span class="line">                                  +--+--+</span><br><span class="line">                                  |15|21|</span><br><span class="line">                                  +--+--+</span><br><span class="line">                                  |  |  |</span><br><span class="line">                 +----------------+  |  +-------------------+</span><br><span class="line">                 |                   |                      |</span><br><span class="line">                 v                   v                      v</span><br><span class="line">              +--+--+             +--+--+                +--+--+</span><br><span class="line">              |10|  |             |18|  |                |38|57|                               </span><br><span class="line">              +--+--+             +--+--+                +--+--+</span><br><span class="line">              |  |                   |                   |  |  |</span><br><span class="line">    +---------+  |                   |        +----------+  |  +---------+</span><br><span class="line">    |            |                   |        |             |            |</span><br><span class="line">    v            v                   v        v             v            v</span><br><span class="line"> +--+--+      +--+--+             +--+--+   +--+--+      +--+--+      +--+--+                  </span><br><span class="line"> |1 |8 |      |11|12|             |16|17|   |22|23|      |41|52|      |58|59|</span><br><span class="line"> +--+--+      +--+--+             +--+--+   +--+--+      +--+--+      +--+--+</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 3. 树高度增加的情况</span><br><span class="line">//</span><br><span class="line">// 以上面3阶B-树的情况，插入一个新的关键字53。那么最左边的子树就需要分裂，然而分裂依然无法解决违反B-树性质的问题。就像下面这个样子。</span><br><span class="line"></span><br><span class="line">// 分裂子节点，违反B-树性质</span><br><span class="line">// 即使再次分裂父节点，使得树的根节点有4个子树，这样也违反B-树的性质</span><br><span class="line"></span><br><span class="line">                                  +--+--+</span><br><span class="line">                                  |15|21|</span><br><span class="line">                                  +--+--+</span><br><span class="line">                                  |  |  |</span><br><span class="line">                 +----------------+  |  +-------------------+</span><br><span class="line">                 |                   |                      |</span><br><span class="line">                 v                   v                      v</span><br><span class="line">              +--+--+             +--+--+                +--+--+</span><br><span class="line">              |10|  |             |18|  |                |38|57|                               </span><br><span class="line">              +--+--+             +--+--+                +--+--+-------------+</span><br><span class="line">              |  |                   |                   |  |  |             |</span><br><span class="line">    +---------+  |                   |        +----------+  |  +----+        |</span><br><span class="line">    |            |                   |        |             |       |        |</span><br><span class="line">    v            v                   v        v             v       v        v</span><br><span class="line"> +--+--+      +--+--+             +--+--+   +--+--+      +--+--+ +--+--+  +--+--+                  </span><br><span class="line"> |1 |8 |      |11|12|             |16|17|   |22|23|      |41|  | |52|53|  |58|59|</span><br><span class="line"> +--+--+      +--+--+             +--+--+   +--+--+      +--+--+ +--+--+  +--+--+</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 这个时候就需要构建树的新根节点，才能完成这次插入。这也是B-树增加高度的唯一办法。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                                  +--+--+</span><br><span class="line">                                  |21|  |</span><br><span class="line">                                  +--+--+</span><br><span class="line">                                  |  |</span><br><span class="line">                           +------+  +------------------+</span><br><span class="line">                           |                            |</span><br><span class="line">                           v                            v</span><br><span class="line">                        +--+--+                      +--+--+  </span><br><span class="line">                        |15|  |                      |52|  |</span><br><span class="line">                        +--+--+                      +--+--+</span><br><span class="line">                        |  |                         |  |</span><br><span class="line">                 +------+  +---------+               |  +----------------+</span><br><span class="line">                 |                   |               |                   |</span><br><span class="line">                 v                   v               v                   v</span><br><span class="line">              +--+--+             +--+--+         +--+--+             +--+--+</span><br><span class="line">              |10|  |             |18|  |         |38|  |             |57|  |                               </span><br><span class="line">              +--+--+             +--+--+         +--+--+             +--+--+</span><br><span class="line">              |  |                |               |     |             |  |</span><br><span class="line">    +---------+  |                |           +---+     +---+         |  +-------+</span><br><span class="line">    |            |                |           |             |         |          |</span><br><span class="line">    v            v                v           v             v         v          v</span><br><span class="line"> +--+--+      +--+--+          +--+--+     +--+--+       +--+--+   +--+--+    +--+--+                  </span><br><span class="line"> |1 |8 |      |11|12|          |16|17|     |22|23|       |41|  |   |53|  |    |58|59|</span><br><span class="line"> +--+--+      +--+--+          +--+--+     +--+--+       +--+--+   +--+--+    +--+--+</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>当然插入并非只有分裂这一个方法。另一种可信的方法是：在还有空位的情况下，调整关键字的位置，将原本已经满了的节点的其中一个关键字移动到另一个节点的空位当中。比如要插入60，就将57移动到53所在的节点当中。然后将58移动到原来57的位置，接着移动59代替58原来的位置。这样就可以空出了一个可以插入60的位置了。</p>
+<p>B-树查找的时间复杂度是O(logM)，但是插入和删除需要O(M)的时间复杂度。</p>
+<p>需要注意的一点事：<em><strong>以3阶B-树为例，小于k1的子树所有关键字都小于k1。大于关键字k1的子树所有关键字都大于k1。这样才能保证树的叶子节点关键字是有序的。</strong></em></p>
+<p><strong>删除</strong><br>删除事插入的反操作，插入需要分裂节点，那么删除就需要合并节点。</p>
+<h2 id="B-树-1"><a href="#B-树-1" class="headerlink" title="B+树"></a>B+树</h2><p>B+树是B-树的一种变体，具有比B树更高的查询性能。其性质和B树差不多，不过在此基础上增加或作稍微修改。<br>M阶B+树的特征：</p>
+<ol>
+<li>有k个关键字的节点有k个指向子树的指针（B-树是k-1个）</li>
+<li>非叶子节点不包含数据（B树的节点都可以包含数据），只用来索引，所有数据保存在叶子节点（或者指向数据项的指针）</li>
+<li>所有中间节点的关键字都存在于直接子节点，在子节点中是最大或最小关键字</li>
+<li>叶子节点之间通过指针串联起来</li>
+</ol>
+<p>（争议：B+树可以有k个关键字，也可以有k-1个关键字）</p>
+<blockquote>
+<p>一个3阶B+树示例</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// 除了叶子节点之外的所有节点的关键字，都会出现在叶子节点中</span><br><span class="line">// 当要查找某一个节点的时候，比如3。根据定义，3比根节点的任何一个关键字都要小</span><br><span class="line">// 所以应该是在左子树。但是来到中间节点的时候就需要判断到底在哪个分支上。</span><br><span class="line">// 在这个例子中，当前节点的关键字是其子树的最大值。所以会走中间子树，而不是左子树或者右子树。</span><br><span class="line"></span><br><span class="line">                              +--+--+</span><br><span class="line">                              |8 |15|</span><br><span class="line">                              +--+--+</span><br><span class="line">                              |     |     </span><br><span class="line">                +-------------+     +------------+</span><br><span class="line">                |                                |</span><br><span class="line">                v                                v</span><br><span class="line">           +--+--+--+                         +--+--+</span><br><span class="line">           |2 |5 |8 |                         |11|15|</span><br><span class="line">           +--+--+--+                         +--+--+</span><br><span class="line">           |    |   |                         |     |</span><br><span class="line">   +-------+    |   +--------+            +---+     +--+</span><br><span class="line">   |            |            |            |            |</span><br><span class="line">   v            v            v            v            v</span><br><span class="line">+--+--+      +--+--+      +--+--+      +--+--+      +--+--+   </span><br><span class="line">|1 |2 | ---&gt; |3 |5 | ---&gt; |6 |8 | ---&gt; |9 |11| ---&gt; |13|15|</span><br><span class="line">+--+--+      +--+--+      +--+--+      +--+--+      +--+--+</span><br></pre></td></tr></table></figure>
+
+<p>从例子中可以看到。所有所有中间节点的关键字都存在于直接子节点，在子节点中是最大关键字。可以根据中间节点的关键字来找到最终在叶子节点的关键字，以及和该关键字相关联的数据项。而且，如果找不到，也可以根据关键字的大小顺着指针往下一个叶子节点找。</p>
+<p>参考资料</p>
+<ol>
+<li>《C++数据结构和算法》第四版</li>
+<li>《数据结构和算法分析—C语言描述》第三版</li>
+<li>《漫画算法》</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/07/02/database_transaction/" rel="prev" title="数据库之事务">
+                  <i class="fa fa-chevron-left"></i> 数据库之事务
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/07/03/linux_process_thread/" rel="next" title="Linux系统编程——进程和线程">
+                  Linux系统编程——进程和线程 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

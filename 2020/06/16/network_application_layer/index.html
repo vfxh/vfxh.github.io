@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="概念P2P报文交换不经过服务器，而是两个客户端之间交换报文 B&#x2F;SC&#x2F;SC&#x2F;S和P2P的区别在同一时间，P2P可以既是client也可以是server，而C&#x2F;S只能是在不同的时间段内互换client和server这两个角色。 进程间通信进程间通信（IPC）只是一组进程间进行数据交换的行为。进程的IPC是由操作系统控制的。操作系统中的IPC是运行在同一台主机上的不同进程。通信网络中的IPC可以是同一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络协议——应用层">
+<meta property="og:url" content="http://example.com/2020/06/16/network_application_layer/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="概念P2P报文交换不经过服务器，而是两个客户端之间交换报文 B&#x2F;SC&#x2F;SC&#x2F;S和P2P的区别在同一时间，P2P可以既是client也可以是server，而C&#x2F;S只能是在不同的时间段内互换client和server这两个角色。 进程间通信进程间通信（IPC）只是一组进程间进行数据交换的行为。进程的IPC是由操作系统控制的。操作系统中的IPC是运行在同一台主机上的不同进程。通信网络中的IPC可以是同一">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/ab74366a88b34c251eca36190657db07f9776b76/http_req_resp_rtt.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/114f424358e04f88d1992416517e76a9a3f42537/http_req_msg_format.png">
+<meta property="og:image" content="https://gitee.com/vfxh/site-images/raw/114f424358e04f88d1992416517e76a9a3f42537/http_rsp_msg_format.png">
+<meta property="article:published_time" content="2020-06-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.693Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/vfxh/site-images/raw/ab74366a88b34c251eca36190657db07f9776b76/http_req_resp_rtt.png">
+
+
+<link rel="canonical" href="http://example.com/2020/06/16/network_application_layer/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;06&#x2F;16&#x2F;network_application_layer&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;06&#x2F;16&#x2F;network_application_layer&#x2F;&quot;,&quot;title&quot;:&quot;网络协议——应用层&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>网络协议——应用层 | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#P2P"><span class="nav-number">1.1.</span> <span class="nav-text">P2P</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B-S"><span class="nav-number">1.2.</span> <span class="nav-text">B&#x2F;S</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C-S"><span class="nav-number">1.3.</span> <span class="nav-text">C&#x2F;S</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C-S%E5%92%8CP2P%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.4.</span> <span class="nav-text">C&#x2F;S和P2P的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1"><span class="nav-number">1.5.</span> <span class="nav-text">进程间通信</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP%E7%9B%B8%E5%85%B3"><span class="nav-number">2.</span> <span class="nav-text">HTTP相关</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E6%80%A7"><span class="nav-number">2.1.</span> <span class="nav-text">特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#URI%E5%92%8CURL"><span class="nav-number">2.2.</span> <span class="nav-text">URI和URL</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">HTTP报文格式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E6%8A%A5%E6%96%87%E9%80%9A%E7%94%A8%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">请求报文通用格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E6%8A%A5%E6%96%87%E9%80%9A%E7%94%A8%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.2.</span> <span class="nav-text">响应报文通用格式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTPS%E5%8D%8F%E8%AE%AE"><span class="nav-number">4.</span> <span class="nav-text">HTTPS协议</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HTTP%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="nav-number">4.1.</span> <span class="nav-text">HTTP协议的缺点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A1%AE%E4%BF%9D%E5%AE%89%E5%85%A8%E7%9A%84HTTPS%E5%8D%8F%E8%AE%AE"><span class="nav-number">4.2.</span> <span class="nav-text">确保安全的HTTPS协议</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/16/network_application_layer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          网络协议——应用层
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-06-16 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-16T00:00:00+08:00">2020-06-16</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" itemprop="url" rel="index"><span itemprop="name">网络协议</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><h4 id="P2P"><a href="#P2P" class="headerlink" title="P2P"></a>P2P</h4><p>报文交换不经过服务器，而是两个客户端之间交换报文</p>
+<h4 id="B-S"><a href="#B-S" class="headerlink" title="B/S"></a>B/S</h4><h4 id="C-S"><a href="#C-S" class="headerlink" title="C/S"></a>C/S</h4><h4 id="C-S和P2P的区别"><a href="#C-S和P2P的区别" class="headerlink" title="C/S和P2P的区别"></a>C/S和P2P的区别</h4><p>在同一时间，P2P可以既是client也可以是server，而C/S只能是在不同的时间段内互换client和server这两个角色。</p>
+<h4 id="进程间通信"><a href="#进程间通信" class="headerlink" title="进程间通信"></a>进程间通信</h4><p>进程间通信（IPC）只是一组进程间进行数据交换的行为。进程的IPC是由操作系统控制的。操作系统中的IPC是运行在同一台主机上的不同进程。通信网络中的IPC可以是同一台主机上的一组不同进程，也可以是不同主机（可能运行的操作系统也不同）之间的一组进程。<br>网络IPC是通过一个叫做套接字（socket）的软件接口来作为报文交换的入口点和出口点，而这个套接字的就是IP和port的组合体。IP的作用是定位实体所在的位置，port的作用是定位报文交换的进程。<br>应用层的进程可以控制应用层的一切，但对于运输层的控制是有限的。比如可以选择用哪种运输层协议，TCP或者UDP。以及缓冲区的大小，报文段的长度大小。</p>
+<blockquote>
+<p>network IPC</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// assuming based on TCP protocol</span><br><span class="line"></span><br><span class="line">+--------+                           +--------+</span><br><span class="line">| entity |                           | entity |</span><br><span class="line">+--------+                           +--------+</span><br><span class="line">    ^                                     ^</span><br><span class="line">    |                                     |</span><br><span class="line">+--------+                           +--------+</span><br><span class="line">| socket |                           | socket |</span><br><span class="line">+--------+                           +--------+ </span><br><span class="line">    |                                     |</span><br><span class="line">    v                                     v</span><br><span class="line">+----------+                         +----------+</span><br><span class="line">|   TCP    | &lt;-------Internet------&gt; |   TCP    |</span><br><span class="line">|  buffer  |                         |  buffer  |</span><br><span class="line">+----------+                         +----------+</span><br></pre></td></tr></table></figure>
+
+<h3 id="HTTP相关"><a href="#HTTP相关" class="headerlink" title="HTTP相关"></a>HTTP相关</h3><p>HTTP即超文本传输协议，目前主要基于运输层的TCP协议。一个HTTP的请求和响应过程的简单：先建立起TCP连接，然后进行数据交互，最后断开TCP连接。TCP在建立连接的时候会进行三次握手。在最后一次握手的时候，也就是建立起连接状态的第三次client向server发送的报文，会把HTTP请求报文作为第三次发送的报文发送到server中。</p>
+<blockquote>
+<p>示意图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+--------+                +--------+</span><br><span class="line">| client |                | server |</span><br><span class="line">+--------+                +--------+</span><br><span class="line">    |                         |</span><br><span class="line">    | &lt;----------TCP--------&gt; |</span><br><span class="line">    |                         |</span><br><span class="line">    | ------HTTP Request----&gt; |</span><br><span class="line">    |                         |</span><br><span class="line">    | &lt;-----HTTP Response---- |</span><br><span class="line">    |                         |  </span><br></pre></td></tr></table></figure>
+
+<p>对于HTTP/1.0，每一个HTTP请求响应的结束都会断开TCP连接。如果想再次进行通信，就需要重新建立TCP连接。每次建立TCP连接都会带来额外的开销，就是分配TCP发送/接收缓冲区和相关变量。而且，每次重新建立起TCP连接到HTTP接收到server的响应，这都要花费两倍的RTT（Round-Trip Time：往返时间，指从C端发送数据到S端，然后S端返回响应，C端收到S端的响应的一个完整过程所花费的时间）。这就是HTTP/1.0的缺点。</p>
+<p>HTTP/1.1解决了这个问题。就是在一条已经建立起的TCP连接上完成了HTTP请求和响应的过程后不断开这条TCP连接，而是保持一段时间的连接状态。这种连接方式叫做持续连接。后面相同的客户端再次进行HTTP请求的时候就不用再次建立TCP连接。这个时候，一次HTTP请求和响应的过程所花费的时间就下降到近似一个RTT，还减少了由于TCP连接建立的时候分配缓冲区和相关变量的开销。</p>
+<blockquote>
+<p>建立连接通信结束后就断开连接叫短连接，而通信结束后还继续保留一段时间的叫做长连接或者持续连接</p>
+</blockquote>
+<p>（！！！！这里要使用Linux的TCP连接工具实际操作下！！！！）</p>
+<p><img src="https://gitee.com/vfxh/site-images/raw/ab74366a88b34c251eca36190657db07f9776b76/http_req_resp_rtt.png" alt="image"></p>
+<p>HTTP/1.1中的持续连接有两种工作方式，一个是非流水式，一个式流水式。</p>
+<p><strong>非流水式</strong></p>
+<p>非流水式的工作方式下，client发送一个HTTP请求之后，只有等到这个请求的响应返回之后才能再次发送HTTP请求。也就是说，在发送请求到收到响应这一段时间TCP连接是处于空闲状态的。虽然每请求一个资源花费的时间是一个RTT，比HTTP/1.0的短链接的2xRTT要高效率，但是还是会浪费点请求到响应的那一段中间的时间。</p>
+<p><strong>流水式</strong></p>
+<p>相对于非流水式的工作方式，流水式允许client在发送一个HTTP请求之后，不需要等到响应就可以再次发送HTTP请求。这种工作方式将非流水式的那端请求响应的中间空闲时间充分得利用起来，提高了效率。在多个连续的HTTP请求到server之后，server会根据请求返回相应的HTTP响应。不过需要注意的是：<em><strong>返回的HTTP响应可能不会按照请求的顺序到达，这其中涉及到server端处理的时间问题以及网络的时延问题</strong></em>。总的来说就是，HTTP/1.0流水式的工作方式要比非流水式的工作方式要高效。</p>
+<h4 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h4><ol>
+<li>面向事务<br>HTTP事务是指一系列信息的交换，这个交换的过程是不可分割的整体。要么全部交换完成，要么一次都不交换。</li>
+</ol>
+<blockquote>
+<p>HTTP一次完整的请求响应过程</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">客户端发起HTTP请求 ——&gt; DNS域名解析(如果访问的是域名) ——&gt; 建立TCP连接(三次握手)</span><br><span class="line">                                                            |</span><br><span class="line">                                                            v</span><br><span class="line"> 数据呈现  &lt;—— 客户端接收HTTP响应，并对响应处理 &lt;——	服务端处理HTTP请求，返回HTTP响应                                                    </span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>无连接<br>HTTP协议本身是无连接的，它依赖于运输层的TCP协议提供可靠的，按序到达的，无差错的服务。</p>
+</li>
+<li><p>无状态<br>所谓无状态是指，HTTP协议本身并不要求server保存有关于client的任何信息。每一次client发来的请求server都不知道client的身份。比如，client向server第一次请求server，然后server做出响应。相同client再次发送相同请求server，server都会向第一次一样对这个请求做出相同的响应。也就是说，HTTP server并不关心谁是谁，只要请求符合要求就会返回响应。</p>
+</li>
+</ol>
+<h4 id="URI和URL"><a href="#URI和URL" class="headerlink" title="URI和URL"></a>URI和URL</h4><p><strong>URI：</strong> <em><strong>(uniform resource identifier)</strong></em> 统一资源标识符，用于唯一标识互联网中的某个资源。这个资源可以是单个，或者多个的集合。</p>
+<p><strong>URL：</strong> <em><strong>(uniform resource location)</strong></em> 统一资源定位符，用于表示资源的地点。URL是URI的子集。</p>
+<p>怎么理解URI呢？关键点就在于”唯一“这两个字，无论什么东西，只要有能够把这个东西唯一标识出来，那么就可以说这个标识是URI。比如一台主机上的某个资源（文档，或者某张图片）。这个资源有唯一的标识，那么能够找到这个资源的一个字符串就是URI。比如：<a href="ftp://ftp.is.co.za/rfc/rfc1808.txt%E3%80%81http://www.ietf.org/rfc/rfc2396.txt">ftp://ftp.is.co.za/rfc/rfc1808.txt、http://www.ietf.org/rfc/rfc2396.txt</a> 这些都可以叫做URI。那么URL又是什么东西呢？所谓的URL就是一个可以获取到这个资源的路径，也就是位置或地点。比如上述URI中的 <a href="ftp://ftp.is.co.za/rfc">ftp://ftp.is.co.za/rfc</a> 或者 <a href="ftp://ftp.is.co.za/">ftp://ftp.is.co.za</a> 。所以说，URL是URI的子集。相对URL是从URI去掉主机信息部分之后的字符串，比如/rfc/rfc1808.txt。如果一个URI不包含单一的资源，比如 <a target="_blank" rel="noopener" href="http://www.baidu.com/">http://www.baidu.com</a> 那么相对URL就是 / 。简而言之URL是URI的一种表示。</p>
+<blockquote>
+<p>通用URI格式：</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[协议名]://[用户名]:[密码]@[主机名]:[端口]/[路径]?[查询参数]#[片段ID]</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">方法</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">协议名</td>
+<td align="left">诸如：http、ftp、https等等表示协议的字符串</td>
+</tr>
+<tr>
+<td align="left">用户名和密码</td>
+<td align="left">认证信息，可以省略</td>
+</tr>
+<tr>
+<td align="left">主机名</td>
+<td align="left">可以是域名，也可以是IP</td>
+</tr>
+<tr>
+<td align="left">端口号</td>
+<td align="left">服务端监听的端口号，如果是http协议，那么默认80端口，可以省略</td>
+</tr>
+<tr>
+<td align="left">路径</td>
+<td align="left">类似于Linux系统的路径，/ 分隔</td>
+</tr>
+<tr>
+<td align="left">查询参数</td>
+<td align="left">可选，用于请求服务端返回的特定数据参数</td>
+</tr>
+<tr>
+<td align="left">片段ID</td>
+<td align="left">标记获取到资源中的子资源，比如文档内的某个位置</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>一个具体实例</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://fk.pretty.girl:8080/first/second?count=100&amp;offset=10</span><br></pre></td></tr></table></figure>
+
+<p>这里主要注意的是查询参数这部分，路径结束的尾部是用符号”?”来衔接查询参数的，之后多个参数用符号”&amp;”来连接。</p>
+<h3 id="HTTP报文格式"><a href="#HTTP报文格式" class="headerlink" title="HTTP报文格式"></a>HTTP报文格式</h3><p>HTTP协议式面向文本的协议，所以报文的字段是一些ASCII码串，码串的长度式不固定的。</p>
+<h4 id="请求报文通用格式"><a href="#请求报文通用格式" class="headerlink" title="请求报文通用格式"></a>请求报文通用格式</h4><p><img src="https://gitee.com/vfxh/site-images/raw/114f424358e04f88d1992416517e76a9a3f42537/http_req_msg_format.png" alt="image"></p>
+<p>HTTP请求报文由三个部分组成，分别是：<strong>请求行</strong>，<strong>首部行</strong>和<strong>实体主体</strong>。在一些请求报文中，实体主体这部分是省略的，如GET方法等。首部行和实体主体之间用一个空行分隔开。</p>
+<p><strong>请求行</strong><br>这一部分可以用来区分请求报文和响应报文。请求行由三个字段组成，各个字段之间用空格隔开，最后是回车和换行结尾。第一个字段是方法，表示该报文使用的是什么方法（GET或者POST等等）。第二个字段是URL，一般使用相对URL，然后在首部行给出目的主机的域名或IP部分。第三个是HTTP协议版本，如：HTTP/1.0，HTTP/1.1等等。</p>
+<p><strong>首部行</strong><br>首部行可以有多个，通常是描述报文或者客户端的一些信息，还有控制信息等等。也可以自定义一些需要的字段和值</p>
+<p><strong>实体主体</strong><br>就是需要传到server的具体数据，可以省略。</p>
+<p><strong>HTTP方法</strong><br>方法，实际上就是要求server做出相应动作的命令。比如想要获取一个资源，那么可以用使用GET方法，然后server端返回相应的资源。</p>
+<blockquote>
+<p>当然这只是一个规则，遵不遵守就不一定了。比如你用GET方法请求资源，结果server删除了这个资源，干这种事的人又不是没有…</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">方法</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">GET</td>
+<td align="left">请求server返回指定的资源</td>
+</tr>
+<tr>
+<td align="left">PUT</td>
+<td align="left">请求在server创建一个资源或者更新一个资源</td>
+</tr>
+<tr>
+<td align="left">POST</td>
+<td align="left">请求在server创建一个资源</td>
+</tr>
+<tr>
+<td align="left">DELETE</td>
+<td align="left">请求删除在server的一个指定的资源</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>HTTP请求实例</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// curl -v -X GET http://www.baidu.com</span><br><span class="line"></span><br><span class="line">&gt; GET / HTTP/1.1</span><br><span class="line">&gt; Host: www.baidu.com</span><br><span class="line">&gt; User-Agent: curl/7.61.1</span><br><span class="line">&gt; Accept: */*</span><br><span class="line">&gt; Content-Length: 11</span><br><span class="line">&gt; Content-Type: application/x-www-form-urlencoded</span><br><span class="line">&gt; </span><br></pre></td></tr></table></figure>
+
+<p><strong>分析</strong><br>请求行中的第二个字段是一个相对URL，只有一个“/”，因为请求的URL只有一个域名：<em><a target="_blank" rel="noopener" href="http://www.baidu.com/">www.baidu.com</a></em>。假设请求的URL是：<em><a target="_blank" rel="noopener" href="https://www.baidu.com/paths/source.md">https://www.baidu.com/paths/source.md</a></em>。那么在请求行中的URL字段就是：/paths/source.md。在首部行中的Host字段是域名或者IP:port（如果使用的ip和port访问的话），不包括完整URI的前缀“https://”。在这里，Host就是首部字段，<a target="_blank" rel="noopener" href="http://www.baidu.com/">www.baidu.com</a> 就是这个字段的值。其它首部字段和值也是类似的。而因为GET方法不携带实体主体，所以在报文的最后只有一个空行。实体主体字段为空。</p>
+<h4 id="响应报文通用格式"><a href="#响应报文通用格式" class="headerlink" title="响应报文通用格式"></a>响应报文通用格式</h4><p><img src="https://gitee.com/vfxh/site-images/raw/114f424358e04f88d1992416517e76a9a3f42537/http_rsp_msg_format.png" alt="image"></p>
+<p>相应报文和请求报文的格式类似，不同的是报文的第一部分。响应报文的第一部分叫做状态行，同样有三个字段组成，分别是HTTP版本，状态码，端语。状态码三个数字组成，有很多个。有些是熟知的，如200，201，401等等，它们都有固定的含义。当然后也可以自己定义，不过要遵循HTTP的规则。第三个字段是短语，其作用是对返回的状态进行简短的说明。比如：Accepted，Not Found等等。后面的和请求报文差不多，实体主体也是可选的。</p>
+<p>HTTP状态码大致可以分为五类，下面是大概的说明。</p>
+<table>
+<thead>
+<tr>
+<th align="left">状态码</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1XX</td>
+<td align="left">通知信息，可能server正在处理</td>
+</tr>
+<tr>
+<td align="left">2XX</td>
+<td align="left">表示成功</td>
+</tr>
+<tr>
+<td align="left">3XX</td>
+<td align="left">表示重定向</td>
+</tr>
+<tr>
+<td align="left">4XX</td>
+<td align="left">表示客户端请求错误，参数或格式不正确</td>
+</tr>
+<tr>
+<td align="left">5XX</td>
+<td align="left">表示服务端错误</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>HTTP响应示例</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// curl -v -X GET http://www.baidu.com</span><br><span class="line"></span><br><span class="line">&lt; HTTP/1.1 200 OK</span><br><span class="line">&lt; Accept-Ranges: bytes</span><br><span class="line">&lt; Connection: keep-alive</span><br><span class="line">&lt; Content-Length: 2381</span><br><span class="line">&lt; Content-Type: text/html</span><br><span class="line">&lt; Date: Fri, 26 Jun 2020 01:48:40 GMT</span><br><span class="line">&lt; </span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;!--STATUS OK--&gt;&lt;html&gt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>同样的，第一行是状态行。200是状态码，表示成功。OK则是短语，描述了这个请求的状态信息。后面的首部字段和请求报文类似。这个响应报文是携带实体主体的，所以在空行后面就是一大段HTML文本。这个就是具体的传输数据，客户端收到报文后，可以对这个主体进行渲染呈现出来。</p>
+<h3 id="HTTPS协议"><a href="#HTTPS协议" class="headerlink" title="HTTPS协议"></a>HTTPS协议</h3><p>HTTP协议有一个致命的缺陷，就是不够安全。在网络中是明文传输，有被中间者拦截篡改的风险。为了能够让用户的隐秘数据能够在网络中安全传输，就需要使用HTTPS协议。HTTPS协议本身不是HTTP协议，它是在HTTP协议的基础上增加了安全传输措施的另一种协议。</p>
+<h4 id="HTTP协议的缺点"><a href="#HTTP协议的缺点" class="headerlink" title="HTTP协议的缺点"></a>HTTP协议的缺点</h4><p><strong>1. 明文传输</strong><br><em><strong>通信过程中使用明文传输</strong></em>。HTTP协议本身不提供加密功能。数据在网络中传输相当于裸奔，毫无秘密可言。如果是用户密码等隐秘数据，有可能被中间者看到。</p>
+<p><strong>2. 不会确认通信双方</strong><br>HTTP协议不会对通信双方进行确认。意思就是：<em><strong>客户端不知道“服务端”是否是真的服务端，服务端也不知道“客户端”是否是真的客户端</strong></em>。对于服务端来说，只要是请求到达都会返回一个响应报文（不限定源IP的情况下）。因为不能确定客户端是否是真的客户端，所以服务端对于一切到达的请求都照单全收。这就造成无法阻止无意义的请求，如果是大量的无意义请求，会导致计算机资源紧张，从而服务端无法正常工作。比如DOS（Denial Of Service）攻击。</p>
+<p>比如下面的例子，A是正常客户端，C是伪装者，B是服务端。在使用HTTP协议的情况下，B不管请求是来自A还是来自C都会接受，并返回响应报文。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">A --------------------------&gt; B(server)</span><br><span class="line">                              ^</span><br><span class="line">                              |</span><br><span class="line">C ----------------------------+</span><br></pre></td></tr></table></figure>
+
+<p><strong>3. 无法保证报文的正确性</strong><br>服务端无法确定从客户端发送过来的报文是否完整，数据是否准确。反之客户端也是一样，不确定服务端返回的响应报文是否正确。即使在HTTP首部字段中加入校验值字段，也无法保证。因为报文是明文传输的，即使加入校验值字段也会被修改。比如如下例子：A向B发送报文，中间C拦截了这个报文。然后对这个报文进行篡改，最终到达B的报文就是被篡改后的报文。但是B并不知道。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">A --------------X-------------&gt; B</span><br><span class="line">                ^</span><br><span class="line">                |</span><br><span class="line">                C</span><br></pre></td></tr></table></figure>
+
+<h4 id="确保安全的HTTPS协议"><a href="#确保安全的HTTPS协议" class="headerlink" title="确保安全的HTTPS协议"></a>确保安全的HTTPS协议</h4><p>HTTPS协议针对HTTP协议的不足进行扩充，比如对明文传输的数据加密，确定通信双方的身份，确保报文的完整性。简而言之，HTTPS协议等于HTTP协议+报文加密机制+通信端认证机制（确认通信双方）+报文完整性保护机制。HTTPS是HTTP协议通信接口部分使用了SSL（Secure Socket Layer）安全套接字协议或者TLS（Transport Layer Security）安全传输层协议代替，而非新的协议。</p>
+<blockquote>
+<p>注意！SSL工作在介于应用层和运输层之间，而TLS则是在运输层。</p>
+</blockquote>
+<p>使用HTTPS协议作为通信协议的时候，不会像HTTP那样最先建立的是TCP连接。而是先通过SSL协议</p>
+<blockquote>
+<p>HTTP和HTTPS协议模型示意图</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+----------+                           +----------+</span><br><span class="line">| HTTP     | &lt;---application layer---&gt; | HTTPS    |</span><br><span class="line">|          |                           +----------+</span><br><span class="line">|          |                           | SSL      |</span><br><span class="line">+----------+                           +----------+</span><br><span class="line">| TCP      | &lt;---transport layer-----&gt; | TCP      |</span><br><span class="line">+----------+                           +----------+</span><br><span class="line">| IP       | &lt;---network layer-------&gt; | IP       |</span><br><span class="line">+----------+                           +----------+</span><br></pre></td></tr></table></figure>
+
+<p><strong>报文加密</strong></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/06/15/english_world/" rel="prev" title="不懂得洋文单词集锦">
+                  <i class="fa fa-chevron-left"></i> 不懂得洋文单词集锦
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/06/16/golang_network_http/" rel="next" title="HTTP">
+                  HTTP <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

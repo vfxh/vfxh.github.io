@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Mist&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="简介 并发：逻辑上具备多个任务在一段时间同时执行的能力，从宏观的角度来看是同时执行的的，从微观的角度来看是串行的。并行：物理上依赖多个处理器在某一个时刻真正意义上同时执行多个任务的能力。  并发执行在普通函数或者方法前面加上关键字前缀go，可以让该函数或者方法在goroutine中调用，go语句本身执行立即完成。但是go关键字并不是并发执行操作，它的作用是创建一个并发执行单元。这个并发执行单元并不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang之并发">
+<meta property="og:url" content="http://example.com/2020/05/11/golang_concurrency/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="简介 并发：逻辑上具备多个任务在一段时间同时执行的能力，从宏观的角度来看是同时执行的的，从微观的角度来看是串行的。并行：物理上依赖多个处理器在某一个时刻真正意义上同时执行多个任务的能力。  并发执行在普通函数或者方法前面加上关键字前缀go，可以让该函数或者方法在goroutine中调用，go语句本身执行立即完成。但是go关键字并不是并发执行操作，它的作用是创建一个并发执行单元。这个并发执行单元并不">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:17:26.678Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/05/11/golang_concurrency/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2020&#x2F;05&#x2F;11&#x2F;golang_concurrency&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;05&#x2F;11&#x2F;golang_concurrency&#x2F;&quot;,&quot;title&quot;:&quot;Golang之并发&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Golang之并发 | Hexo</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C"><span class="nav-number">2.</span> <span class="nav-text">并发执行</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#GOMAXPROCES"><span class="nav-number">2.1.</span> <span class="nav-text">GOMAXPROCES</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#local-storage"><span class="nav-number">2.2.</span> <span class="nav-text">local storage</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Gosched"><span class="nav-number">2.3.</span> <span class="nav-text">Gosched</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Goexit"><span class="nav-number">2.4.</span> <span class="nav-text">Goexit</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#channel"><span class="nav-number">3.</span> <span class="nav-text">channel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#channel%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.1.</span> <span class="nav-text">channel类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE"><span class="nav-number">3.2.</span> <span class="nav-text">传递数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E9%80%9A%E7%9F%A5"><span class="nav-number">3.3.</span> <span class="nav-text">事件通知</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%BC%93%E5%86%B2channel"><span class="nav-number">3.4.</span> <span class="nav-text">无缓冲channel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%89%E7%BC%93%E5%86%B2channel"><span class="nav-number">3.5.</span> <span class="nav-text">有缓冲channel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#goroutine%E6%B3%84%E6%BC%8F"><span class="nav-number">3.6.</span> <span class="nav-text">goroutine泄漏</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#select%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">select多路复用</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/11/golang_concurrency/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Golang之并发
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-05-11 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-11T00:00:00+08:00">2020-05-11</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-05-23 16:17:26" itemprop="dateModified" datetime="2021-05-23T16:17:26+08:00">2021-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><blockquote>
+<p>并发：逻辑上具备多个任务在一段时间同时执行的能力，从宏观的角度来看是同时执行的的，从微观的角度来看是串行的。<br>并行：物理上依赖多个处理器在某一个时刻真正意义上同时执行多个任务的能力。</p>
+</blockquote>
+<h3 id="并发执行"><a href="#并发执行" class="headerlink" title="并发执行"></a>并发执行</h3><p>在普通函数或者方法前面加上关键字前缀go，可以让该函数或者方法在goroutine中调用，go语句本身执行立即完成。但是go关键字并不是并发执行操作，它的作用是创建一个并发执行单元。这个并发执行单元并不会立即被执行，而是在创建之后被放入一个系统队列，等待调度器取安排合适的系统线程去获取执行权。然后从队列中获取一个goroutine放到系统线程中执行。<br>一个执行单元处理保存函数指针和参数之外，还会分配执行所需要的栈空间。和系统线程相比，goroutine的栈栈空间是可以增长的。最初goroutine的空间很小，仅有KB级别。在扩容之后，可以增长到GB级别。另外，goroutine是由go本身调度的。<br>go 关键字作为一个匿名函数的前缀，表示这个匿名函数作为一个goroutine执行单元。这里不会阻塞，并且新创建的并发单元可能不会被立即执行。所以，需要等到一段时间。等到goroutine执行完毕之后才会退出main函数。否则，一般main函数结束之后。所有的goroutine都会被暴力终止。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> x <span class="keyword">int</span> = <span class="number">10</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(x <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;param: &quot;</span>, x)</span><br><span class="line">	&#125; (x)</span><br><span class="line">	time.Sleep(<span class="number">1</span> * time.Second)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于多个goroutine，并且需要等待所有goroutine结束才退出，这个就需要sync.WaitGroup。sync.WaitGroup用于等待一组goroutine的结束。<br>Add()用于内部计数器加上指定的值，应该放在并发单元创建之前。Done()是递减内部计数器的值，应该在goroutine最后再调用。Wait()一直阻塞，至到计数器的值为0。如果计数器的值为负数，那么Wait()就会panic。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注意传参用的指针</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">(wg *sync.WaitGroup, i <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> wg.Done()</span><br><span class="line">	fmt.Println(<span class="string">&quot;goroutine: &quot;</span>, i)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	wg := <span class="built_in">new</span>(sync.WaitGroup)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= <span class="number">10</span>; i++ &#123;</span><br><span class="line">		wg.Add(<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">go</span> test(wg, i)</span><br><span class="line">	&#125;</span><br><span class="line">	wg.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">goroutine:  <span class="number">1</span></span><br><span class="line">goroutine:  <span class="number">2</span></span><br><span class="line">goroutine:  <span class="number">10</span></span><br><span class="line">goroutine:  <span class="number">3</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>Wait可以在多处等待，它们都可以收到通知</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	wg := <span class="built_in">new</span>(sync.WaitGroup)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= <span class="number">10</span>; i++ &#123;</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(i <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">			wg.Add(<span class="number">1</span>)</span><br><span class="line">			<span class="keyword">defer</span> wg.Done()</span><br><span class="line">			fmt.Println(<span class="string">&quot;goroutine: &quot;</span>, i)</span><br><span class="line">		&#125;(i)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		wg.Wait()</span><br><span class="line">		fmt.Println(<span class="string">&quot;goroutine exit&quot;</span>)</span><br><span class="line">	&#125;()</span><br><span class="line">	wg.Wait()</span><br><span class="line">	fmt.Println(<span class="string">&quot;main exit&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">goroutine:  <span class="number">8</span></span><br><span class="line">goroutine:  <span class="number">9</span></span><br><span class="line">goroutine exit</span><br><span class="line">main exit</span><br></pre></td></tr></table></figure>
+<h4 id="GOMAXPROCES"><a href="#GOMAXPROCES" class="headerlink" title="GOMAXPROCES"></a>GOMAXPROCES</h4><p>运行时可以创建很多个线程，但真正参与并发执行任务的线程有时候只有几个。默认线程的个数等于系统的处理器的核心数相等，可以使用runtime.GOMAXPROCES(n)函数来设置调度器使用的逻辑处理器的个数（同时执行任务的CPU个数）然后返回当前的设置值，如果。runtime.NumCPU()函数返回当前机器的CPU核心个数。</p>
+<h4 id="local-storage"><a href="#local-storage" class="headerlink" title="local storage"></a>local storage</h4><p>goroutine和系统线程不同，它没有返回值，无法设置编号，也无法设置优先级。不过除了优先级，其它可以通过代码来实现。<br>可以声明一个结构体数组，结构体成员可以声明自定义的goroutine编号，返回值等等。当然，这个也可以用map来实现，不过需要考虑到并发读写map的问题。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> lsg [<span class="number">5</span>]<span class="keyword">struct</span> &#123;</span><br><span class="line">		id <span class="keyword">int</span></span><br><span class="line">		result <span class="keyword">int</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(lsg); i++ &#123;</span><br><span class="line">		wg.Add(<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span> <span class="params">(i <span class="keyword">int</span>)</span></span>  &#123;</span><br><span class="line">			<span class="keyword">defer</span> wg.Done()</span><br><span class="line">			lsg[i].id = i</span><br><span class="line">			lsg[i].result = i*i</span><br><span class="line">		&#125;(i)</span><br><span class="line">	&#125;</span><br><span class="line">	wg.Wait()</span><br><span class="line">	<span class="keyword">for</span> _, v := <span class="keyword">range</span> lsg &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;%+v\n&quot;</span>, v)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用结构体数组实现需要实现给出数组长度，用map实现的话需要考虑到并发读写的问题，同样slice也需要考虑到并发读写。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">type</span> item <span class="keyword">struct</span> &#123;</span><br><span class="line">		id <span class="keyword">int</span></span><br><span class="line">		res <span class="keyword">int</span></span><br><span class="line">	&#125;</span><br><span class="line">	lsg := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">int</span>]*item)</span><br><span class="line">	<span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">	<span class="keyword">var</span> rwmx sync.RWMutex</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++ &#123;</span><br><span class="line">		wg.Add(<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span> <span class="params">(i <span class="keyword">int</span>)</span></span>  &#123;</span><br><span class="line">			<span class="keyword">defer</span> wg.Done()</span><br><span class="line">			rwmx.Lock()</span><br><span class="line">			lsg[i] = &amp;item&#123;id: i, res: i *i&#125;</span><br><span class="line">			rwmx.Unlock()</span><br><span class="line">		&#125;(i)</span><br><span class="line">	&#125;</span><br><span class="line">	wg.Wait()</span><br><span class="line">	<span class="keyword">for</span>  _, v := <span class="keyword">range</span> lsg &#123;</span><br><span class="line">		fmt.Println(v)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Gosched"><a href="#Gosched" class="headerlink" title="Gosched"></a>Gosched</h4><p>调用Gosched函数的goroutine会暂停，让出处理器，处理器转去执行其它任务。当前任务会被放回队列当中，等待下次被调度恢复执行。由于goroutine执行的顺序是不确定性的，所以有可能goroutine b会先执行。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">	wg.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="comment">// goroutine a</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> wg.Done()</span><br><span class="line">		<span class="comment">// goroutine b</span></span><br><span class="line">		<span class="comment">// 放在a内部用来保证a先执行</span></span><br><span class="line">		wg.Add(<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span> <span class="params">()</span></span>  &#123;</span><br><span class="line">			<span class="keyword">defer</span> wg.Done()</span><br><span class="line">			fmt.Println(<span class="string">&quot;b&quot;</span>)</span><br><span class="line">		&#125;()</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i&lt; <span class="number">4</span>; i++ &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;a&quot;</span>, i)</span><br><span class="line">			<span class="keyword">if</span> i==<span class="number">1</span> &#123;</span><br><span class="line">				runtime.Gosched()</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;	</span><br><span class="line">	&#125;()</span><br><span class="line">	wg.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">a <span class="number">0</span></span><br><span class="line">a <span class="number">1</span></span><br><span class="line">b</span><br><span class="line">a <span class="number">2</span></span><br><span class="line">a <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<h4 id="Goexit"><a href="#Goexit" class="headerlink" title="Goexit"></a>Goexit</h4><p>Goexit被调用后立即终止当前goroutine，并确已经注册的延迟调用被执行。调用Goexit的goroutine不会影响到其它goroutine，也不会引起panic。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">	wg.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span> <span class="params">()</span></span>  &#123;</span><br><span class="line">		<span class="keyword">defer</span> wg.Done() </span><br><span class="line">		<span class="keyword">defer</span> fmt.Println(<span class="string">&quot;the king of the world&quot;</span>)</span><br><span class="line">		<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">			<span class="keyword">defer</span> fmt.Println(<span class="string">&quot;this is inner function&quot;</span>)</span><br><span class="line">			<span class="function"><span class="keyword">func</span> <span class="params">()</span></span> &#123;</span><br><span class="line">				fmt.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">				<span class="comment">// 立即终止当前任务</span></span><br><span class="line">				runtime.Goexit()</span><br><span class="line">				fmt.Println(<span class="string">&quot;goodbye world&quot;</span>) <span class="comment">// 不会被执行</span></span><br><span class="line">			&#125;()</span><br><span class="line">			fmt.Println(<span class="string">&quot;1&quot;</span>) <span class="comment">// 不会被执行</span></span><br><span class="line">		&#125;()</span><br><span class="line">		fmt.Println(<span class="string">&quot;2&quot;</span>) <span class="comment">// 不会被执行</span></span><br><span class="line">	&#125;()</span><br><span class="line">	wg.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="comment">// 调用Goexit不会影响到别的的goroutine</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span> <span class="params">()</span></span>  &#123;</span><br><span class="line">		<span class="keyword">defer</span> wg.Done()</span><br><span class="line">		time.Sleep(<span class="number">1</span> *time.Second)</span><br><span class="line">		fmt.Println(<span class="string">&quot;other goroutine&quot;</span>)	</span><br><span class="line">	&#125;()</span><br><span class="line">	wg.Wait()</span><br><span class="line">	fmt.Println(<span class="string">&quot;main exit&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hello world</span><br><span class="line">this is inner function</span><br><span class="line">the king of the world</span><br><span class="line">other goroutine</span><br><span class="line">main exit</span><br></pre></td></tr></table></figure>
+<p>如果再main中调用Goexit，会等到所有任务完成之后，再让进程崩溃。原因是：Goexit被调用之后，不会让main返回。因为main没有返回，所以main函数一直无法退出，形成死锁。等到其它任务执行完毕之后进程直接崩溃。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;start&quot;</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span> <span class="params">()</span></span>  &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;goroutine sleep&quot;</span>)</span><br><span class="line">		time.Sleep(<span class="number">2</span> *time.Second)	</span><br><span class="line">	&#125;()</span><br><span class="line">	runtime.Goexit()</span><br><span class="line">	fmt.Println(<span class="string">&quot;main exit&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">start</span><br><span class="line">goroutine sleep</span><br><span class="line">fatal error: no goroutines (main called runtime.Goexit) - deadlock!</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h3 id="channel"><a href="#channel" class="headerlink" title="channel"></a>channel</h3><p>简而言之，channel就是goroutine之间的一种通信机制，channel允许一个goroutine发送数据到另一个goroutine。channel是引用类型，创建的时候需要使用make函数来创建。channel传输的数据类型是需要指定的，比如传输int数据类型，那么这个channel的类型就是：chan int。channel支持三个操作，发送，接收和关闭。<br>关闭操作表示当前channel已经没有值在发送了，从一个关闭的channel读取数据，将会获取到channel里面的所有数据，直到为空。如果再从一个已经关闭channel读取数据将会读取到传输类型的零值。</p>
+<h4 id="channel类型"><a href="#channel类型" class="headerlink" title="channel类型"></a>channel类型</h4><p>创建一个传输int类型数据的channel</p>
+<blockquote>
+<p>ch := make(chan int)</p>
+</blockquote>
+<p>这样不指定长度的channel类型称为无缓冲channel，与之相反的是有缓冲channel。创建一个容量为3的有缓冲channel。有缓冲channel可以用内置函数cap获取其容量，len函数获取当前channel里的数据个数。无缓冲channelcap和len都是0。</p>
+<blockquote>
+<p>ch := make(chan int, 3)</p>
+</blockquote>
+<p>单向channel类型<br>&lt;-在chan左边是一个只能接收的channel，不能发送。而&lt;-在chan的右边则是一个只能发送不能接收的channel。<br>比如下面的ch是一个只能接收的channel类型，test函数里只能从ch中读取数据，而不能向ch发送数据。</p>
+<blockquote>
+<p>func test(ch &lt;-chan int) {…}</p>
+</blockquote>
+<p>一个只能发送数据的channel声明</p>
+<blockquote>
+<p>func test(ch chan&lt;- int) {…}</p>
+</blockquote>
+<p>channel的缓冲区大小和类型无关，比如make(chan int)和make(chan int, 4)创建的channel类型都是chan int。channel是引用类型，可以用==来判断两个channel对象是否引用同一个底层对象，或者和nil比较判断是否已经初始化。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch1, ch2 := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>), <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">3</span>)</span><br><span class="line">	<span class="keyword">var</span> ch3 <span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line">	fmt.Printf(<span class="string">&quot;ch1 type: %v\tch2 type: %v\n&quot;</span>, reflect.TypeOf(ch1), reflect.TypeOf(ch2))</span><br><span class="line">	fmt.Println(ch1 == ch2) <span class="comment">// false，不是引用同一个对象</span></span><br><span class="line">	fmt.Println(ch3 == <span class="literal">nil</span>) <span class="comment">// true，ch3未初始化</span></span><br><span class="line">	ch4 := ch2</span><br><span class="line">	fmt.Println(ch2 == ch4) <span class="comment">// true，引用的是同一个对象</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ch1 <span class="keyword">type</span>: <span class="keyword">chan</span> <span class="keyword">int</span>      ch2 <span class="keyword">type</span>: <span class="keyword">chan</span> <span class="keyword">int</span></span><br><span class="line"><span class="literal">false</span></span><br><span class="line"><span class="literal">true</span></span><br><span class="line"><span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>未初始化的channel进行写操作会panic，进行读操作会一直阻塞。关闭一个未初始化的channel会panic，重复关闭一个channel也会panic。</p>
+<h4 id="传递数据"><a href="#传递数据" class="headerlink" title="传递数据"></a>传递数据</h4><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span> <span class="params">()</span></span>  &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			ch &lt;- i <span class="comment">// 数据发送到channel里</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(ch)	</span><br><span class="line">	&#125;()</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		data := &lt;-ch <span class="comment">// 从channel读取出数据</span></span><br><span class="line">		fmt.Println(data)</span><br><span class="line">		time.Sleep(<span class="number">1</span> * time.Second)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">4</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>判断一个channel是否已经关闭可以使用ok模式，但是这不是最佳的方式。for range循环从一个channel读取数据，直到channel关闭。channel关闭之后，for range从通道中读取全部数据后循环自动结束，只有当channel里的数据全部读取出来时候才算是关闭channel。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span> <span class="params">()</span></span>  &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			ch &lt;- i <span class="comment">// 数据发送到channel里</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(ch)	</span><br><span class="line">	&#125;()</span><br><span class="line">	<span class="keyword">for</span> data := <span class="keyword">range</span> ch &#123;</span><br><span class="line">		fmt.Println(data)</span><br><span class="line">		time.Sleep(<span class="number">1</span> * time.Second)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	for &#123;</span></span><br><span class="line"><span class="comment">		// 判断channel是否关闭</span></span><br><span class="line"><span class="comment">		data, ok := &lt;-ch </span></span><br><span class="line"><span class="comment">		if !ok &#123;</span></span><br><span class="line"><span class="comment">			break</span></span><br><span class="line"><span class="comment">		&#125;</span></span><br><span class="line"><span class="comment">		fmt.Println(data)</span></span><br><span class="line"><span class="comment">		time.Sleep(1 * time.Second)</span></span><br><span class="line"><span class="comment">	&#125;</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>向一个已经关闭的channel写入数据将会panic</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span> <span class="params">()</span></span>  &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			ch &lt;- i <span class="comment">// 数据发送到channel里</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(ch)	</span><br><span class="line">		ch &lt;- <span class="number">10</span></span><br><span class="line">	&#125;()</span><br><span class="line">	<span class="keyword">for</span> data := <span class="keyword">range</span> ch &#123;</span><br><span class="line">		fmt.Println(data)</span><br><span class="line">		time.Sleep(<span class="number">1</span> * time.Second)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">4</span></span><br><span class="line"><span class="built_in">panic</span>: send on closed channel</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h4 id="事件通知"><a href="#事件通知" class="headerlink" title="事件通知"></a>事件通知</h4><p>除了传递数据之外，channel还可以做为事件通知。<br>下面的代码先创建一个无缓冲channel，然后创建一个goroutine，然后等到合适时机再由Golang调度器调度。&lt;-ch为了等待goroutine执行。当channel被关闭的时候，&lt;-ch也会退出。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span> <span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="comment">// 关闭channel</span></span><br><span class="line">		<span class="keyword">defer</span> <span class="built_in">close</span>(ch) </span><br><span class="line">		fmt.Println(<span class="string">&quot;goroutine start&quot;</span>)</span><br><span class="line">		time.Sleep(<span class="number">2</span> * time.Second)</span><br><span class="line">		fmt.Println(<span class="string">&quot;goroutine done.&quot;</span>)</span><br><span class="line">	&#125;()</span><br><span class="line">	<span class="comment">// 从一个无缓冲channel读取数据</span></span><br><span class="line">	<span class="comment">// 如果无缓冲通道没有数据，将会阻塞直到有数据或者关闭channel</span></span><br><span class="line">	&lt;-ch</span><br><span class="line">	fmt.Println(<span class="string">&quot;main done.&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里可以不用使用关闭channel的方式，使用另一种向channel发送数据也可以。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span> <span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">			ch &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">		&#125;()</span><br><span class="line">		fmt.Println(<span class="string">&quot;goroutine start&quot;</span>)</span><br><span class="line">		time.Sleep(<span class="number">2</span> * time.Second)</span><br><span class="line">		fmt.Println(<span class="string">&quot;goroutine done.&quot;</span>)</span><br><span class="line">	&#125;()</span><br><span class="line">	<span class="comment">// 从一个无缓冲channel读取数据</span></span><br><span class="line">	<span class="comment">// 如果无缓冲通道没有数据，将会阻塞直到有数据或者关闭channel</span></span><br><span class="line">	&lt;-ch</span><br><span class="line">	fmt.Println(<span class="string">&quot;main done.&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="无缓冲channel"><a href="#无缓冲channel" class="headerlink" title="无缓冲channel"></a>无缓冲channel</h4><p>无缓冲channel也成为同步channel。使用无缓冲channel时，发送方发送送数据到channel中，如果接收方没有接收数据。那么发送方就会一直阻塞，直到接收方从channel中读取数据，然后接收方和发送方继续执行。如果接收方先执行，执行读取操作的时候发送方还没有向channel发送数据，这时候接收方就会阻塞，直到发送方发送数据。这时候双方才会继续执行下去，这也是无缓冲channel被称为同步channel的原因。<br>使用无缓冲channel的时候需要有配对的goroutine来执行发送和接收操作，如果只有一个goroutine，那么将会一直阻塞，形成死锁。<br>下面的代码将会一直阻塞在ch&lt;-struct{}{}这里，因为没有配对的goroutine执行接收操作。最终main无法返回，进程崩溃。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;)</span><br><span class="line">	ch &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125; <span class="comment">// 一直阻塞</span></span><br><span class="line">	&lt;-ch</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fatal error: all goroutines are asleep - deadlock!</span><br></pre></td></tr></table></figure>
+<p>需要注意一点是，顺序执行的程序本身就是一个goroutine。想要上面的程序工程执行，那么只需要再创建另一个goroutine就可以了。<br>创建一个新的goroutine用来接收数据，主goroutine用来发送数据。新创建的goroutine从一个空的无缓冲channel读取数据就一直阻塞，因为已经实现有goroutine进行读取数据而被阻塞，所以主goroutine发送的时候另一个goroutine读取数据成功。主goroutine不会阻塞，另一个goroutine也解除阻塞。双方继续执行，程序结束。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		&lt;-ch</span><br><span class="line">	&#125;()</span><br><span class="line">	ch &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不过需要注意的是，goroutine的创建不能在发送数据之后。因为没有goroutine准备接收数据，主goroutine就会一直阻塞。没办法执行创建新的goroutine的动作，同样会进程崩溃。<br>就像这样</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;)</span><br><span class="line">	ch &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125; <span class="comment">// 一直阻塞，无法执行创建goroutine的代码</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		&lt;-ch</span><br><span class="line">	&#125;()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同步示例<br>send发送数据不阻塞的前提是receive已经准备好接收数据，同样receive接收数据不阻塞的前提是send已经发送数据了。send和receive不阻塞的条件都是由对方提供的，并且可以按照一定的顺序执行，这种方式称为同步。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">send</span><span class="params">(ch <span class="keyword">chan</span>&lt;- <span class="keyword">int</span>, wg *sync.WaitGroup)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;send: &quot;</span>, i)</span><br><span class="line">		ch &lt;- i</span><br><span class="line">		time.Sleep(<span class="number">1</span> * time.Second)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 只有关闭channel，for range才会自动终止</span></span><br><span class="line">	<span class="built_in">close</span>(ch)</span><br><span class="line">	wg.Done()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">receive</span><span class="params">(ch &lt;-<span class="keyword">chan</span> <span class="keyword">int</span>, wg *sync.WaitGroup)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> el := <span class="keyword">range</span> ch &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;receive: &quot;</span>, el)</span><br><span class="line">	&#125;</span><br><span class="line">	wg.Done()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	wg := <span class="built_in">new</span>(sync.WaitGroup)</span><br><span class="line">	wg.Add(<span class="number">2</span>)</span><br><span class="line">	<span class="keyword">go</span> send(ch, wg)</span><br><span class="line">	<span class="keyword">go</span> receive(ch, wg)</span><br><span class="line">	wg.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">send:  <span class="number">0</span></span><br><span class="line">receive:  <span class="number">0</span></span><br><span class="line">send:  <span class="number">1</span></span><br><span class="line">receive:  <span class="number">1</span></span><br><span class="line">send:  <span class="number">2</span></span><br><span class="line">receive:  <span class="number">2</span></span><br><span class="line">send:  <span class="number">3</span></span><br><span class="line">receive:  <span class="number">3</span></span><br><span class="line">send:  <span class="number">4</span></span><br><span class="line">receive:  <span class="number">4</span></span><br></pre></td></tr></table></figure>
+<p>一般来说等待多个goroutine使用sync.WaitGroup比较合理，也可以使用另一个channel来作为事件通知的形式来实现。<br>ch用来作数据传输的channel，而done则是用来通知主goroutine并发任务已经全部完成，可以退出。done &lt;- struct{}{}这个语句放在receive和放在send是不同，放在send当中会有微妙的错误。考虑这样一个场景，send循环结束之后立即执行done &lt;- struct{}{}通知主goroutine任务已经全部完成。假设receive在这个时候被抢占了处理器，主goroutine接收到send发来的事件通知之后直接退出程序，那么receive就丢失掉send最后发来的数据了。所以，这个事件通知最好还是放在receive函数了。不过，最好的方式还是用sync.WaitGroup。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">send</span><span class="params">(ch <span class="keyword">chan</span>&lt;- <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;send: &quot;</span>, i)</span><br><span class="line">		ch &lt;- i</span><br><span class="line">		time.Sleep(<span class="number">1</span> * time.Second)</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="comment">// 不要忘记关闭channel</span></span><br><span class="line">	<span class="built_in">close</span>(ch)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">receive</span><span class="params">(ch &lt;-<span class="keyword">chan</span> <span class="keyword">int</span>, done <span class="keyword">chan</span>&lt;- <span class="keyword">struct</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> el := <span class="keyword">range</span> ch &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;receive: &quot;</span>, el)</span><br><span class="line">	&#125;</span><br><span class="line">	done &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	done := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;)</span><br><span class="line">	<span class="keyword">go</span> send(ch)</span><br><span class="line">	<span class="keyword">go</span> receive(ch, done)</span><br><span class="line">	&lt;-done</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>单向channel<br>channel默认是不区分读端和写端的，不过也可以声明成读类型的channel或者写类型的channel，这种区分读写端的channel称为单向channel。<br>声明一个单向读channel</p>
+<blockquote>
+<p>var rch &lt;- chan int<br>声明一个单向写channel<br>var wch chan&lt;- int<br>当然也可以用make创建一个单向channel，不过没有意义。比如创建一个单向写channel，那么只能写，不能读，那有什么意义?</p>
+</blockquote>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span>&lt;- <span class="keyword">int</span>, <span class="number">1</span>)</span><br><span class="line">	ch &lt;- <span class="number">10</span></span><br><span class="line">	<span class="comment">// 错误：invalid operation: &lt;-ch (receive from send-only type chan&lt;- int)</span></span><br><span class="line">	fmt.Println(&lt;-ch)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以用make创建出channel，然后再赋值给单向类型的channel，或者传给单向channel的形参</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	<span class="comment">// 单向读</span></span><br><span class="line">	<span class="keyword">var</span> rch &lt;-<span class="keyword">chan</span> <span class="keyword">int</span> = ch</span><br><span class="line">	<span class="comment">// 单向写</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(wch <span class="keyword">chan</span>&lt;- <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">		wch &lt;- <span class="number">100</span></span><br><span class="line">	&#125;(ch)</span><br><span class="line">	fmt.Println(&lt;-rch)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>单向channel无法重新转换成不区分读写端的channel</p>
+<blockquote>
+<p>ch = (chan int)(rch) // cannot convert rch (type &lt;-chan int) to type chan int<br>close可以关闭写端，但是不能关闭读端。原因是：关闭写端，读端还可以从channel里读取剩余的数据，如果没有数据就会返回对应类型的零值，而且可以判断channel是否已经关闭了。但是关闭读端的话，写入channel的数据就没办法获取了，会一直存在，浪费资源。（我猜的！真是情况学到源码分析再改！）<br>var rch &lt;-chan int = ch<br>close(rch)</p>
+</blockquote>
+<h4 id="有缓冲channel"><a href="#有缓冲channel" class="headerlink" title="有缓冲channel"></a>有缓冲channel</h4><p>有缓冲的channel有一个元素队列，在创建channel的时候可以指定这个队列的长度。在执行发送操作的时候就把数据插入到队列的尾部，读取数据就从队列的头部弹出一个元素。当channel满的时候，执行发送操作就会阻塞，直到队列有空位。而当队列为空的时候，接收操作也会阻塞，直到队列有元素。<br>创建一个可以容纳三个元素的有缓冲channel: ch := make(chan int, 3)，它的示意图就像这样。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> ch</span><br><span class="line">+---+           +-----------+</span><br><span class="line">| *-|----------&gt;|   |   |   |</span><br><span class="line">+---+           +-----------+</span><br><span class="line"></span><br><span class="line">ch &lt;- <span class="number">10</span></span><br><span class="line">ch &lt;- <span class="number">20</span></span><br><span class="line"></span><br><span class="line"> ch</span><br><span class="line">+---+           +-------------+</span><br><span class="line">| *-|----------&gt;| <span class="number">10</span> | <span class="number">20</span> |   |</span><br><span class="line">+---+           +-------------+</span><br></pre></td></tr></table></figure>
+<p>有缓冲channel不会像无channel那样如果没有配对的接收goroutine，执行写操作就会阻塞。对于有缓冲通道，如果channel的缓冲区没有满或者数据没有读取完之前，无论是读写操作都不会被阻塞。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">3</span>)</span><br><span class="line">	ch &lt;- <span class="number">1</span></span><br><span class="line">	ch &lt;- <span class="number">2</span></span><br><span class="line">	ch &lt;- <span class="number">3</span></span><br><span class="line">    <span class="comment">// channel缓冲区已满，再次写入就会阻塞</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的程序不会阻塞，因为写入三个数据之后channel的缓冲区才满，等到第四次写入并且没有读取数据的操作，那么就会阻塞。<br>有缓冲channel也叫异步channel，可以根据它的特性来写异步程序。多数时候，有缓冲channel可以提高性能，减少排队阻塞。</p>
+<h4 id="goroutine泄漏"><a href="#goroutine泄漏" class="headerlink" title="goroutine泄漏"></a>goroutine泄漏</h4><p>看一个例子<br>test函数中创建了两个goroutine，以及一个无缓冲channel。goroutine b先执行，向channel发送事件通知，然后b退出，test的channel接收数据然后返回。而goroutine a在睡眠结束后向channel发送事件通知（channel被引用，延长了生命周期），然而这是一个无缓冲channel，test函数已经返回了，没有可以接收数据的goroutine，所以goroutine a就一直阻塞在发送数据这里，一直到进程结束。这种情况就称为goroutine泄漏。GC并不会回收一直阻塞的goroutine，所以这些泄漏的channel就会一直存在并且处于阻塞阻塞状态，占用资源。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		time.Sleep(<span class="number">2</span> * time.Second)</span><br><span class="line">		ch &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">		fmt.Println(<span class="string">&quot;a exit&quot;</span>)</span><br><span class="line">	&#125;()</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		ch &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">		fmt.Println(<span class="string">&quot;b exit&quot;</span>)</span><br><span class="line">	&#125;()</span><br><span class="line">	&lt;-ch</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	test()</span><br><span class="line">	http.ListenAndServe(<span class="string">&quot;:8080&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解决上面程序中goroutine a一直阻塞的方法就是使用有缓冲channel。这里的有缓冲channel即使容量只有1，在test从channel读取出数据的时候，channel就变成空的了，所以goroutine a向channel写入数据也不会阻塞。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;, <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		time.Sleep(<span class="number">2</span> * time.Second)</span><br><span class="line">		ch &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">		fmt.Println(<span class="string">&quot;a exit&quot;</span>)</span><br><span class="line">	&#125;()</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		ch &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">		fmt.Println(<span class="string">&quot;b exit&quot;</span>)</span><br><span class="line">	&#125;()</span><br><span class="line">	&lt;-ch</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	test()</span><br><span class="line">	fmt.Println(<span class="string">&quot;test return&quot;</span>)</span><br><span class="line">	http.ListenAndServe(<span class="string">&quot;:8080&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="select多路复用"><a href="#select多路复用" class="headerlink" title="select多路复用"></a>select多路复用</h3><p>在处理多个channel的时候就需要用select，select的每一个case处理一个channel，选择已经准备就需要的channel并执行相应的代码块。如果存在多个case都符合情况，那么就随机选择一个执行。如果都不符合，那么就会执行default。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> &#123;</span><br><span class="line">	<span class="keyword">case</span> x := &lt;- ch:</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">case</span> ch1 &lt;- v:</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		ch &lt;- <span class="number">10</span></span><br><span class="line">	&#125;()</span><br><span class="line">	<span class="keyword">select</span> &#123;</span><br><span class="line">	<span class="keyword">case</span> v := &lt;-ch:</span><br><span class="line">		fmt.Println(<span class="string">&quot;receive: &quot;</span>, v)</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">&quot;done.&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">receive:  <span class="number">10</span></span><br><span class="line">done.</span><br></pre></td></tr></table></figure>
+<p>一个例子，这个例子会打印出：0 2 4 6 8<br>原因是：对于一个容量是1的有缓冲channel，如果channel未满，那么写入数据不会阻塞，但是读取数据会阻塞。所以，当第一次循环的时候，只有ch &lt;- i满足，写入0。但是第二次执行的时候，i的值为1。这个时候，channel已经满了，ch &lt;- i会阻塞，而x := &lt;-ch满足条件，就会执行这个条件对应的代码块。就这样依次循环，直到循环结束。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> x := &lt;-ch:</span><br><span class="line">			fmt.Println(x)</span><br><span class="line">		<span class="keyword">case</span> ch &lt;- i:</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是出现channel既没有满，也不是空的情况。那么就会出现随机输出的情况，因为select对于多个条件满足的时候就会随机选择一个，至于选择哪一个是不确定的。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 改成容量为2</span></span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">2</span>)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> x := &lt;-ch:</span><br><span class="line">			fmt.Println(x)</span><br><span class="line">		<span class="keyword">case</span> ch &lt;- i:</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 第一次</span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">5</span></span><br><span class="line"><span class="number">8</span></span><br><span class="line"># 第二次</span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">4</span></span><br><span class="line"><span class="number">6</span></span><br><span class="line"><span class="number">8</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>可以看到，每次输出的结果都随机的，没有规律可言。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/05/10/golang_interface/" rel="prev" title="Golang之接口">
+                  <i class="fa fa-chevron-left"></i> Golang之接口
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/13/linux_env_variable/" rel="next" title="Linux之环境变量">
+                  Linux之环境变量 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
