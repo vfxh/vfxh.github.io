@@ -152,6 +152,93 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-redis_data_type" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/29/redis_data_type/">Redis读书笔记《二》：数据类型</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/29/redis_data_type/" class="archive-article-date">
+  	<time datetime="2020-04-28T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><p>字符串可以存储任何形式的字符串，无论是二进制数据还是json数据，甚至是图片（编码成base64形式）。字符串存取数据命令是SET/GET。如果键不存在就创建，如果键已经存在了，那么就会把str_value设为当前str_key的值。值不限于字符串，也可以是整数，浮点数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置</span></span><br><span class="line">&gt; SET str_key str_value</span><br><span class="line"><span class="comment"># 成功会返回OK</span></span><br><span class="line">&gt; OK</span><br></pre></td></tr></table></figure>
+<p>获取字符串的值</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; GET str_key</span><br><span class="line"><span class="comment"># 返回字符串的值，如果字符串</span></span><br><span class="line">&gt; <span class="string">&quot;str_value&quot;</span></span><br><span class="line"><span class="comment"># 如果不存在就返回 nil 表示空</span></span><br><span class="line">&gt; (nil)</span><br></pre></td></tr></table></figure>
+<p>删除字符串跟删除键是一样的操作。可以删除多个字符串，不过指定的键需要用空格隔开。返回的是成功删除的个数，如果键不存在，就返回0</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; DEL str_key</span><br><span class="line"><span class="comment"># 返回成功删除的个数</span></span><br><span class="line">&gt; 1</span><br></pre></td></tr></table></figure>
+
+<p><strong>其它命令</strong><br>递增和递减：INCR/DECR [key]<br>增加或减少一个整数：INCRBY/DECRBY [key] [integer]<br>增加指定的浮点数：INCRBYFLOAT [key] [float] （如果想要减少就将值设为负数）<br>追加：APPEND key [value]</p>
+<blockquote>
+<p>注意！SET 命令可以覆盖掉其它数据类型，不只是只有string。比如，一个键是散列类型，在使用SET 设置这个键的值之后。这个键就变成了string类型。</p>
+</blockquote>
+<h3 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h3>
+        
+          <a class="article-more-a" href="/2020/04/29/redis_data_type/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/29/redis_data_type/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-op_process_and_thread" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     

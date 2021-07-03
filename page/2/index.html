@@ -152,6 +152,95 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-mysql_index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/08/mysql_index/">MySQL之索引</a>
+    </h1>
+  
+
+        
+        <a href="/2020/08/08/mysql_index/" class="archive-article-date">
+  	<time datetime="2020-08-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-08-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>数据库中的索引是一种可以提高查询记录速度的，排好序的数据结构。考虑下面这样一个例子，在tbl_book表中检索author为604102的记录。假设这个表中有很多记录，那么实现最原始的方式就是：先获取表中所有的记录，然后再根据WHERE子句中的条件来测试，筛选出符合条件的记录。如果这个数据库的记录非常非常多，那么这其中消耗的时间就很长。如果在author这一个字段上建有索引，那么MySQL现在索引上按值进行查找，返回所有包含该值的记录。而不用事先获取所有表中的记录，这样处理起来的速度就快很多。</p>
+<blockquote>
+<p>目前可以将索引想象成键值对一样的结构，建有索引的字段值为键，而包含该字段值的记录就是该键对应的值</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tbl_book <span class="keyword">WHERE</span> author <span class="operator">=</span> <span class="string">&#x27;604102&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>为了验证上面的想法，我们准备一张表tbl_book，表的结构很简单，只有四个字段。然后向表tbl_book插入两千多万条数据，其中有一些数据是重复的。不过重复的数据并不妨碍实验。最开始统计整张表的数据量时，所花费的时间达到了11秒，这是非常耗时的。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[learn_db]<span class="operator">&gt;</span><span class="keyword">desc</span> tbl_book;</span><br><span class="line"><span class="operator">+</span><span class="comment">--------+--------------+------+-----+---------+----------------+</span></span><br><span class="line"><span class="operator">|</span> Field  <span class="operator">|</span> Type         <span class="operator">|</span> <span class="keyword">Null</span> <span class="operator">|</span> Key <span class="operator">|</span> <span class="keyword">Default</span> <span class="operator">|</span> Extra          <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">--------+--------------+------+-----+---------+----------------+</span></span><br><span class="line"><span class="operator">|</span> id     <span class="operator">|</span> <span class="type">bigint</span>       <span class="operator">|</span> <span class="keyword">NO</span>   <span class="operator">|</span> PRI <span class="operator">|</span> <span class="keyword">NULL</span>    <span class="operator">|</span> auto_increment <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> name   <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">255</span>) <span class="operator">|</span> <span class="keyword">NO</span>   <span class="operator">|</span>     <span class="operator">|</span> <span class="keyword">NULL</span>    <span class="operator">|</span>                <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> author <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">255</span>) <span class="operator">|</span> <span class="keyword">NO</span>   <span class="operator">|</span>     <span class="operator">|</span> <span class="keyword">NULL</span>    <span class="operator">|</span>                <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> price  <span class="operator">|</span> <span class="type">float</span>(<span class="number">255</span>,<span class="number">2</span>) <span class="operator">|</span> <span class="keyword">NO</span>   <span class="operator">|</span>     <span class="operator">|</span> <span class="keyword">NULL</span>    <span class="operator">|</span>                <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">--------+--------------+------+-----+---------+----------------+</span></span><br><span class="line"><span class="number">4</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">[learn_db]<span class="operator">&gt;</span><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">from</span> tbl_book;</span><br><span class="line"><span class="operator">+</span><span class="comment">----------+</span></span><br><span class="line"><span class="operator">|</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+</span></span><br><span class="line"><span class="operator">|</span> <span class="number">20629174</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">11.22</span> sec)</span><br><span class="line"></span><br><span class="line">[learn_db]<span class="operator">&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在没有使用索引的时候执行例子中SQL的情况，这个过程花费了12秒多，这要是放在生产环境上还不得被打死…</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">[learn_db]<span class="operator">&gt;</span><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tbl_book <span class="keyword">WHERE</span> author <span class="operator">=</span> <span class="string">&#x27;604102&#x27;</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">----------+--------------------------+--------+-------+</span></span><br><span class="line"><span class="operator">|</span> id       <span class="operator">|</span> name                     <span class="operator">|</span> author <span class="operator">|</span> price <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+--------------------------+--------+-------+</span></span><br><span class="line"><span class="operator">|</span>        <span class="number">1</span> <span class="operator">|</span> <span class="number">5</span>f2e71a2ec82fe7579059a6f <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">1297591</span> <span class="operator">|</span> <span class="number">5</span>f2e8addec82fe7868ddd432 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">1492308</span> <span class="operator">|</span> <span class="number">5</span>f2e8e63ec82fe829ae2a143 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">2740234</span> <span class="operator">|</span> <span class="number">5</span>f2edb13ec82fecdba2048ae <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">3704369</span> <span class="operator">|</span> <span class="number">5</span>f2ede84ec82fecdba2efed8 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">4242790</span> <span class="operator">|</span> <span class="number">5</span>f2ee592ec82fecdba4b92f0 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">5780079</span> <span class="operator">|</span> <span class="number">5</span>f2ef45dec82fed5779739d7 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">6020535</span> <span class="operator">|</span> <span class="number">5</span>f2ef532ec82fed5779ae519 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">6356235</span> <span class="operator">|</span> <span class="number">5</span>f2ef65bec82fed577a00477 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">7416911</span> <span class="operator">|</span> <span class="number">5</span>f2efa10ec82fed577b033b3 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">8828343</span> <span class="operator">|</span> <span class="number">5</span>f2eff03ec82fed577c5bd1e <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">10217289</span> <span class="operator">|</span> <span class="number">5</span>f2f03e4ec82fed577daeead <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">10629132</span> <span class="operator">|</span> <span class="number">5</span>f2f0557ec82fed577e13770 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">11197881</span> <span class="operator">|</span> <span class="number">5</span>f30f3feec82feef5cef2089 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">14428555</span> <span class="operator">|</span> <span class="number">5</span>f30ff39ec82feef5c206c63 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">14789945</span> <span class="operator">|</span> <span class="number">5</span>f310077ec82feef5c25f012 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">16414586</span> <span class="operator">|</span> <span class="number">5</span>f310a08ec82fef33565ad49 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">17786327</span> <span class="operator">|</span> <span class="number">5</span>f310ec1ec82fef3357a9baa <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">17808111</span> <span class="operator">|</span> <span class="number">5</span>f310ed4ec82fef3357af0c5 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">18135204</span> <span class="operator">|</span> <span class="number">5</span>f310ff6ec82fef3357fee77 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">19213885</span> <span class="operator">|</span> <span class="number">5</span>f3113aeec82fef33590641c <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">19224975</span> <span class="operator">|</span> <span class="number">5</span>f3113b8ec82fef335908f5e <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">19794094</span> <span class="operator">|</span> <span class="number">5</span>f3115abec82fef335993e89 <span class="operator">|</span> <span class="number">604102</span> <span class="operator">|</span> <span class="number">20.21</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+--------------------------+--------+-------+</span></span><br><span class="line"><span class="number">23</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">12.64</span> sec)</span><br><span class="line"></span><br><span class="line">[learn_db]<span class="operator">&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来在tbl_book表的author字段上加上一个普通索引。由于数据量过大，本身用于实验的机器配置较低，创建索引的过程所花费的时间也较长。（目前的想法：因为给一个表字段创建索引，需要将表中的所有记录中的这个字段值和记录创建键值映射）创建完索引之后再重新执行SELECT语句，发现这次查询只花费了0.04秒，速度比之前没有索引的查询快了非常多。</p>
+<p>在使用索引的情况下，MySQL会使用该索引来找到author值为604102的记录。如果包含该值的记录有多条，那么就会返回所有包含该值的行。</p>
+        
+          <a class="article-more-a" href="/2020/08/08/mysql_index/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/08/08/mysql_index/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-golang_module" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -865,133 +954,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/07/13/database_error_test/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-golang_test" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/07/04/golang_test/">Golang之测试</a>
-    </h1>
-  
-
-        
-        <a href="/2020/07/04/golang_test/" class="archive-article-date">
-  	<time datetime="2020-07-03T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h3><p>规则：</p>
-<ol>
-<li>测试代码必须放在当前包以“_test.go”结尾地文件中 </li>
-<li>测试函数以Test为函数名前缀</li>
-<li>测试命令go test忽略以“_”或“.”开头地测试文件 </li>
-<li>正常编译（go build/install）会忽略测试文件</li>
-</ol>
-<p>testing是工具链和标准库自带地单元测试框架，编写测试包含单元测试函数地时候需要导入这个包。testing包中包含一个T类型，用来控制测试地结果和行为。比如根据测试例程来判断是否测试通过，来决定是否继续执行测试函数等。</p>
-<blockquote>
-<p>测试例子</p>
-</blockquote>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main包</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x, y <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> x + y</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(add(<span class="number">7</span>, <span class="number">9</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 同样是定义在main包下的测试文件</span></span><br><span class="line"><span class="comment">// 文件名：main_test.go</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;testing&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestAdd</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> add(<span class="number">1</span>, <span class="number">2</span>) != <span class="number">3</span> &#123;</span><br><span class="line">        t.FailNow()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>运行测试，-v选项可以输出包中每个测试函数的名称已经执行的时间。go test -v默认执行当前包中的测试函数，如果要测试当前包和子包，就执行 go test -v ./…  。不过我觉得没必要这么做，防止混乱。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// go test -v </span><br><span class="line"></span><br><span class="line">=== RUN   TestAdd</span><br><span class="line">--- PASS: TestAdd (0.00s)</span><br><span class="line">PASS</span><br><span class="line">ok      test    0.364s</span><br></pre></td></tr></table></figure>
-
-<p>testing.T.FailNow方法表示，如果测试失败就立即终止当前测试函数，不再继续测试当前函数的后面代码。testing.T类型的方法有很多，主要有几个。</p>
-<table>
-<thead>
-<tr>
-<th align="left">方法</th>
-<th align="left">说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">FailNow</td>
-<td align="left">失败，立即终止执行当前测试函数</td>
-</tr>
-<tr>
-<td align="left">Fail</td>
-<td align="left">失败，继续执行当前测试函数</td>
-</tr>
-<tr>
-<td align="left">SkipNow</td>
-<td align="left">跳过，停止执行当前测试函数</td>
-</tr>
-<tr>
-<td align="left">Log</td>
-<td align="left">输出错误信息，仅失败或-v时输出</td>
-</tr>
-<tr>
-<td align="left">Parallel</td>
-<td align="left">和有同样设置的测试函数并行执行</td>
-</tr>
-<tr>
-<td align="left">Error</td>
-<td align="left">失败并打印错误信息并继续执行，Fail+Log</td>
-</tr>
-<tr>
-<td align="left">Fatal</td>
-<td align="left">失败立即停止当前测试函数执行并打印错误信息，FailNow+Log</td>
-</tr>
-</tbody></table>
-        
-          <a class="article-more-a" href="/2020/07/04/golang_test/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Golang//" class="article-tag-list-link color2">Golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/07/04/golang_test/">展开全文 >></a>
         </p>
       
 

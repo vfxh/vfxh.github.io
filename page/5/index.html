@@ -152,6 +152,91 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-golang_concurrency" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/05/11/golang_concurrency/">Golang之并发</a>
+    </h1>
+  
+
+        
+        <a href="/2020/05/11/golang_concurrency/" class="archive-article-date">
+  	<time datetime="2020-05-10T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><blockquote>
+<p>并发：逻辑上具备多个任务在一段时间同时执行的能力，从宏观的角度来看是同时执行的的，从微观的角度来看是串行的。<br>并行：物理上依赖多个处理器在某一个时刻真正意义上同时执行多个任务的能力。</p>
+</blockquote>
+<h3 id="并发执行"><a href="#并发执行" class="headerlink" title="并发执行"></a>并发执行</h3><p>在普通函数或者方法前面加上关键字前缀go，可以让该函数或者方法在goroutine中调用，go语句本身执行立即完成。但是go关键字并不是并发执行操作，它的作用是创建一个并发执行单元。这个并发执行单元并不会立即被执行，而是在创建之后被放入一个系统队列，等待调度器取安排合适的系统线程去获取执行权。然后从队列中获取一个goroutine放到系统线程中执行。<br>一个执行单元处理保存函数指针和参数之外，还会分配执行所需要的栈空间。和系统线程相比，goroutine的栈栈空间是可以增长的。最初goroutine的空间很小，仅有KB级别。在扩容之后，可以增长到GB级别。另外，goroutine是由go本身调度的。<br>go 关键字作为一个匿名函数的前缀，表示这个匿名函数作为一个goroutine执行单元。这里不会阻塞，并且新创建的并发单元可能不会被立即执行。所以，需要等到一段时间。等到goroutine执行完毕之后才会退出main函数。否则，一般main函数结束之后。所有的goroutine都会被暴力终止。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> x <span class="keyword">int</span> = <span class="number">10</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(x <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;param: &quot;</span>, x)</span><br><span class="line">	&#125; (x)</span><br><span class="line">	time.Sleep(<span class="number">1</span> * time.Second)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于多个goroutine，并且需要等待所有goroutine结束才退出，这个就需要sync.WaitGroup。sync.WaitGroup用于等待一组goroutine的结束。<br>Add()用于内部计数器加上指定的值，应该放在并发单元创建之前。Done()是递减内部计数器的值，应该在goroutine最后再调用。Wait()一直阻塞，至到计数器的值为0。如果计数器的值为负数，那么Wait()就会panic。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注意传参用的指针</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">(wg *sync.WaitGroup, i <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> wg.Done()</span><br><span class="line">	fmt.Println(<span class="string">&quot;goroutine: &quot;</span>, i)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	wg := <span class="built_in">new</span>(sync.WaitGroup)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= <span class="number">10</span>; i++ &#123;</span><br><span class="line">		wg.Add(<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">go</span> test(wg, i)</span><br><span class="line">	&#125;</span><br><span class="line">	wg.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">goroutine:  <span class="number">1</span></span><br><span class="line">goroutine:  <span class="number">2</span></span><br><span class="line">goroutine:  <span class="number">10</span></span><br><span class="line">goroutine:  <span class="number">3</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>Wait可以在多处等待，它们都可以收到通知</p>
+        
+          <a class="article-more-a" href="/2020/05/11/golang_concurrency/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Golang//" class="article-tag-list-link color2">Golang</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/05/11/golang_concurrency/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-golang_interface" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -899,93 +984,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/05/02/golang_defer/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-redis_data_type" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/29/redis_data_type/">Redis读书笔记《二》：数据类型</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/29/redis_data_type/" class="archive-article-date">
-  	<time datetime="2020-04-28T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><p>字符串可以存储任何形式的字符串，无论是二进制数据还是json数据，甚至是图片（编码成base64形式）。字符串存取数据命令是SET/GET。如果键不存在就创建，如果键已经存在了，那么就会把str_value设为当前str_key的值。值不限于字符串，也可以是整数，浮点数</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置</span></span><br><span class="line">&gt; SET str_key str_value</span><br><span class="line"><span class="comment"># 成功会返回OK</span></span><br><span class="line">&gt; OK</span><br></pre></td></tr></table></figure>
-<p>获取字符串的值</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; GET str_key</span><br><span class="line"><span class="comment"># 返回字符串的值，如果字符串</span></span><br><span class="line">&gt; <span class="string">&quot;str_value&quot;</span></span><br><span class="line"><span class="comment"># 如果不存在就返回 nil 表示空</span></span><br><span class="line">&gt; (nil)</span><br></pre></td></tr></table></figure>
-<p>删除字符串跟删除键是一样的操作。可以删除多个字符串，不过指定的键需要用空格隔开。返回的是成功删除的个数，如果键不存在，就返回0</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; DEL str_key</span><br><span class="line"><span class="comment"># 返回成功删除的个数</span></span><br><span class="line">&gt; 1</span><br></pre></td></tr></table></figure>
-
-<p><strong>其它命令</strong><br>递增和递减：INCR/DECR [key]<br>增加或减少一个整数：INCRBY/DECRBY [key] [integer]<br>增加指定的浮点数：INCRBYFLOAT [key] [float] （如果想要减少就将值设为负数）<br>追加：APPEND key [value]</p>
-<blockquote>
-<p>注意！SET 命令可以覆盖掉其它数据类型，不只是只有string。比如，一个键是散列类型，在使用SET 设置这个键的值之后。这个键就变成了string类型。</p>
-</blockquote>
-<h3 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h3>
-        
-          <a class="article-more-a" href="/2020/04/29/redis_data_type/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/29/redis_data_type/">展开全文 >></a>
         </p>
       
 
