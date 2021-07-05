@@ -172,8 +172,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="消息定义"><a href="#消息定义" class="headerlink" title="消息定义"></a>消息定义</h2><p>protobuf</p>
+        <h3 id="消息定义"><a href="#消息定义" class="headerlink" title="消息定义"></a>消息定义</h3><p>protobuf文件以<code>.proto</code>为文件扩展名，文件第一行非空非注释行用来指定protobuf版本语法。如果不指定，protobuf编译器默认使用版本2的语法。例子中指定版本3的语法：<code>syntax = &quot;proto3&quot;</code>。另外，注释以<code>//</code>或者<code>/**/</code>格式。</p>
+<blockquote>
+<p>example.proto</p>
+</blockquote>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;proto3&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// this is a request message </span></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> name = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">int32</span> age = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p>消息固定以<code>message</code>关键字开头，消息名称随意，但是必须是下划线或字母开头，不能数字开头。消息中的每个字段都是标量类型（下文会提到），字段类型可以是标量类型的任何一种，或者是另一个消息。如下所示：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;proto3&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> name = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">int32</span> age = <span class="number">2</span>;</span><br><span class="line">    InnerMsg i_msg = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">InnerMsg</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>字段标识号</strong></p>
+<p>一个消息中的每个字段选哟指定唯一的标识号，用来在消息二进制格式中识别各个字段。标识号范围[1,2^29-1]。其中1至15标识号标识的字段在编码后占一个字节，16到2047占两个字节。并且1900到1999这个范围的标识号是protobuf预留的，禁止使用。需要注意的一点：指定标识号之后就不要随意改变，如果要增加字段，应该使用新的标识号。所以，尽可能预留一些标识号给可能要增加的字段使用。</p>
+<p><strong>字段规则</strong></p>
+<p>消息字段可以是以下规则其中一个：</p>
         
           <a class="article-more-a" href="/2021/07/02/grpc_1/#more">more >></a>
         
