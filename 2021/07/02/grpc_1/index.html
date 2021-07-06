@@ -16,7 +16,7 @@
 <meta property="og:description" content="消息定义protobuf文件以.proto为文件扩展名，文件第一行非空非注释行用来指定protobuf版本语法。如果不指定，protobuf编译器默认使用版本2的语法。例子中指定版本3的语法：syntax &#x3D; &quot;proto3&quot;。另外，注释以&#x2F;&#x2F;或者&#x2F;**&#x2F;格式。  example.proto  1234567syntax &#x3D; &quot;proto3&quot;;&#x2F;&#x2F; this">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-07-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-07-06T08:44:29.677Z">
+<meta property="article:modified_time" content="2021-07-06T11:15:40.698Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
   
@@ -206,7 +206,42 @@
 
 <p><strong>标量类型</strong></p>
 <p>类似于编程语言中的数据类型，具体参考：<a target="_blank" rel="noopener" href="https://developers.google.com/protocol-buffers/docs/proto3#scalar">https://developers.google.com/protocol-buffers/docs/proto3#scalar</a></p>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ol>
+<p><strong>枚举</strong></p>
+<p>枚举类型的字段值只能是预定义好的一组值的其中一个，如果给出的字段值不是预定义好一组值的其中一个，那么这个字段就被当做未知字段。枚举需要实现预定义，如下<code>enum Test</code>。注意：<em><strong>每个枚举定义必须包含一个映射到零的常量作为其第一个元素</strong></em>。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> name = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">int32</span> age = <span class="number">2</span>;</span><br><span class="line">    InnerMsg i_msg = <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">repeated</span> <span class="built_in">int64</span> arr = <span class="number">4</span>;</span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">        ZERO = <span class="number">0</span>;</span><br><span class="line">        ONE = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Test test = <span class="number">5</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>生成go代码后，枚举类型会转化成常量</p>
+</blockquote>
+<p>不同的枚举项也可以赋予同一个值，不过需要指定：<code>option allow_alias = true</code></p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> name = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">int32</span> age = <span class="number">2</span>;</span><br><span class="line">    InnerMsg i_msg = <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">repeated</span> <span class="built_in">int64</span> arr = <span class="number">4</span>;</span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">        <span class="keyword">option</span> allow_alias = <span class="literal">true</span>;</span><br><span class="line">        ZERO = <span class="number">0</span>;</span><br><span class="line">        ONE = <span class="number">1</span>;</span><br><span class="line">        FIRST = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Test test = <span class="number">5</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外，枚举也可以定义在消息外部，这样方便重用枚举。</p>
+<p><strong>嵌套类型</strong></p>
+<p>消息定义可以嵌套，如果要在别的消息定义中使用内嵌套的类型，就需要指定父类型，格式：<code>parent.child</code>，如第二个消息类型定义。</p>
+<blockquote>
+<p>不过我觉得内嵌消息不应该被外部消息定义使用，如果需要被其他消息定义引用，还是独立定义得好</p>
+</blockquote>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">message</span> <span class="title">InnerMsg</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">RequestOther</span> </span>&#123;</span><br><span class="line">    Request.InnerMsg msg = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>map</strong></p>
+<p>作为键值对映射的一种数据类型，键可以是字符串或整型，值可以是任意类型。而且，map不能声明为repeated。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">    map&lt;<span class="built_in">string</span>, <span class="built_in">int32</span>&gt; maps = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>向后兼容可以使用以下定义来代替不支持map的protobuf版本。但是最终生成的代码可能是不一样的。比如生成go代码，使用map最终会生成map类型，但是下面这种方式会生成结构体数组类型。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">MapFieldEntry</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> key = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">int32</span> value = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">  <span class="keyword">repeated</span> MapFieldEntry map_field = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>包</strong></p>
+<p>包是可选的名称说明符，用来避免协议消息类型之间的冲突。在生成具体语言代码时，包名也作为模块之间的冲突避免手段。比如go语言会变成go的包名称，除非使用<code>option go_package</code>选项明确提供包名。生成C++代码会变成对应的命名空间。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> protobuf;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Msg</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>定义RPC服务</strong></p>
+<p>protobuf编译器会生成rpc服务的代码和存根。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">RPCReq</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">RPCRsp</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">service</span> <span class="title">RPCService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">rpc</span> GetInfos (RPCReq) <span class="keyword">returns</span> (RPCRsp)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>导入定义</strong></p>
+<p>（包括any类型）</p>
+<h3 id="protobuf扩展"><a href="#protobuf扩展" class="headerlink" title="protobuf扩展"></a>protobuf扩展</h3><h3 id="go使用protobuf3"><a href="#go使用protobuf3" class="headerlink" title="go使用protobuf3"></a>go使用protobuf3</h3><h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ol>
 <li><a target="_blank" rel="noopener" href="https://developers.google.com/protocol-buffers/docs/proto3#simple">https://developers.google.com/protocol-buffers/docs/proto3#simple</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/sanshengshui/p/9739521.html">https://www.cnblogs.com/sanshengshui/p/9739521.html</a>  </li>
 </ol>
@@ -343,7 +378,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E5%AE%9A%E4%B9%89"><span class="toc-number">1.</span> <span class="toc-text">消息定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">2.</span> <span class="toc-text">参考资料</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E5%AE%9A%E4%B9%89"><span class="toc-number">1.</span> <span class="toc-text">消息定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#protobuf%E6%89%A9%E5%B1%95"><span class="toc-number">2.</span> <span class="toc-text">protobuf扩展</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#go%E4%BD%BF%E7%94%A8protobuf3"><span class="toc-number">3.</span> <span class="toc-text">go使用protobuf3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">4.</span> <span class="toc-text">参考资料</span></a></li></ol>
                     </div>
                 </span>
             </div>
