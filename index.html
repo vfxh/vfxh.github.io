@@ -152,6 +152,98 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-grpc_2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/07/06/grpc_2/">grpc学习笔记《二》-- RPC简介与grpc简单使用</a>
+    </h1>
+  
+
+        
+        <a href="/2021/07/06/grpc_2/" class="archive-article-date">
+  	<time datetime="2021-07-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="RPC简介"><a href="#RPC简介" class="headerlink" title="RPC简介"></a>RPC简介</h3><p>RPC是Remote Procedure Call的简写，即远程过程调用。我个人觉得RPC是一种设计理念，而不是一种网络协议，和TCP，HTTP这种网络协议有着本质的区别。RPC调用一个方法或者函数，就像是本地调用一样。但是和本地调用是不同的，因为RPC通常是一个进程调用另一个进程提供的方法或函数，请求方和服务方不在同一个进程地址空间内。不能像本地调用那样借助系统栈或寄存器来调用函数，传参，接受返回值。可能RPC的请求方和服务方不在同一台机器内，那么RPC想要实现调用就需要涉及几个问题：</p>
+<ol>
+<li><p><em><strong>调用映射：</strong></em> A进程调用B进程的C方法。A发起请求的时候需要带上C方法的唯一标识，否则B无法识别A到底调用的是哪个方法。而且B还需要将C方法和一个唯一的标识符进行映射，这样在请求来到的时候才能正确快速找到服务提供方。</p>
+</li>
+<li><p><em><strong>序列化和反序列化：</strong></em> 通信双方可能不是用同一个种编程语言实现的，那么请求参数和返回值就需要转换成字节流，然后双方再将这些字节流转换成各自语言能够识别的格式。转换成字节流的过程叫序列化，反之反序列化。</p>
+</li>
+<li><p><em><strong>网络传输：</strong></em> 请求方和调用方不在同一个进程内，甚至不在同一台机器当中，那么双方就需要进行网络通信。可以基于TCP协议，也可以是HTTP协议。grpc就是基于HTTP/2协议之上的。</p>
+</li>
+</ol>
+<p><strong>一个例子</strong></p>
+<p>A调用B的C方法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">    进程A                                  进程B</span><br><span class="line">      |                                     |</span><br><span class="line">B.C的唯一映射标识符                      提取映射标识符和请求参数</span><br><span class="line">   请求参数                              调用C方法处理</span><br><span class="line">      |                                     ^</span><br><span class="line">      v                                     |</span><br><span class="line">序列化成二进制格式                       反序列化请求数据</span><br><span class="line">      |                                     ^</span><br><span class="line">      v                                     |</span><br><span class="line">发起网络请求 ----------网络传输--------&gt; 接收网络请求</span><br></pre></td></tr></table></figure>
+
+<h3 id="grpc版hello-world"><a href="#grpc版hello-world" class="headerlink" title="grpc版hello world"></a>grpc版hello world</h3><h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ol>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/25536695/answer/221638079%EF%BC%88RPC%E7%9A%84%E4%BB%8B%E7%BB%8D%EF%BC%89">https://www.zhihu.com/question/25536695/answer/221638079（RPC的介绍）</a></li>
+</ol>
+
+        
+          <a class="article-more-a" href="/2021/07/06/grpc_2/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/grpc//" class="article-tag-list-link color5">grpc</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/07/06/grpc_2/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-grpc_1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -159,7 +251,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/02/grpc_1/">grpc学习笔记《一：protobuf3》</a>
+      <a class="article-title" href="/2021/07/02/grpc_1/">grpc学习笔记《一》-- protobuf3</a>
     </h1>
   
 
@@ -861,79 +953,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/09/12/load_balance_round_robin/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mysql_explain" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/10/mysql_explain/">MySQL之EXPLAIN关键字</a>
-    </h1>
-  
-
-        
-        <a href="/2020/08/10/mysql_explain/" class="archive-article-date">
-  	<time datetime="2020-08-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-08-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/08/10/mysql_explain/">展开全文 >></a>
         </p>
       
 

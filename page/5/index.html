@@ -152,6 +152,102 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-linux_env_variable" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/05/13/linux_env_variable/">Linux之环境变量</a>
+    </h1>
+  
+
+        
+        <a href="/2020/05/13/linux_env_variable/" class="archive-article-date">
+  	<time datetime="2020-05-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><ol>
+<li>所谓的环境变量就是用来存储数据的变量，可以存储shell会话和工作环境的信息</li>
+<li>可以把数据存储到内存中，shell脚本或命令行可以引用这些h环境变量</li>
+<li>对于特殊环境变量PATH，可指定系统查找程序的路径 </li>
+</ol>
+<p>环境变量分为全局变量和局部变量</p>
+<ol>
+<li>局部变量：<blockquote>
+<p>只能在创建局部变量的shell可见，其它shell不可见</p>
+</blockquote>
+</li>
+<li>全局变量：<blockquote>
+<p>全局变量在定义它的shell和进程衍生出来的子shell，子进程里都可见</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="查看环境变量"><a href="#查看环境变量" class="headerlink" title="查看环境变量"></a>查看环境变量</h3><p>使用env或者printenv可以打印出全部全局变量，但是不包含局部变量。set命令将全局变量和局部变量都打印出来。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ printenv</span><br><span class="line">XDG_SESSION_ID=11</span><br><span class="line">HOSTNAME=learn</span><br><span class="line">SELINUX_ROLE_REQUESTED=</span><br><span class="line">TERM=xterm</span><br><span class="line">SHELL=/bin/bash</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ env</span><br><span class="line">XDG_SESSION_ID=11</span><br><span class="line">HOSTNAME=learn</span><br><span class="line">SELINUX_ROLE_REQUESTED=</span><br><span class="line">TERM=xterm</span><br><span class="line">SHELL=/bin/bash</span><br><span class="line">,,,</span><br></pre></td></tr></table></figure>
+<p>printenv和env打印的结果是差不多一致的。<br>在使用变量的时候需要在变量名称前面加上一个$前缀，不过对于printenv命令来说不需要这么做，其它命令就需要了，比如echo命令。<br>printenv命令和env有一点不同，就是printenv可以打印环境变量的值，但是env不可以。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ printenv HOME</span><br><span class="line">/root</span><br><span class="line">$ env HOME</span><br><span class="line">env: HOME: No such file or directory</span><br></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2020/05/13/linux_env_variable/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/05/13/linux_env_variable/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-golang_concurrency" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -900,90 +996,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/05/02/golang_cosure/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-golang_defer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/02/golang_defer/">Golang之defer</a>
-    </h1>
-  
-
-        
-        <a href="/2020/05/02/golang_defer/" class="archive-article-date">
-  	<time datetime="2020-05-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>延迟调用是指函数返回之前自动调用的一个代码块，在Golang当中是用关键defer来实现的。defer向当前函数注册要执行的代码块，然后到函数返回之前执行。<br>比如打开文件和关闭文件。</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">openFile</span><span class="params">()</span></span> &#123;</span><br><span class="line">    f, err := os.Open(<span class="string">&quot;...&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> f.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在函数openFile中先是打开了一个文件，然后defer f.Close()注册文件关闭代码。这样在openFile函数执行期间，文件是一直处于打开状态。等到openFile返回之前就自动关闭打开的文件，很方便。</p>
-<p>defer的作用域是函数或者方法的作用域，而不是某个局部代码块的作用域。即使在函数或者方法内的某个局部作用域使用defer注册延迟调用，也会在函数或方法结束之前调用。而不是在离开局部作用之前调用。</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;internal code area&quot;</span>)</span><br><span class="line">        <span class="keyword">defer</span> fmt.Println(<span class="string">&quot;internal end&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println(<span class="string">&quot;main end&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>打印结果。可见，即使在函数内部的局部作用域进行defer注册，也会在函数结束之前调用，而不是离开函数内部局部作用域之前调用。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">internal code area</span><br><span class="line">main end</span><br><span class="line">internal end</span><br></pre></td></tr></table></figure>
-
-<h4 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h4><p>可以注册多次，不过注册顺序和执行的顺序是反过来的。注册就相当压栈，执行就相当于出栈（其实底层并不是栈实现，这里只是为了方便理解）。所以先注册的代码块会在最后才执行。比如下面的代码打印的顺序是：third second first</p>
-        
-          <a class="article-more-a" href="/2020/05/02/golang_defer/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Golang//" class="article-tag-list-link color2">Golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/05/02/golang_defer/">展开全文 >></a>
         </p>
       
 

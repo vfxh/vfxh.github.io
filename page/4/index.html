@@ -152,6 +152,91 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-data_structure_hash" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/12/data_structure_hash/">散列表</a>
+    </h1>
+  
+
+        
+        <a href="/2020/06/12/data_structure_hash/" class="archive-article-date">
+  	<time datetime="2020-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><h4 id="散列表"><a href="#散列表" class="headerlink" title="散列表"></a>散列表</h4><p>散列表也叫哈希表，是一种能够实现将多个键映射到多个值的数据结构，其添加，删除，查找等操作都是常数时间完成。其中，键和值的映射关系是通过散列函数来完成的。理想的散列表是一个固定大小的数组，不同的键经过散列函数的计算之后能够均匀分布到不同单元的散列表项当中，但这只是在理想的状态下。</p>
+<h4 id="散列函数"><a href="#散列函数" class="headerlink" title="散列函数"></a>散列函数</h4><p>散列函数就是将任意长度的数据映射到固定长度数据的函数。散列表使用散列函数来计算键在散列表的索引，来找到键在散列表中对应的值。一个好的散列函数能够将不同的键均匀的映射到散列表的不同单元中，提高散列表利用率。所以，散列函数的好坏取决于其解决冲突的能力。但凡事都有利弊。一个好的散列函数通常会增加计算的开销，效率有所降低。所以，适当选择不是很完善的散列函数有助于提高效率。</p>
+<h5 id="取余法"><a href="#取余法" class="headerlink" title="取余法"></a>取余法</h5><p>最简单的散列函数是取余法，以键的长度对散列表的大小取余。对于键是字符串的形式，通常会先计算字符串的长度，然后根据字符串的长度对散列表的大小取余。一般来说，散列表的大小取素数会更好。取素数的散列计算方式：hash(key) = len(key) mod hashTableSize。如果散列表的长度不是素数，那么计算公式就是：hash(key) = (len(key) mod p) mod hashTableSize，p是一个大于hashTableSize的素数。</p>
+<blockquote>
+<p>为什么取余法的散列表长度要取素数</p>
+</blockquote>
+<p>简而言之就是为了减少冲突，使得键在散列之后能够均匀分布在散列表中</p>
+<blockquote>
+<p>具体分析</p>
+</blockquote>
+        
+          <a class="article-more-a" href="/2020/06/12/data_structure_hash/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/数据结构//" class="article-tag-list-link color5">数据结构</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/06/12/data_structure_hash/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-golang_memory_management" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -987,102 +1072,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/05/14/linux_user_and_file_permissions/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-linux_env_variable" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/13/linux_env_variable/">Linux之环境变量</a>
-    </h1>
-  
-
-        
-        <a href="/2020/05/13/linux_env_variable/" class="archive-article-date">
-  	<time datetime="2020-05-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-13</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><ol>
-<li>所谓的环境变量就是用来存储数据的变量，可以存储shell会话和工作环境的信息</li>
-<li>可以把数据存储到内存中，shell脚本或命令行可以引用这些h环境变量</li>
-<li>对于特殊环境变量PATH，可指定系统查找程序的路径 </li>
-</ol>
-<p>环境变量分为全局变量和局部变量</p>
-<ol>
-<li>局部变量：<blockquote>
-<p>只能在创建局部变量的shell可见，其它shell不可见</p>
-</blockquote>
-</li>
-<li>全局变量：<blockquote>
-<p>全局变量在定义它的shell和进程衍生出来的子shell，子进程里都可见</p>
-</blockquote>
-</li>
-</ol>
-<h3 id="查看环境变量"><a href="#查看环境变量" class="headerlink" title="查看环境变量"></a>查看环境变量</h3><p>使用env或者printenv可以打印出全部全局变量，但是不包含局部变量。set命令将全局变量和局部变量都打印出来。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ printenv</span><br><span class="line">XDG_SESSION_ID=11</span><br><span class="line">HOSTNAME=learn</span><br><span class="line">SELINUX_ROLE_REQUESTED=</span><br><span class="line">TERM=xterm</span><br><span class="line">SHELL=/bin/bash</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ env</span><br><span class="line">XDG_SESSION_ID=11</span><br><span class="line">HOSTNAME=learn</span><br><span class="line">SELINUX_ROLE_REQUESTED=</span><br><span class="line">TERM=xterm</span><br><span class="line">SHELL=/bin/bash</span><br><span class="line">,,,</span><br></pre></td></tr></table></figure>
-<p>printenv和env打印的结果是差不多一致的。<br>在使用变量的时候需要在变量名称前面加上一个$前缀，不过对于printenv命令来说不需要这么做，其它命令就需要了，比如echo命令。<br>printenv命令和env有一点不同，就是printenv可以打印环境变量的值，但是env不可以。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ printenv HOME</span><br><span class="line">/root</span><br><span class="line">$ env HOME</span><br><span class="line">env: HOME: No such file or directory</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2020/05/13/linux_env_variable/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/05/13/linux_env_variable/">展开全文 >></a>
         </p>
       
 

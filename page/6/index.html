@@ -152,6 +152,90 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-golang_defer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/05/02/golang_defer/">Golang之defer</a>
+    </h1>
+  
+
+        
+        <a href="/2020/05/02/golang_defer/" class="archive-article-date">
+  	<time datetime="2020-05-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>延迟调用是指函数返回之前自动调用的一个代码块，在Golang当中是用关键defer来实现的。defer向当前函数注册要执行的代码块，然后到函数返回之前执行。<br>比如打开文件和关闭文件。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">openFile</span><span class="params">()</span></span> &#123;</span><br><span class="line">    f, err := os.Open(<span class="string">&quot;...&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> f.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在函数openFile中先是打开了一个文件，然后defer f.Close()注册文件关闭代码。这样在openFile函数执行期间，文件是一直处于打开状态。等到openFile返回之前就自动关闭打开的文件，很方便。</p>
+<p>defer的作用域是函数或者方法的作用域，而不是某个局部代码块的作用域。即使在函数或者方法内的某个局部作用域使用defer注册延迟调用，也会在函数或方法结束之前调用。而不是在离开局部作用之前调用。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;internal code area&quot;</span>)</span><br><span class="line">        <span class="keyword">defer</span> fmt.Println(<span class="string">&quot;internal end&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println(<span class="string">&quot;main end&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印结果。可见，即使在函数内部的局部作用域进行defer注册，也会在函数结束之前调用，而不是离开函数内部局部作用域之前调用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">internal code area</span><br><span class="line">main end</span><br><span class="line">internal end</span><br></pre></td></tr></table></figure>
+
+<h4 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h4><p>可以注册多次，不过注册顺序和执行的顺序是反过来的。注册就相当压栈，执行就相当于出栈（其实底层并不是栈实现，这里只是为了方便理解）。所以先注册的代码块会在最后才执行。比如下面的代码打印的顺序是：third second first</p>
+        
+          <a class="article-more-a" href="/2020/05/02/golang_defer/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Golang//" class="article-tag-list-link color2">Golang</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/05/02/golang_defer/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-redis_data_type" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
