@@ -185,10 +185,10 @@
 <p>A调用B的C方法。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">    进程A                                  进程B</span><br><span class="line">      |                                     |</span><br><span class="line">B.C的唯一映射标识符                      提取映射标识符和请求参数</span><br><span class="line">   请求参数                              调用C方法处理</span><br><span class="line">      |                                     ^</span><br><span class="line">      v                                     |</span><br><span class="line">序列化成二进制格式                       反序列化请求数据</span><br><span class="line">      |                                     ^</span><br><span class="line">      v                                     |</span><br><span class="line">发起网络请求 ----------网络传输--------&gt; 接收网络请求</span><br></pre></td></tr></table></figure>
 
-<h3 id="grpc版hello-world"><a href="#grpc版hello-world" class="headerlink" title="grpc版hello world"></a>grpc版hello world</h3><h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ol>
-<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/25536695/answer/221638079%EF%BC%88RPC%E7%9A%84%E4%BB%8B%E7%BB%8D%EF%BC%89">https://www.zhihu.com/question/25536695/answer/221638079（RPC的介绍）</a></li>
-</ol>
+<h3 id="grpc版hello-world"><a href="#grpc版hello-world" class="headerlink" title="grpc版hello world"></a>grpc版hello world</h3><p>目录结构</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">service</span><br><span class="line">|———client</span><br><span class="line">|    |__client.go</span><br><span class="line">|</span><br><span class="line">|———protobuf</span><br><span class="line">|    |__service.pb.go</span><br><span class="line">|    |__service.proto</span><br><span class="line">|———server</span><br><span class="line">|    |__server.go</span><br></pre></td></tr></table></figure>
 
+<p>protobuf定义。例子定义了一个服务RpcCall，这个服务只提供了一个方法RspRemoteReq。</p>
         
           <a class="article-more-a" href="/2021/07/06/grpc_2/#more">more >></a>
         
