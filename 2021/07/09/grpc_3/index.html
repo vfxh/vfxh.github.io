@@ -6,13 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>Hexo</title>
+  <title>grpc学习笔记《二》-- 认证和拦截器 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/page/4/index.html">
+  <meta name="description" content="简介grpc提供两种认证方式：1.SSL&#x2F;TLS认证方式， 2.token认证。grpc也提供接口自定义认证。未进行认证的rpc方式进行通信是明文传输的，非常不安全。未使用认证的rpc请求使用grpc.WithInsecure()选项来跳过认证。 证书认证使用openssl生成服务端和客户端的密钥和证书。 123456789$ openssl genrsa -out server.key 2048">
+<meta property="og:type" content="article">
+<meta property="og:title" content="grpc学习笔记《二》-- 认证和拦截器">
+<meta property="og:url" content="http://example.com/2021/07/09/grpc_3/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="简介grpc提供两种认证方式：1.SSL&#x2F;TLS认证方式， 2.token认证。grpc也提供接口自定义认证。未进行认证的rpc方式进行通信是明文传输的，非常不安全。未使用认证的rpc请求使用grpc.WithInsecure()选项来跳过认证。 证书认证使用openssl生成服务端和客户端的密钥和证书。 123456789$ openssl genrsa -out server.key 2048">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-07-08T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-10T09:36:18.456Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
   
@@ -150,596 +154,74 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-english_world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-grpc_3" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/15/english_world/">不懂得洋文单词集锦</a>
+    <h1 class="article-title" itemprop="name">
+      grpc学习笔记《二》-- 认证和拦截器
     </h1>
   
 
         
-        <a href="/2020/06/15/english_world/" class="archive-article-date">
-  	<time datetime="2020-06-14T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-15</time>
+        <a href="/2021/07/09/grpc_3/" class="archive-article-date">
+  	<time datetime="2021-07-08T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-09</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <table>
-<thead>
-<tr>
-<th align="left">单词</th>
-<th align="left">中文含义</th>
-<th align="left">备注</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">assuming</td>
-<td align="left">假设</td>
-<td align="left">形容词，v –&gt; assume</td>
-</tr>
-<tr>
-<td align="left">semantics</td>
-<td align="left">语义学</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">slightly</td>
-<td align="left">略，稍微</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">specifies</td>
-<td align="left">指定</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">thus</td>
-<td align="left">因此，所以，于是</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">currently</td>
-<td align="left">目前，一般</td>
-<td align="left">表示目前是，和at present一样。都是目前</td>
-</tr>
-<tr>
-<td align="left">subsequent</td>
-<td align="left">随后的，后续</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">Replenish</td>
-<td align="left">补充</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">queued</td>
-<td align="left">排队</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">assume</td>
-<td align="left">假设，设想</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">adjust</td>
-<td align="left">调整，调节</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">noticed</td>
-<td align="left">注意，注意到，在意（如：you may have noticed 你可能已经注意到）通知</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">appears</td>
-<td align="left">出现</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">appears exactly once.</td>
-<td align="left">仅出现一次</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">prevent</td>
-<td align="left">防止预防，避免</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">as well as</td>
-<td align="left">以及</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">since</td>
-<td align="left">因为，自从</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">cycle</td>
-<td align="left">周期</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">role</td>
-<td align="left">角色</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">swept</td>
-<td align="left">已经清理过（过去）</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">sweep</td>
-<td align="left">打扫，清理（第三人称或单数）</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">sweeping</td>
-<td align="left">正在清理或打扫，（现在进行时）</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">retained</td>
-<td align="left">拥有，保留</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">maintain</td>
-<td align="left">维护，维持，维修</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">reclaim</td>
-<td align="left">回收</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">specifically特别地（是）</td>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">credit</td>
-<td align="left">分数</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">spare</td>
-<td align="left">空余，空闲，备用</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">extra</td>
-<td align="left">额外的，附加的</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">usable</td>
-<td align="left">可用的</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">entire</td>
-<td align="left">全部，整个</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">attempt</td>
-<td align="left">尝试，试图</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">preemption</td>
-<td align="left">抢占</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">snapshot</td>
-<td align="left">快照</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">taken at</td>
-<td align="left">取于…</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">straight</td>
-<td align="left">直接，直行</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">as soon as possible</td>
-<td align="left">尽快地</td>
-<td align="left"></td>
-</tr>
-</tbody></table>
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>grpc提供两种认证方式：1.SSL/TLS认证方式， 2.token认证。grpc也提供接口自定义认证。未进行认证的rpc方式进行通信是明文传输的，非常不安全。未使用认证的rpc请求使用<code>grpc.WithInsecure()</code>选项来跳过认证。</p>
+<h3 id="证书认证"><a href="#证书认证" class="headerlink" title="证书认证"></a>证书认证</h3><p>使用openssl生成服务端和客户端的密钥和证书。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ openssl genrsa -out server.key 2048</span><br><span class="line">$ openssl req -new -x509 -days 3650 \</span><br><span class="line">    -subj <span class="string">&quot;/C=GB/L=China/O=grpc-server/CN=server.grpc.io&quot;</span> \</span><br><span class="line">    -key server.key -out server.crt</span><br><span class="line"></span><br><span class="line">$ openssl genrsa -out client.key 2048</span><br><span class="line">$ openssl req -new -x509 -days 3650 \</span><br><span class="line">    -subj <span class="string">&quot;/C=GB/L=China/O=grpc-client/CN=client.grpc.io&quot;</span> \</span><br><span class="line">    -key client.key -out client.crt</span><br></pre></td></tr></table></figure>
 
-        
-          <a class="article-more-a" href="/2020/06/15/english_world/#more">more >></a>
-        
-      
+<p>服务端示例代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;context&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="string">&quot;google.golang.org/grpc&quot;</span></span><br><span class="line">	<span class="string">&quot;google.golang.org/grpc/credentials&quot;</span></span><br><span class="line">	<span class="string">&quot;grpc.sdy/service/protobuf&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	listener, err := net.Listen(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;:8080&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 证书认证</span></span><br><span class="line">	cert, err := credentials.NewServerTLSFromFile(<span class="string">&quot;./cert/server.crt&quot;</span>, <span class="string">&quot;./cert/server.key&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(err)</span><br><span class="line">	&#125;</span><br><span class="line">	grpcServ := grpc.NewServer(grpc.Creds(cert))</span><br><span class="line">	protobuf.RegisterRpcCallServer(grpcServ, &amp;grpcServer&#123;&#125;)</span><br><span class="line">	<span class="keyword">if</span> err := grpcServ.Serve(listener); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> grpcServer <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(g *grpcServer)</span> <span class="title">RspRemoteReq</span><span class="params">(ctx context.Context, req *protobuf.Request)</span> <span class="params">(*protobuf.Response, error)</span></span> &#123;</span><br><span class="line">	log.Println(<span class="string">&quot;server recv:&quot;</span>, req.Query)</span><br><span class="line">	rsp := &amp;protobuf.Response&#123;</span><br><span class="line">		Result: <span class="string">&quot;hello world&quot;</span>,</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> rsp, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习记录//" class="article-tag-list-link color5">学习记录</a>
-        		</li>
-      		
-		</ul>
-	</div>
+<p>客户端示例代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;context&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="string">&quot;google.golang.org/grpc&quot;</span></span><br><span class="line">	<span class="string">&quot;google.golang.org/grpc/credentials&quot;</span></span><br><span class="line">	<span class="string">&quot;grpc.sdy/service/protobuf&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	cert, err := credentials.NewClientTLSFromFile(<span class="string">&quot;./cert/server.crt&quot;</span>, <span class="string">&quot;server.grpc.io&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// grpc.WithInsecure() 这个选项是为了跳过认证</span></span><br><span class="line">	<span class="comment">// grpcConn, err := grpc.Dial(&quot;127.0.0.1:8080&quot;, grpc.WithInsecure())</span></span><br><span class="line">	grpcConn, err := grpc.Dial(<span class="string">&quot;127.0.0.1:8080&quot;</span>, grpc.WithTransportCredentials(cert))</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(err)</span><br><span class="line">	&#125;</span><br><span class="line">	rpcClient := protobuf.NewRpcCallClient(grpcConn)</span><br><span class="line">	rsp, err := rpcClient.RspRemoteReq(context.Background(), &amp;protobuf.Request&#123;Query: <span class="string">&quot;l` client&quot;</span>&#125;)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(err)</span><br><span class="line">	&#125;</span><br><span class="line">	log.Println(<span class="string">&quot;client recv:&quot;</span>, rsp.Result)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/06/15/english_world/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-data_structure_hash" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/12/data_structure_hash/">散列表</a>
-    </h1>
-  
-
-        
-        <a href="/2020/06/12/data_structure_hash/" class="archive-article-date">
-  	<time datetime="2020-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><h4 id="散列表"><a href="#散列表" class="headerlink" title="散列表"></a>散列表</h4><p>散列表也叫哈希表，是一种能够实现将多个键映射到多个值的数据结构，其添加，删除，查找等操作都是常数时间完成。其中，键和值的映射关系是通过散列函数来完成的。理想的散列表是一个固定大小的数组，不同的键经过散列函数的计算之后能够均匀分布到不同单元的散列表项当中，但这只是在理想的状态下。</p>
-<h4 id="散列函数"><a href="#散列函数" class="headerlink" title="散列函数"></a>散列函数</h4><p>散列函数就是将任意长度的数据映射到固定长度数据的函数。散列表使用散列函数来计算键在散列表的索引，来找到键在散列表中对应的值。一个好的散列函数能够将不同的键均匀的映射到散列表的不同单元中，提高散列表利用率。所以，散列函数的好坏取决于其解决冲突的能力。但凡事都有利弊。一个好的散列函数通常会增加计算的开销，效率有所降低。所以，适当选择不是很完善的散列函数有助于提高效率。</p>
-<h5 id="取余法"><a href="#取余法" class="headerlink" title="取余法"></a>取余法</h5><p>最简单的散列函数是取余法，以键的长度对散列表的大小取余。对于键是字符串的形式，通常会先计算字符串的长度，然后根据字符串的长度对散列表的大小取余。一般来说，散列表的大小取素数会更好。取素数的散列计算方式：hash(key) = len(key) mod hashTableSize。如果散列表的长度不是素数，那么计算公式就是：hash(key) = (len(key) mod p) mod hashTableSize，p是一个大于hashTableSize的素数。</p>
 <blockquote>
-<p>为什么取余法的散列表长度要取素数</p>
+<p>注意：go1.15版本需要设置环境变量GODEBUG值为x509ignoreCN=0才可以正常运行，否贼会报错[2]：<code>rpc error: code = Unavailable desc = connection error: desc = &quot;transport: authentication handshake failed: x509: certificate relies on legacy Common Name field, use SANs or temporarily enable Common Name matching with GODEBUG=x509ignoreCN=0&quot;</code>。win系统设置：<code>$env:GODEBUG=&quot;x509ignoreCN=0&quot;</code></p>
 </blockquote>
-<p>简而言之就是为了减少冲突，使得键在散列之后能够均匀分布在散列表中</p>
-<blockquote>
-<p>具体分析</p>
-</blockquote>
-        
-          <a class="article-more-a" href="/2020/06/12/data_structure_hash/#more">more >></a>
-        
-      
+<p><strong>根证书签名</strong></p>
+<h3 id="Token认证"><a href="#Token认证" class="headerlink" title="Token认证"></a>Token认证</h3><h3 id="拦截器"><a href="#拦截器" class="headerlink" title="拦截器"></a>拦截器</h3><p>简单来说，拦截器就是服务端进入请求处理函数之前或者客户端执行发起请求之前的处理逻辑。比如：grpc服务端进入请求处理函数前对请求进行校验，如果校验不通过就直接返回错误，不进入实际处理函数。拦截器分成普通方法拦截器和流式方法拦截器。</p>
+<p><strong>服务端拦截器</strong></p>
+<p>函数原型：<code>func(ctx context.Context, req interface&#123;&#125;, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface&#123;&#125;, error)</code><br>前面两个参数是普通的grpc处理函数的参数，第三个包含处理函数的一些信息，第四个是处理函数。<br>grpc.ChainUnaryInterceptor函数接收多个拦截器实体，它们之间呈链式形式。最先传入的拦截器处于最外层，最后一个拦截器才是真正会调用处理函数。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;context&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="string">&quot;google.golang.org/grpc&quot;</span></span><br><span class="line">	<span class="string">&quot;google.golang.org/grpc/codes&quot;</span></span><br><span class="line">	<span class="string">&quot;google.golang.org/grpc/credentials&quot;</span></span><br><span class="line">	<span class="string">&quot;google.golang.org/grpc/status&quot;</span></span><br><span class="line">	<span class="string">&quot;grpc.sdy/service/protobuf&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 省略...</span></span><br><span class="line">	filter := <span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, req <span class="keyword">interface</span>&#123;&#125;, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler)</span> <span class="params">(<span class="keyword">interface</span>&#123;&#125;, error)</span></span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;filter&quot;</span>)</span><br><span class="line">		log.Println(info.FullMethod)</span><br><span class="line">		<span class="keyword">return</span> handler(ctx, req)</span><br><span class="line">	&#125;</span><br><span class="line">	filter2 := <span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, req <span class="keyword">interface</span>&#123;&#125;, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler)</span> <span class="params">(_ <span class="keyword">interface</span>&#123;&#125;, err error)</span></span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;filter2&quot;</span>)</span><br><span class="line">		<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">			<span class="keyword">if</span> r := <span class="built_in">recover</span>(); r != <span class="literal">nil</span> &#123;</span><br><span class="line">				log.Println(<span class="string">&quot;recover: &quot;</span>, r)</span><br><span class="line">				<span class="comment">// codes.Internal是状态描述码</span></span><br><span class="line">				<span class="comment">// status.Errorf是grpc的错误返回格式</span></span><br><span class="line">				err = status.Errorf(codes.Internal, <span class="string">&quot;[target=%s err=%v]&quot;</span>, info.FullMethod, r)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;()</span><br><span class="line">		<span class="keyword">return</span> handler(ctx, req)</span><br><span class="line">	&#125;</span><br><span class="line">	filter3 := <span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, req <span class="keyword">interface</span>&#123;&#125;, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler)</span> <span class="params">(<span class="keyword">interface</span>&#123;&#125;, error)</span></span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;filter3&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span> handler(ctx, req)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// grpc.ChainUnaryInterceptor接受多个拦截器，第一个拦截器是最外层的</span></span><br><span class="line">	<span class="comment">// 最后一个拦截器才是整整调用实际处理的方法函数，panic恢复放在任意拦截器中都可以</span></span><br><span class="line">	<span class="comment">// 所有一元拦截器链接起来依次执行，最后才是具体的方法函数</span></span><br><span class="line">	grpcServ := grpc.NewServer(grpc.Creds(cert), grpc.ChainUnaryInterceptor(filter, filter2, filter3))</span><br><span class="line">	protobuf.RegisterRpcCallServer(grpcServ, &amp;grpcServer&#123;&#125;)</span><br><span class="line">	<span class="keyword">if</span> err := grpcServ.Serve(listener); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据结构//" class="article-tag-list-link color5">数据结构</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/06/12/data_structure_hash/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-golang_memory_management" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/11/golang_memory_management/">Golang之内存管理</a>
-    </h1>
-  
-
-        
-        <a href="/2020/06/11/golang_memory_management/" class="archive-article-date">
-  	<time datetime="2020-06-10T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>注意mspan是从mheap分配出去的，mcache是从mcentral获取然后缓存到自身，是获取</p>
-</blockquote>
-<blockquote>
-<p>微对象是不需要扫描的</p>
-</blockquote>
-<blockquote>
-<p>内存分配和垃圾回收算法查看C++数据结构和算法</p>
-</blockquote>
-<blockquote>
-<p>基于Go1.14版本</p>
-</blockquote>
-<h2 id="系统内存管理"><a href="#系统内存管理" class="headerlink" title="系统内存管理"></a>系统内存管理</h2><p>操作系统精髓与设计原理：内存管理<br>深入理解操作系统第九章 虚拟内存<br>微信收藏熬丙敖丙20 张图揭开内存管理的迷雾</p>
-<h2 id="TCmalloc"><a href="#TCmalloc" class="headerlink" title="TCmalloc"></a>TCmalloc</h2><p>比如参考！！！<a target="_blank" rel="noopener" href="https://wallenwang.com/2018/11/tcmalloc/#ftoc-heading-22">https://wallenwang.com/2018/11/tcmalloc/#ftoc-heading-22</a></p>
-<blockquote>
-<p>其实老夫压根就没明白，就简单记下来……..</p>
-</blockquote>
-<p>TCmalloc（thread-cache-malloc）是Google开发的内存分配器，Go的内存分配器和TCmalloc相似，了解一下有助于理解Go的内存分配。<br>当程序执行的时候，在操作系统中是以进程来表示。操作系统会给一个进程分配指定大小的虚拟内存，而TCmalloc管理的就是这个虚拟内存中的堆。大多数现代操作系统中，进程内部会有很多个线程在执行不同的任务。一个进程内的全部线程共享进程的全部资源（线程与线程之间的栈是独立的，但是他们栈集合就是进程的栈），如果进程内的线程在申请内存的时候都在进程的堆中分配，那么就会有很大的竞争，效率不高。TCmalloc会给进程内的线程分配一个线程的局部缓存，线程内的小对象就是在这个线程本地缓存（thread-local cache）中分配的。由于是线程本地的缓存，所以可以进行无锁操作，效率得到很大的提升。而TCmalloc管理的虚拟内存中的堆，称为中心堆（central page）。当线程本地缓存不足的时候也会从中心堆批量获取内存块来作为线程本地缓存，这个操作是需要加锁的。大对象也会从中心堆中分配。</p>
-        
-          <a class="article-more-a" href="/2020/06/11/golang_memory_management/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Golang//" class="article-tag-list-link color2">Golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/06/11/golang_memory_management/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-golang_memory_alignment" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/05/golang_memory_alignment/">内存对齐</a>
-    </h1>
-  
-
-        
-        <a href="/2020/06/05/golang_memory_alignment/" class="archive-article-date">
-  	<time datetime="2020-06-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>C语言可以用offsetof函数来获取结构体成员的偏移量</p>
-</blockquote>
-<blockquote>
-<p>基于Fedora32 64位系统</p>
-</blockquote>
-<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>现代计算机的内存空间是按照字节来划分的，但计算机系统对于基本类型的数据存放在内存的地址有限制。计算机系统会要求这些数据的存放起始地址是某个数的倍数（2、4或8等等），这个就是内存对齐。而CPU在访问数据时候，并不是按照一个字节一个字节来访问的，而是按照多个字节组合作为访问单位来周期性性访问。这个多个字节组合一般是：2个字节、4个字节、8个字节甚至是16，32个字节。而这些访问的单位被称为内存存取粒度。</p>
-<blockquote>
-<p>CPU存取示意图</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 内存中并不是按照一个字节一个字节排列</span><br><span class="line">// 类似于这样</span><br><span class="line"></span><br><span class="line">         0   1   2   3   4   5   6   7</span><br><span class="line">       +---+---+---+---+---+---+---+---+</span><br><span class="line">data   |   |   |   |   |   |   |   |   |</span><br><span class="line">       +---+---+---+---+---+---+---+---+</span><br><span class="line"></span><br><span class="line">// 而是按照一个块一个块存取的</span><br><span class="line">// 假设存取粒度是4，那么就像这样</span><br><span class="line"></span><br><span class="line">         0   1   2   3       4   5   6   7</span><br><span class="line">       +---+---+---+---+   +---+---+---+---+</span><br><span class="line">data   |   |   |   |   |   |   |   |   |   |</span><br><span class="line">       +---+---+---+---+   +---+---+---+---+</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="为什么要对齐"><a href="#为什么要对齐" class="headerlink" title="为什么要对齐"></a>为什么要对齐</h3><p>假设CPU存取粒度为4，要读取一个int32（4个字节）的变量，根据内存存取粒度为4的情况，每一个周期读取数据都要读取4个字节。假设现在没有内存对齐，并且这个int32类型的变量数据随意存放，假设它的存储起始地址是1，那么这个数据占据的内存地址就是1，2，3，4。现在要从0地址开始读取，一个周期读取4个字节，包括0，1，2，3。但是int32变量的数据还包括地址为4的数据，那么就需要进行迭第二个周期读取，读取包括4，5，6，7。然后将不需要的字节剔除，就是把0，5，6，7这个四个地址的字节剔除，最后剩下的1，2，3地址的数据块和地位是4的数据块组合得到int32变量的数据。</p>
-<blockquote>
-<p>没有内存对齐读取数据示意图</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"> memoery</span><br><span class="line"></span><br><span class="line">0 +---+&lt;------+</span><br><span class="line">  |   |       |   erase address 0                   </span><br><span class="line">1 +---+       |                       1 +---+-----------------+</span><br><span class="line">  | \ |      first read ------------&gt;   | \ |                 | </span><br><span class="line">2 +---+       |                       2 +---+                 |           1 +---+ </span><br><span class="line">  | \ |       |                         | \ |                 v  merge      | \ |                </span><br><span class="line">3 +---+&lt;------+                       3 +---+                 +---------&gt; 2 +---+</span><br><span class="line">  | \ |                                 | \ |                 ^             | \ |</span><br><span class="line">4 +---+&lt;------+                         +---+                 |           3 +---+  </span><br><span class="line">  | \ |       | erase address 5,6,7                           |             | \ |</span><br><span class="line">5 +---+       |                       4 +---+-----------------+           4 +---+</span><br><span class="line">  |   |     second read ------------&gt;   | \ |                               | \ |</span><br><span class="line">6 +---+       |                         +---+                               +---+</span><br><span class="line">  |   |       |</span><br><span class="line">7 +---+       |</span><br><span class="line">  |   |       |</span><br><span class="line">  +---+&lt;------+</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2020/06/05/golang_memory_alignment/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Golang//" class="article-tag-list-link color2">Golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/06/05/golang_memory_alignment/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-data_structure_array_linked_table" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/01/data_structure_array_linked_table/">数组和链表</a>
-    </h1>
-  
-
-        
-        <a href="/2020/06/01/data_structure_array_linked_table/" class="archive-article-date">
-  	<time datetime="2020-05-31T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>数组是一种数据类型相同，长度固定，顺序存储的数据结构。也就说初始化的时候，会分配一块固定大小的内存，元素的存储时连续的。</p>
-<blockquote>
-<p>优点</p>
-</blockquote>
-<ol>
-<li>在下标范围内支持快速随机读取和更新数据，时间复杂度为O(1)</li>
+<p><strong>客户端拦截器</strong></p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ol>
+<li><a target="_blank" rel="noopener" href="https://books.studygolang.com/advanced-go-programming-book/ch4-rpc/ch4-05-grpc-hack.html">https://books.studygolang.com/advanced-go-programming-book/ch4-rpc/ch4-05-grpc-hack.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jackluo/p/13841286.html">https://www.cnblogs.com/jackluo/p/13841286.html</a></li>
 </ol>
-<blockquote>
-<p>缺点</p>
-</blockquote>
-<ol>
-<li>在插入和删除元素的时候需要移动元素位置。时间复杂度为O(n)</li>
-<li>长度固定，想要存储更多元素的时候需要扩容</li>
-</ol>
-<blockquote>
-<p>数组结构体声明<br>因为需要扩容，所以不直接使用数组，而是封装成一个结构体</p>
-</blockquote>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">array</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> cap;   <span class="comment">// 当前容量</span></span><br><span class="line">    <span class="keyword">int</span> len;   <span class="comment">// 当前元素长度</span></span><br><span class="line">    <span class="keyword">int</span> last;  <span class="comment">// 最后一个元素下标</span></span><br><span class="line">    <span class="keyword">int</span>* arr;  <span class="comment">// 数组</span></span><br><span class="line">&#125; Array, *ArrayPtr;</span><br></pre></td></tr></table></figure>
 
-<blockquote>
-<p>示意图</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">                        last</span><br><span class="line">                         |</span><br><span class="line">                         v        </span><br><span class="line">arr-----------&gt;+---+---+---+---+---+</span><br><span class="line">               | 0 | 1 | 2 |   |   |</span><br><span class="line">               +---+---+---+---+---+</span><br><span class="line">               |----len----|       |</span><br><span class="line">               |----------cap------|</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2020/06/01/data_structure_array_linked_table/#more">more >></a>
-        
       
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -751,7 +233,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/数据结构//" class="article-tag-list-link color5">数据结构</a>
+        			<a href="/categories/grpc//" class="article-tag-list-link color5">grpc</a>
         		</li>
       		
 		</ul>
@@ -759,16 +241,75 @@
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/06/01/data_structure_array_linked_table/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2021/07/09/grpc_3/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2021/07/06/grpc_2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">grpc学习笔记《二》-- RPC简介与grpc简单使用</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -783,514 +324,32 @@
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-golang_plan9" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/30/golang_plan9/">Golang之plan9汇编入门学习</a>
-    </h1>
-  
-
-        
-        <a href="/2020/05/30/golang_plan9/" class="archive-article-date">
-  	<time datetime="2020-05-29T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-30</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>想研究研究golang的底层运行原理，涉及到plan9汇编。就想着怎么也得对plan9汇编了解了解，上网查了下plan9汇编的相关知识。然后…没错，老夫压根就看不懂！先记下来装个逼</p>
-<blockquote>
-<p>plan9汇编的操作数方向，比如这个数据传送的方向是：第一个操作数的数据传送到第二个操作数</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MOVQ $10, AX</span><br><span class="line">      |    ^</span><br><span class="line">      |    |</span><br><span class="line">      +----+</span><br></pre></td></tr></table></figure>
-
-<h3 id="Plan9寄存器"><a href="#Plan9寄存器" class="headerlink" title="Plan9寄存器"></a>Plan9寄存器</h3><h4 id="通用寄存器"><a href="#通用寄存器" class="headerlink" title="通用寄存器"></a>通用寄存器</h4><table>
-<thead>
-<tr>
-<th align="left">关键字</th>
-<th align="left">说明</th>
-<th align="left">备注</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">AX</td>
-<td align="left">累加寄存器</td>
-<td align="left">（感觉还可以存放数据）用于加、减、乘、输入输出等操作</td>
-</tr>
-<tr>
-<td align="left">BX</td>
-<td align="left">基址寄存器</td>
-<td align="left">可作为存储器指针使用</td>
-</tr>
-<tr>
-<td align="left">CX</td>
-<td align="left">计数寄存器</td>
-<td align="left">循环和字符串操作数，用于控制循环次数。输入输出操作时，用CL知名移位的位数</td>
-</tr>
-<tr>
-<td align="left">DX</td>
-<td align="left">数据寄存器</td>
-<td align="left">进行运算时，可作为操作数参与运算，也可以存放I/O端口地址</td>
-</tr>
-<tr>
-<td align="left">SI</td>
-<td align="left">源变址寄存器</td>
-<td align="left">存放源存储单元在段内的偏移量</td>
-</tr>
-<tr>
-<td align="left">DI</td>
-<td align="left">目的变址寄存器</td>
-<td align="left">存放目的存储单元在段内的偏移量</td>
-</tr>
-<tr>
-<td align="left">BP</td>
-<td align="left">基址指针寄存器</td>
-<td align="left">指向栈顶，低地址</td>
-</tr>
-<tr>
-<td align="left">SP</td>
-<td align="left">栈指针寄存器</td>
-<td align="left">指向栈底，高地址</td>
-</tr>
-<tr>
-<td align="left">PC</td>
-<td align="left">程序计数器</td>
-<td align="left">存放下一个指令的地址</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>一点补充</p>
-</blockquote>
-<ol>
-<li>数据寄存器AX、BX、CX、DX用于保存操作数和运算结果。</li>
-<li>变址寄存器SI、DI的作用是存放存储单元在段内的偏移量，可以根据：基地址加上偏移量来得到真正的物理地址</li>
-<li>栈指针寄存器BP、SP主要用于存放栈内存储存单元的偏移量，也可以用于存储算术逻辑运算的操作数和结果</li>
-</ol>
-<h4 id="伪寄存器"><a href="#伪寄存器" class="headerlink" title="伪寄存器"></a>伪寄存器</h4>
-        
-          <a class="article-more-a" href="/2020/05/30/golang_plan9/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Golang//" class="article-tag-list-link color2">Golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/05/30/golang_plan9/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%81%E4%B9%A6%E8%AE%A4%E8%AF%81"><span class="toc-number">2.</span> <span class="toc-text">证书认证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Token%E8%AE%A4%E8%AF%81"><span class="toc-number">3.</span> <span class="toc-text">Token认证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">4.</span> <span class="toc-text">拦截器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">5.</span> <span class="toc-text">参考资料</span></a></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
-
-  
-    <article id="post-redis_persistence" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/23/redis_persistence/">Redis之持久化</a>
-    </h1>
-  
-
-        
-        <a href="/2020/05/23/redis_persistence/" class="archive-article-date">
-  	<time datetime="2020-05-22T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>Redis在大多数情况下在内存中运行，数据是临时性的。但是Redis也提供将数据写入磁盘保存的方式，将数据写入磁盘保存的过程称为持久化。持久化的作用是在Redis宕机之后导致数据丢失的情况下，可以快速恢复之前存储的数据。在Redis中持久化有两种方式：一种是快照（RDB），另一种是只追加文件（AOF）。RDB持久化方式会定时将数据写入指定的文件中（覆盖），而AOF持久化方式会在执行命令的时候将写命令复制到磁盘里面（追加）。</p>
-<h3 id="RDB持久化"><a href="#RDB持久化" class="headerlink" title="RDB持久化"></a>RDB持久化</h3><p>RDB持久化会在某个时间点（在redis.conf配置文件中指定）将内存中的数据的副本进行存储。存储的方式可以是写入本地磁盘文件中，也可以是将副本复制到其它Redis服务器中。不过这种方式有一种弊端：<em><strong>如果在持久化未完成的时候，由于某些原因而导致Redis进程停止，那么在上一次持久化完成之后的操作得到的数据就会丢失。。</strong></em>。比如：第一次RDB持久化完成之后接着执行写命令，过一段时间后进行第二次持久化。在第二次持久化的过程中出于某些原因Redis进程停止，那么第二次持久化操作就会失败。快照文件只会保存着第一次持久化的数据，在第一次持久化之后的数据都会丢失。</p>
-<h4 id="RDB持久化的方式"><a href="#RDB持久化的方式" class="headerlink" title="RDB持久化的方式"></a>RDB持久化的方式</h4><p>第一种是执行显示手动执行BGSAVE或者SAVE命令，这两个命令都会创建一个快照。不同的是，BGSAVE命令会使得Redis主进程派生出一个子进程进行快照的创建，主进程继续执行客户端的命令。而SAVE则是在Redis创建快照完成之前都不会处理客户端的命令。这么一看似乎BGSAVE命令比较好一些，但是这个命令有一个致命的问题。那就是在数据非常大的时候，执行BGSAVE命令会因为创建子进程而导致Redis停顿，数据量越大停顿越久。而在这种情况下，SAVE命令表现得要比BGSAVE命令好得多，因为不需要创建子进程，没有子进程来争抢资源，创建快照得时间要比BGSAVE命令快一些。</p>
-<blockquote>
-<p>关于BGSAVE创建子进程导致停顿得问题，我的猜想是：当fork出一个子进程的时候，需要为这个子进程创建进程控制块，进程所持有的数据集等等数据，将父进程的进程映像复制一份。因为父进程所持有的内存块过大，导致复制过程缓慢。具体的理解还得详细阅读阅读操作系统原理和源码才知道。</p>
-</blockquote>
-<p>第二种是通过配置文件预定义持久化行为，配置文件是redis.conf。持久化策略解释：<em><strong>save [length] [times]，这个意思是指，距离上一次持久化完成开始算起，当length秒内有times写入就会触发BGSAVE命令</strong></em>。比如：“save 900 1”是指距离上一次持久化完成到现在900秒内有1次写入就会触发BGSAVE命令。如果配置了多个持久化策略，那么只要满足其中一项就会触发BGSAVE命令。</p>
-<blockquote>
-<p>redis.conf</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 持久化策略</span><br><span class="line">save 900 1</span><br><span class="line">save 300 10</span><br><span class="line">save 60 10000</span><br><span class="line"></span><br><span class="line">// 是否在执行BGSAVE命令下发生错误时</span><br><span class="line">// 停止写入（yes or no）</span><br><span class="line">stop-writes-on-bgsave-error yes</span><br><span class="line">// 是否在其RDB持久化方式（yes or no）</span><br><span class="line">rdbcompression yes</span><br><span class="line">// 是否校验</span><br><span class="line">rdbchecksum yes</span><br><span class="line">// 指定持久化文件名称</span><br><span class="line">dbfilename dump.rdb</span><br><span class="line">// 指定持久化文件存储路径（RDB/AOF共享）</span><br><span class="line">dir ./</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2020/05/23/redis_persistence/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/05/23/redis_persistence/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-database_relation_data_model" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/22/database_relation_data_model/">数据库之关系数据模型</a>
-    </h1>
-  
-
-        
-        <a href="/2020/05/22/database_relation_data_model/" class="archive-article-date">
-  	<time datetime="2020-05-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>数据库模型分为很多种，关系模型是主要的数据库模型。除此之外，还有半结构化模型，对象关系模型，面向对象数据库模型。还有已经被淘汰了的基于树结构的层次模型和基于图结构的网状模型。<br>一个关系的例子：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">relation name: Movies</span><br><span class="line">+-------+------+--------+-------+</span><br><span class="line">| title | year | length | genre |</span><br><span class="line">+-------+------+--------+-------+</span><br><span class="line">| one   | 1998 | 345    | A     |</span><br><span class="line">+-------+------+--------+-------+</span><br><span class="line">| two   | 1999 | 123    | B     |</span><br><span class="line">+-------+------+--------+-------+</span><br></pre></td></tr></table></figure>
-<p>关系：</p>
-<blockquote>
-<p>表示信息的二维表，包括表的结构和表存储的数据</p>
-</blockquote>
-<p>属性：</p>
-<blockquote>
-<p>关系的列就是属性<br>比如例子中的属性就是：title、year、length、genre</p>
-</blockquote>
-<p> 模式：</p>
-<blockquote>
-<p>关系名和属性的集合组合在一起称为关系模式<br>在关系型数据库中，数据库就是一个或多个关系组成的。关系模式的集合就叫做关系数据库模式，也叫数据库模式<br>例子中的模式可以表示为：Movies(title,year,length,genre)</p>
-</blockquote>
-<p>元组：</p>
-        
-          <a class="article-more-a" href="/2020/05/22/database_relation_data_model/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/05/22/database_relation_data_model/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-data_structure_stack_queue" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/22/data_structure_stack_queue/">栈和队列</a>
-    </h1>
-  
-
-        
-        <a href="/2020/05/22/data_structure_stack_queue/" class="archive-article-date">
-  	<time datetime="2020-05-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h3><p>栈是一种先进后出的数据结构，入口和出口都在同一端，称为栈顶，所有操作都在栈顶进行。例如：进栈顺序是：1 2 3 4。出栈的顺序就是倒着过来：4 3 2 1。<br>栈模型</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">push  pop </span><br><span class="line">  |    ^</span><br><span class="line">  v    |</span><br><span class="line">+---------+</span><br><span class="line">|  stack  |</span><br><span class="line">+---------+</span><br></pre></td></tr></table></figure>
-<p>一个空栈模型<br>（这里的栈顶和栈底和操作系统里的栈顶和栈底不是一个意思，这里额栈顶是指入栈和出栈的一端，栈底是另一端）</p>
-<blockquote>
-<p>用top指向最新的元素位置，因为这是一个空栈，所以top指向栈以外的地方</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">栈顶---&gt;</span><br><span class="line">        |    |</span><br><span class="line">        +----+</span><br><span class="line">        |    |</span><br><span class="line">        +----+</span><br><span class="line">        |    |</span><br><span class="line">        +----+</span><br><span class="line">        |    |</span><br><span class="line">栈低---&gt;+----+ </span><br><span class="line">              &lt;---top</span><br></pre></td></tr></table></figure>
-<p>入栈（压栈）</p>
-<blockquote>
-<p>新的元素入栈之后，top向栈顶方向移动，指向新的元素的位置，这样最新入栈的元素就是栈顶元素。</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">                       5进栈      </span><br><span class="line">                       |</span><br><span class="line">                       v</span><br><span class="line">|    |              |    |          |    |</span><br><span class="line">+----+              +----+          +----+ </span><br><span class="line">|    |              |    |          |  5 |&lt;---top</span><br><span class="line">+----+              +----+          +----+ </span><br><span class="line">|    |              |  1 |&lt;---top   |  1 | </span><br><span class="line">+----+              +----+          +----+ </span><br><span class="line">|  2 |&lt;---top       |  2 |          |  2 |</span><br><span class="line">+----+              +----+          +----+ </span><br></pre></td></tr></table></figure>
-<p>出栈</p>
-        
-          <a class="article-more-a" href="/2020/05/22/data_structure_stack_queue/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据结构//" class="article-tag-list-link color5">数据结构</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/05/22/data_structure_stack_queue/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-golang_concurrency_schedule" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/20/golang_concurrency_schedule/">Golang并发调度</a>
-    </h1>
-  
-
-        
-        <a href="/2020/05/20/golang_concurrency_schedule/" class="archive-article-date">
-  	<time datetime="2020-05-19T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>基于1.14版本</p>
-</blockquote>
-<h3 id="GMP模型"><a href="#GMP模型" class="headerlink" title="GMP模型"></a>GMP模型</h3><p>Go的调度器由三个部分组成，分别是G、M、P。G表示一个并发任务单元，M表示一个工作线程，P表示一个处理器。</p>
-<blockquote>
-<p>runtime/proc.go</p>
-</blockquote>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Goroutine scheduler</span></span><br><span class="line"><span class="comment">// The scheduler&#x27;s job is to distribute ready-to-run goroutines over worker threads.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// The main concepts are:</span></span><br><span class="line"><span class="comment">// G - goroutine.</span></span><br><span class="line"><span class="comment">// M - worker thread, or machine.</span></span><br><span class="line"><span class="comment">// P - processor, a resource that is required to execute Go code.</span></span><br><span class="line"><span class="comment">//     M must have an associated P to execute Go code, however it can be</span></span><br><span class="line"><span class="comment">//     blocked or in a syscall w/o an associated P.</span></span><br></pre></td></tr></table></figure>
-<h4 id="G"><a href="#G" class="headerlink" title="G"></a>G</h4><p>即goroutine，是一个并发任务单元。但是它并不是真正的执行体，它只保存任务的状态。真正的执行体是系统线程M。其实现是一个类似于PCB(进程控制块)的数据结构，其中包含为并发任务执行所需的栈空间，保存上下文的运行现场结构，goroutine的状态等等。在goroutine切换的时候，运行现场会保存当前goroutine的上下文，下次再恢复执行的时候就可以从中读取所需要的数据。一个goroutine创建之后，就会被放到P的本地队列或者全局队列当中，等待被调度执行。</p>
-<p>栈结构</p>
-<blockquote>
-<p>stack描述一个goroutine执行时需要的栈，其范围是[lo,hi)，在这两侧没有隐式的数据结构</p>
-</blockquote>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> stack <span class="keyword">struct</span> &#123;</span><br><span class="line">    lo <span class="keyword">uintptr</span>  </span><br><span class="line">    hi <span class="keyword">uintptr</span> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2020/05/20/golang_concurrency_schedule/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Golang//" class="article-tag-list-link color2">Golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/05/20/golang_concurrency_schedule/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">Next &amp;raquo;</a>
-    </nav>
+  
+
+  
+
+  
+
   
 
 
@@ -1313,8 +372,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

@@ -152,6 +152,91 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-load_balance_round_robin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/09/12/load_balance_round_robin/">负载均衡之轮询策略</a>
+    </h1>
+  
+
+        
+        <a href="/2020/09/12/load_balance_round_robin/" class="archive-article-date">
+  	<time datetime="2020-09-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-09-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>负载均衡是一种能够将客户端请求分流到不同节点的中间件，避免单个节点压力过大，无法正常处理请求。</p>
+<h3 id="轮询选择"><a href="#轮询选择" class="headerlink" title="轮询选择"></a>轮询选择</h3><p>简单得轮询选择策略适用于后端节点配置相同或相近的情况，每个节点IP被选择到的概率是相近的。具体的实现是将所有的节点IP放进一个数组里面，在选择节点IP的时候是顺序选择。当选择到最后一个数组元素之后，下一次选择是从数组起始位置开始，形成一个循环数组的方式。</p>
+<blockquote>
+<p>实现</p>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 轮询选择策略</span></span><br><span class="line"><span class="keyword">var</span> counter <span class="keyword">int64</span></span><br><span class="line"><span class="keyword">var</span> ips = []<span class="keyword">string</span>&#123;<span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>, <span class="string">&quot;C&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">roundRobin</span><span class="params">()</span> <span class="title">string</span></span> &#123;</span><br><span class="line">    counter = atomic.AddInt64(&amp;counter, <span class="number">1</span>) % math.MaxInt64</span><br><span class="line">    <span class="keyword">return</span> ips[counter%<span class="keyword">int64</span>(<span class="built_in">len</span>(ips))]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//测试</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    count := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int64</span>)</span><br><span class="line">    <span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">    <span class="keyword">var</span> mutex sync.Mutex</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">9999</span>; i++ &#123;</span><br><span class="line">        wg.Add(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">            <span class="keyword">defer</span> wg.Done()</span><br><span class="line">            mutex.Lock()</span><br><span class="line">            count[roundRobin()]++</span><br><span class="line">            mutex.Unlock()</span><br><span class="line">        &#125;()</span><br><span class="line">    &#125;</span><br><span class="line">    wg.Wait()</span><br><span class="line">    <span class="comment">// map[A:3333 B:3333 C:3333]</span></span><br><span class="line">    fmt.Println(count)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="带权重的轮询选择"><a href="#带权重的轮询选择" class="headerlink" title="带权重的轮询选择"></a>带权重的轮询选择</h3><p>简单轮询选择策略适用于节点配置差不多的情况，但是节点配置不同的情况下。比如有的节点配置高，有的节点配置低。那么在这种情况下就不能使用简单的轮询选择策略，因为每个节点的请求量一样，会造成这样一个效果：配置高的节点资源没有得到有效的利用，空闲很多。配置低的节点有可能负载过高，处理不了那么多请求量，可能会造成有些请求无法响应，甚至宕机的情况。</p>
+<p>基于这样的情况，就需要带有权重的轮询策略。每个节点都带有一个权重值，权重值较高的节点承受较大的请求量，而权重值较低的节点承受较小的请求量。这样才能保证配置高的节点资源充分利用，配置低的节点避免承受较高的负载。</p>
+<p>参考资料：</p>
+        
+          <a class="article-more-a" href="/2020/09/12/load_balance_round_robin/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/负载均衡//" class="article-tag-list-link color5">负载均衡</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/09/12/load_balance_round_robin/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-mysql_explain" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -866,79 +951,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/07/18/database_constraint_and_trigger/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-database_constraint_adn_trigger" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/07/17/database_constraint_adn_trigger/">数据库之约束和出发器</a>
-    </h1>
-  
-
-        
-        <a href="/2020/07/17/database_constraint_adn_trigger/" class="archive-article-date">
-  	<time datetime="2020-07-16T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/07/17/database_constraint_adn_trigger/">展开全文 >></a>
         </p>
       
 
