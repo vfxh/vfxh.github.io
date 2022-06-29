@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://tripper.press/2022/0/</loc>
+    <loc>https://tripper.press/2020/4db/</loc>
     
-    <lastmod>2022-06-27T00:58:49.664Z</lastmod>
+    <lastmod>2022-06-29T07:04:33.533Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://tripper.press/about/index.html</loc>
+    
+    <lastmod>2022-06-28T13:19:35.125Z</lastmod>
     
   </url>
   
@@ -103,13 +110,6 @@
     <loc>https://tripper.press/calendar.html</loc>
     
     <lastmod>2022-06-21T07:37:45.553Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://tripper.press/about/index.html</loc>
-    
-    <lastmod>2022-06-21T07:37:45.552Z</lastmod>
     
   </url>
   
