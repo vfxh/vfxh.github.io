@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://tripper.press/type/index.html</loc>
+    
+    <lastmod>2022-06-30T05:17:05.241Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://tripper.press/2020/f92b/</loc>
     
-    <lastmod>2022-06-29T07:58:58.519Z</lastmod>
+    <lastmod>2022-06-30T01:20:37.594Z</lastmod>
     
   </url>
   
@@ -31,13 +38,6 @@
   
   <url>
     <loc>https://tripper.press/type/getstart.html</loc>
-    
-    <lastmod>2022-06-21T07:37:45.557Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://tripper.press/type/index.html</loc>
     
     <lastmod>2022-06-21T07:37:45.557Z</lastmod>
     
@@ -110,13 +110,6 @@
     <loc>https://tripper.press/calendar.html</loc>
     
     <lastmod>2022-06-21T07:37:45.553Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://tripper.press/2020/4db/</loc>
-    
-    <lastmod>2022-06-21T07:37:45.544Z</lastmod>
     
   </url>
   
