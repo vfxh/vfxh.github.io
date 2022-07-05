@@ -207,13 +207,13 @@ canvas {
   border-radius: var(--radius);
   box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.02), 1px 1px 15px 0 rgba(0, 0, 0, 0.03);
   transition: transform 0.3s, background-color 0.3s, box-shadow 0.6s;
-  max-width: 800px;
+  max-width: 960px;
   margin: 0 auto;
 }
 
 @media screen and (min-width: 1024px) {
   .post-entry {
-    max-width: 800px;
+    max-width: 960px;
   }
 }
 @media screen and (max-width: 1024px) {
@@ -227,7 +227,7 @@ canvas {
   box-shadow: 1px 10px 30px 0 rgba(0, 0, 0, 0.1);
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (min-width: 960px) {
   .top-cover, .post-cover {
     margin-top: 116px;
   }
@@ -246,14 +246,14 @@ canvas {
   background: linear-gradient(rgba(32, 32, 32, 0) 14%, rgba(32, 32, 32, 0.56) 100%);
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (min-width: 960px) {
   .itp-m3-card.top-cover .itp-m3-cover-bg,
 .itp-m3-card.top-cover .itp-m3-card-cover,
 .itp-m3-card.top-cover .itp-m3-card-cover-layer {
     border-radius: var(--radius);
   }
 }
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 960px) {
   .itp-m3-card.top-cover .itp-m3-cover-bg,
 .itp-m3-card.top-cover .itp-m3-card-cover,
 .itp-m3-card.top-cover .itp-m3-card-cover-layer {
@@ -264,12 +264,12 @@ canvas {
   }
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (min-width: 960px) {
   .itp-m3-card .article {
     margin: 1rem 3.5rem;
   }
 }
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 960px) {
   .itp-m3-card .article {
     margin: 0.5rem 1.5rem;
   }
@@ -560,12 +560,12 @@ canvas {
   border-radius: 5px;
   background-color: #f5f5f5a4;
 }
-@media screen and (min-width: 800px) {
+@media screen and (min-width: 960px) {
   .itp-m3-post-info_area {
     padding: 18px 3.5rem;
   }
 }
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 960px) {
   .itp-m3-post-info_area {
     padding: 18px 1.5rem;
   }

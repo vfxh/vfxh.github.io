@@ -70,64 +70,9 @@
     
     
     <entry>
-      <title>快速开始</title>
-      <link href="/type/getstart.html"/>
-      <url>/type/getstart.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h1><p>要使用 Type，必须首先安装 Hexo。你可以访问 Hexo 的文档来了解如何安装 Hexo </p><blockquote><p><a href="https://hexo.io/zh-cn/">hexo.io&#x2F;zh-cn&#x2F;</a>。</p></blockquote><p>Hexo 中有两份配置文件，分别为站点目录下的 <code>_config.yml</code> 和 主题目录下的 <code>_config.yml</code>，后文将前者称为「站点配置文件」，后者称之为「主题配置文件」。</p><p>本主题支持 npm 和 git 两种安装方式，你也可以下载 release 版本手动安装。</p><h3 id="使用-npm-安装（推荐）"><a href="#使用-npm-安装（推荐）" class="headerlink" title="使用 npm 安装（推荐）"></a>使用 npm 安装（推荐）</h3><p>进入 Hexo 根目录，依次执行以下命令。</p><pre><code class="bash">npm install hexo-theme-type --savenpm installcp -v ./node_modules/hexo-theme-type/_config_test.yml ./_config.type.yml</code></pre><p>随后，修改 Hexo 根目录的「站点配置文件」</p><pre><code class="yaml">theme: type</code></pre><p>是用这种方式安装的主题，「主题配置文件」即为站点目录下的 <code>_config.type.yml</code> 文件。</p><h3 id="使用-git-安装"><a href="#使用-git-安装" class="headerlink" title="使用 git 安装"></a>使用 git 安装</h3><p>进入 Hexo 根目录，依次执行以下命令。</p><pre><code class="bash">git clone https://github.com/aiokr/hexo-theme-type.git themes/type --depth=1npm install</code></pre><p>随后，修改 Hexo 根目录的「站点配置文件」</p><pre><code class="yaml">theme: type</code></pre>]]></content>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>搜索</title>
       <link href="/search.html"/>
       <url>/search.html</url>
-      
-        <content type="html"><![CDATA[]]></content>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Hexo-Theme-Type 文档</title>
-      <link href="/type/index.html"/>
-      <url>/type/index.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>（没发布也不要慌，老夫直接拿来用！）</p><p>Type 是一个简洁、专注于文字、照片展示的 Hexo 主题。本主题尚未正式发布，使用过程中可能遇到一些问题，请见谅。</p><p><a href="getstart.html">快速开始</a></p><p><a href="theme_settings.html">主题设定</a></p>]]></content>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title></title>
-      <link href="/type/theme_settings.html"/>
-      <url>/type/theme_settings.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="主题设定"><a href="#主题设定" class="headerlink" title="主题设定"></a>主题设定</h1><h2 id="设置「图标」"><a href="#设置「图标」" class="headerlink" title="设置「图标」"></a>设置「图标」</h2><pre><code class="yaml"># ---------------------------------------------------------------# ICON Settings 图标设置# ---------------------------------------------------------------favicon: avatar: apple_icon:  # iPhone 57x57   iphone:   # iPad 72x72  ipad:   # Retina iPhone 114x114  iphone_hd:   # Retina iPad 144x144  ipad_hd: </code></pre><p>编辑「主题配置文件」中的图标设置部分</p><p><strong>favicon</strong>: 浏览器标签页的小图标<br><strong>avatar</strong>: 首页、文章封面处的头像<br><strong>apple_icon</strong>: 负责苹果不同尺寸设备上的图标</p><h2 id="设置「样式」"><a href="#设置「样式」" class="headerlink" title="设置「样式」"></a>设置「样式」</h2><pre><code class="yaml"># ---------------------------------------------------------------# Style Settings 样式设置# ---------------------------------------------------------------# Schemes# Use column ｜ m3schemes: m3# Fonts# Use LXGW ｜ fonts: LXGW# Random Picturesrandom_pic_switch: falserandom_pics: 19random_thumbnail: https://cdn.jsdelivr.net/gh/photup/hexo-theme-type-random_pics@v1.0.0/randompic-# random_thumbnail: ../img/random/randompic-</code></pre><p><strong>schemes</strong>: Type 主题目前提供 column、m3 两种样式，可以根据您的喜好进行选择，将所选的样式名称填入 schemes 设置项即可。</p><p><strong>fonts</strong>: Type 主题内置有霞鹜文楷字体，在 fonts 设置项填入 LXGW 即可启用全局霞鹜文楷字体。</p><p>Type 主题提供文章随机封面图的功能，启用该功能后，没有设置 cover 项目的文章会在首页启用随机封面图，但是注意文章内页并不会启用。<br>随机封面图有两个来源，一是主题文件内置的本地文件，二是由 jsdelivr 提供的在线文件。您也可以自定义随机封面图。</p><p><strong>random_pic_switch</strong>: 布尔值，开启或关闭随机封面图功能<br><strong>random_pics</strong>: 随机封面图的数量<br><strong>random_thumbnail</strong>: 随机封面图地址</p>]]></content>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>南宁 2019 秋</title>
-      <link href="/nanning2019.html"/>
-      <url>/nanning2019.html</url>
-      
-        <content type="html"><![CDATA[]]></content>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>工具箱</title>
-      <link href="/tools/index.html"/>
-      <url>/tools/index.html</url>
       
         <content type="html"><![CDATA[]]></content>
       
@@ -147,11 +92,11 @@
     
     
     <entry>
-      <title>柳州 2020 春</title>
-      <link href="/liuzhou2020spring.html"/>
-      <url>/liuzhou2020spring.html</url>
+      <title>南宁 2019 秋</title>
+      <link href="/nanning2019.html"/>
+      <url>/nanning2019.html</url>
       
-        <content type="html"><![CDATA[<p>今天终于有时间出门看紫荆花了。前几天一直阴雨绵绵，花开了又被雨打掉了不少，紫荆花也稀稀疏疏地挂在树上。</p>]]></content>
+        <content type="html"><![CDATA[]]></content>
       
     </entry>
     
@@ -180,9 +125,64 @@
     
     
     <entry>
+      <title>柳州 2020 春</title>
+      <link href="/liuzhou2020spring.html"/>
+      <url>/liuzhou2020spring.html</url>
+      
+        <content type="html"><![CDATA[<p>今天终于有时间出门看紫荆花了。前几天一直阴雨绵绵，花开了又被雨打掉了不少，紫荆花也稀稀疏疏地挂在树上。</p>]]></content>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>作品</title>
       <link href="/work/index.html"/>
       <url>/work/index.html</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>快速开始</title>
+      <link href="/type/getstart.html"/>
+      <url>/type/getstart.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h1><p>要使用 Type，必须首先安装 Hexo。你可以访问 Hexo 的文档来了解如何安装 Hexo </p><blockquote><p><a href="https://hexo.io/zh-cn/">hexo.io&#x2F;zh-cn&#x2F;</a>。</p></blockquote><p>Hexo 中有两份配置文件，分别为站点目录下的 <code>_config.yml</code> 和 主题目录下的 <code>_config.yml</code>，后文将前者称为「站点配置文件」，后者称之为「主题配置文件」。</p><p>本主题支持 npm 和 git 两种安装方式，你也可以下载 release 版本手动安装。</p><h3 id="使用-npm-安装（推荐）"><a href="#使用-npm-安装（推荐）" class="headerlink" title="使用 npm 安装（推荐）"></a>使用 npm 安装（推荐）</h3><p>进入 Hexo 根目录，依次执行以下命令。</p><pre><code class="bash">npm install hexo-theme-type --savenpm installcp -v ./node_modules/hexo-theme-type/_config_test.yml ./_config.type.yml</code></pre><p>随后，修改 Hexo 根目录的「站点配置文件」</p><pre><code class="yaml">theme: type</code></pre><p>是用这种方式安装的主题，「主题配置文件」即为站点目录下的 <code>_config.type.yml</code> 文件。</p><h3 id="使用-git-安装"><a href="#使用-git-安装" class="headerlink" title="使用 git 安装"></a>使用 git 安装</h3><p>进入 Hexo 根目录，依次执行以下命令。</p><pre><code class="bash">git clone https://github.com/aiokr/hexo-theme-type.git themes/type --depth=1npm install</code></pre><p>随后，修改 Hexo 根目录的「站点配置文件」</p><pre><code class="yaml">theme: type</code></pre>]]></content>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title></title>
+      <link href="/type/theme_settings.html"/>
+      <url>/type/theme_settings.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="主题设定"><a href="#主题设定" class="headerlink" title="主题设定"></a>主题设定</h1><h2 id="设置「图标」"><a href="#设置「图标」" class="headerlink" title="设置「图标」"></a>设置「图标」</h2><pre><code class="yaml"># ---------------------------------------------------------------# ICON Settings 图标设置# ---------------------------------------------------------------favicon: avatar: apple_icon:  # iPhone 57x57   iphone:   # iPad 72x72  ipad:   # Retina iPhone 114x114  iphone_hd:   # Retina iPad 144x144  ipad_hd: </code></pre><p>编辑「主题配置文件」中的图标设置部分</p><p><strong>favicon</strong>: 浏览器标签页的小图标<br><strong>avatar</strong>: 首页、文章封面处的头像<br><strong>apple_icon</strong>: 负责苹果不同尺寸设备上的图标</p><h2 id="设置「样式」"><a href="#设置「样式」" class="headerlink" title="设置「样式」"></a>设置「样式」</h2><pre><code class="yaml"># ---------------------------------------------------------------# Style Settings 样式设置# ---------------------------------------------------------------# Schemes# Use column ｜ m3schemes: m3# Fonts# Use LXGW ｜ fonts: LXGW# Random Picturesrandom_pic_switch: falserandom_pics: 19random_thumbnail: https://cdn.jsdelivr.net/gh/photup/hexo-theme-type-random_pics@v1.0.0/randompic-# random_thumbnail: ../img/random/randompic-</code></pre><p><strong>schemes</strong>: Type 主题目前提供 column、m3 两种样式，可以根据您的喜好进行选择，将所选的样式名称填入 schemes 设置项即可。</p><p><strong>fonts</strong>: Type 主题内置有霞鹜文楷字体，在 fonts 设置项填入 LXGW 即可启用全局霞鹜文楷字体。</p><p>Type 主题提供文章随机封面图的功能，启用该功能后，没有设置 cover 项目的文章会在首页启用随机封面图，但是注意文章内页并不会启用。<br>随机封面图有两个来源，一是主题文件内置的本地文件，二是由 jsdelivr 提供的在线文件。您也可以自定义随机封面图。</p><p><strong>random_pic_switch</strong>: 布尔值，开启或关闭随机封面图功能<br><strong>random_pics</strong>: 随机封面图的数量<br><strong>random_thumbnail</strong>: 随机封面图地址</p>]]></content>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hexo-Theme-Type 文档</title>
+      <link href="/type/index.html"/>
+      <url>/type/index.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>（没发布也不要慌，老夫直接拿来用！）</p><p>Type 是一个简洁、专注于文字、照片展示的 Hexo 主题。本主题尚未正式发布，使用过程中可能遇到一些问题，请见谅。</p><p><a href="getstart.html">快速开始</a></p><p><a href="theme_settings.html">主题设定</a></p>]]></content>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>工具箱</title>
+      <link href="/tools/index.html"/>
+      <url>/tools/index.html</url>
       
         <content type="html"><![CDATA[]]></content>
       
