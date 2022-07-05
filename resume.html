@@ -126,6 +126,13 @@
   <!--Comment-->
   
   
+  <script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.noStyle.js"></script>
+  
+<link rel="stylesheet" href="/css/waline.css">
+
+  
+  
+  
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-HFH67WJVKQ"></script>
   <script>
@@ -280,6 +287,21 @@
   </div>
   <div class="itp-m3-card itp-m3-post-comment_area" id="comment">
     <!--评论-->
+
+<div id="waline"></div>
+<script>
+  Waline({
+    el: '#waline',
+    serverURL: 'https://websitecomment-6sc40bghn-vfxh.vercel.app/',
+    path: 'https://tripper.press/resume.html',
+    dark: 'auto',
+    uploadImage: false,
+    wordLimit: [5,200],
+    emoji: [
+      'https://cdn.jsdelivr.net/gh/aiokr/press-assets@v0.1.0/waline-emojis/bili'
+    ],
+  });
+</script>
 
   </div>
 </div>

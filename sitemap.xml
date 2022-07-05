@@ -23,13 +23,6 @@
   </url>
   
   <url>
-    <loc>https://tripper.press/work/index.html</loc>
-    
-    <lastmod>2022-06-21T07:37:45.558Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://tripper.press/type/theme_settings.html</loc>
     
     <lastmod>2022-06-21T07:37:45.558Z</lastmod>
@@ -37,14 +30,21 @@
   </url>
   
   <url>
-    <loc>https://tripper.press/type/getstart.html</loc>
+    <loc>https://tripper.press/work/index.html</loc>
+    
+    <lastmod>2022-06-21T07:37:45.558Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://tripper.press/tools/index.html</loc>
     
     <lastmod>2022-06-21T07:37:45.557Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://tripper.press/tools/index.html</loc>
+    <loc>https://tripper.press/type/getstart.html</loc>
     
     <lastmod>2022-06-21T07:37:45.557Z</lastmod>
     
@@ -79,13 +79,6 @@
   </url>
   
   <url>
-    <loc>https://tripper.press/product-pattern-example.html</loc>
-    
-    <lastmod>2022-06-21T07:37:45.555Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://tripper.press/liuzhou2020spring.html</loc>
     
     <lastmod>2022-06-21T07:37:45.555Z</lastmod>
@@ -93,14 +86,21 @@
   </url>
   
   <url>
-    <loc>https://tripper.press/liuzhou2019.html</loc>
+    <loc>https://tripper.press/product-pattern-example.html</loc>
+    
+    <lastmod>2022-06-21T07:37:45.555Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://tripper.press/nanning2019.html</loc>
     
     <lastmod>2022-06-21T07:37:45.554Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://tripper.press/nanning2019.html</loc>
+    <loc>https://tripper.press/liuzhou2019.html</loc>
     
     <lastmod>2022-06-21T07:37:45.554Z</lastmod>
     
