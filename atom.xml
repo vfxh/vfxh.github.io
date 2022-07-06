@@ -6,7 +6,7 @@
   <link href="https://tripper.press/atom.xml" rel="self"/>
   
   <link href="https://tripper.press/"/>
-  <updated>2022-07-03T11:01:49.383Z</updated>
+  <updated>2022-07-06T10:48:14.357Z</updated>
   <id>https://tripper.press/</id>
   
   <author>
@@ -18,14 +18,33 @@
   
   
   <entry>
+    <title>摘抄</title>
+    <link href="https://tripper.press/2022/4f42/"/>
+    <id>https://tripper.press/2022/4f42/</id>
+    <published>2022-07-06T05:53:20.000Z</published>
+    <updated>2022-07-06T10:48:14.357Z</updated>
+    
+    
+    <summary type="html">摘抄</summary>
+    
+    
+    
+    <category term="摘抄" scheme="https://tripper.press/categories/%E6%91%98%E6%8A%84/"/>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>听听那冷雨</title>
     <link href="https://tripper.press/2020/f92b/"/>
     <id>https://tripper.press/2020/f92b/</id>
     <published>2020-05-11T04:11:20.000Z</published>
-    <updated>2022-07-03T11:01:49.383Z</updated>
+    <updated>2022-07-06T10:49:06.250Z</updated>
     
     
-    <summary type="html">听听那冷雨</summary>
+    <summary type="html">前尘隔海。古屋不在。听听那冷雨。</summary>
     
     
     
