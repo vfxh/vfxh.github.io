@@ -3,11 +3,11 @@
   <title>随忆说、</title>
   <icon>https://imgur.lzmun.com/picgo/after2022/presslogo.png_itp</icon>
   <subtitle>Meditation</subtitle>
-  <link href="https://tripper.press/atom.xml" rel="self"/>
+  <link href="https://vfxh.github.io/atom.xml" rel="self"/>
   
-  <link href="https://tripper.press/"/>
-  <updated>2022-07-06T10:59:22.260Z</updated>
-  <id>https://tripper.press/</id>
+  <link href="https://vfxh.github.io/"/>
+  <updated>2022-07-29T11:35:22.926Z</updated>
+  <id>https://vfxh.github.io/</id>
   
   <author>
     <name>vfxh</name>
@@ -18,18 +18,37 @@
   
   
   <entry>
+    <title>美文佳句摘抄</title>
+    <link href="https://vfxh.github.io/2022/a9a8/"/>
+    <id>https://vfxh.github.io/2022/a9a8/</id>
+    <published>2022-07-16T16:00:00.000Z</published>
+    <updated>2022-07-29T11:35:22.926Z</updated>
+    
+    
+    <summary type="html">我愿化身石桥，受五百年风吹，五百年日晒，五百年雨淋，只求她从桥上走过。</summary>
+    
+    
+    
+    <category term="摘抄" scheme="https://vfxh.github.io/categories/%E6%91%98%E6%8A%84/"/>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>摘抄</title>
-    <link href="https://tripper.press/2022/4f42/"/>
-    <id>https://tripper.press/2022/4f42/</id>
+    <link href="https://vfxh.github.io/2022/4f42/"/>
+    <id>https://vfxh.github.io/2022/4f42/</id>
     <published>2022-07-06T05:53:20.000Z</published>
-    <updated>2022-07-06T10:59:22.260Z</updated>
+    <updated>2022-07-29T07:54:57.533Z</updated>
     
     
     <summary type="html">人生有许多事情，正如船后的波纹，总要过后才觉得美。</summary>
     
     
     
-    <category term="摘抄" scheme="https://tripper.press/categories/%E6%91%98%E6%8A%84/"/>
+    <category term="摘抄" scheme="https://vfxh.github.io/categories/%E6%91%98%E6%8A%84/"/>
     
     
   </entry>
@@ -38,17 +57,36 @@
   
   <entry>
     <title>听听那冷雨</title>
-    <link href="https://tripper.press/2020/f92b/"/>
-    <id>https://tripper.press/2020/f92b/</id>
-    <published>2020-05-11T04:11:20.000Z</published>
-    <updated>2022-07-06T10:49:06.250Z</updated>
+    <link href="https://vfxh.github.io/2021/f92b/"/>
+    <id>https://vfxh.github.io/2021/f92b/</id>
+    <published>2021-05-11T04:11:20.000Z</published>
+    <updated>2022-07-17T14:16:14.645Z</updated>
     
     
     <summary type="html">前尘隔海。古屋不在。听听那冷雨。</summary>
     
     
     
-    <category term="随笔" scheme="https://tripper.press/categories/%E9%9A%8F%E7%AC%94/"/>
+    <category term="随笔" scheme="https://vfxh.github.io/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>陌上人如玉 公子世无双</title>
+    <link href="https://vfxh.github.io/2020/4db/"/>
+    <id>https://vfxh.github.io/2020/4db/</id>
+    <published>2020-05-11T04:11:20.000Z</published>
+    <updated>2022-07-24T14:50:19.684Z</updated>
+    
+    
+    <summary type="html">陌上人如玉 公子世无双</summary>
+    
+    
+    
+    <category term="读立写生" scheme="https://vfxh.github.io/categories/%E8%AF%BB%E7%AB%8B%E5%86%99%E7%94%9F/"/>
     
     
   </entry>
