@@ -83,17 +83,6 @@
     
     
     <entry>
-      <title>关于</title>
-      <link href="/about/index.html"/>
-      <url>/about/index.html</url>
-      
-        <content type="html"><![CDATA[<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>记忆里，有许多云、许多风，许多风筝在风中升起。</p><p>至渺至茫，逝去的风中逝去那些鸟儿的陪伴，精灵的降落伞，天使的驹。</p>]]></content>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>友情链接</title>
       <link href="/links/index.html"/>
       <url>/links/index.html</url>
@@ -110,6 +99,17 @@
       <url>/calendar.html</url>
       
         <content type="html"><![CDATA[<link href="/css/calendar.css" rel="stylesheet"><section class="main-section first-section">  <h1 class="mdui-text-center date">01/30</h1>  <p class="mdui-text-center sentence">我们始终在用无知面对世界</p></section>]]></content>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>关于</title>
+      <link href="/about/index.html"/>
+      <url>/about/index.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>记忆里，有许多云、许多风，许多风筝在风中升起。</p><p>至渺至茫，逝去的风中逝去那些鸟儿的陪伴，精灵的降落伞，天使的驹。</p>]]></content>
       
     </entry>
     
@@ -149,9 +149,31 @@
     
     
     <entry>
+      <title>柳州 2020 春</title>
+      <link href="/liuzhou2020spring.html"/>
+      <url>/liuzhou2020spring.html</url>
+      
+        <content type="html"><![CDATA[<p>今天终于有时间出门看紫荆花了。前几天一直阴雨绵绵，花开了又被雨打掉了不少，紫荆花也稀稀疏疏地挂在树上。</p>]]></content>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>柳州 2019 秋</title>
       <link href="/liuzhou2019.html"/>
       <url>/liuzhou2019.html</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>产品图案例</title>
+      <link href="/product-pattern-example.html"/>
+      <url>/product-pattern-example.html</url>
       
         <content type="html"><![CDATA[]]></content>
       
@@ -171,33 +193,11 @@
     
     
     <entry>
-      <title>柳州 2020 春</title>
-      <link href="/liuzhou2020spring.html"/>
-      <url>/liuzhou2020spring.html</url>
+      <title>快速开始</title>
+      <link href="/type/getstart.html"/>
+      <url>/type/getstart.html</url>
       
-        <content type="html"><![CDATA[<p>今天终于有时间出门看紫荆花了。前几天一直阴雨绵绵，花开了又被雨打掉了不少，紫荆花也稀稀疏疏地挂在树上。</p>]]></content>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>产品图案例</title>
-      <link href="/product-pattern-example.html"/>
-      <url>/product-pattern-example.html</url>
-      
-        <content type="html"><![CDATA[]]></content>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>工具箱</title>
-      <link href="/tools/index.html"/>
-      <url>/tools/index.html</url>
-      
-        <content type="html"><![CDATA[]]></content>
+        <content type="html"><![CDATA[<h1 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h1><p>要使用 Type，必须首先安装 Hexo。你可以访问 Hexo 的文档来了解如何安装 Hexo </p><blockquote><p><a href="https://hexo.io/zh-cn/">hexo.io&#x2F;zh-cn&#x2F;</a>。</p></blockquote><p>Hexo 中有两份配置文件，分别为站点目录下的 <code>_config.yml</code> 和 主题目录下的 <code>_config.yml</code>，后文将前者称为「站点配置文件」，后者称之为「主题配置文件」。</p><p>本主题支持 npm 和 git 两种安装方式，你也可以下载 release 版本手动安装。</p><h3 id="使用-npm-安装（推荐）"><a href="#使用-npm-安装（推荐）" class="headerlink" title="使用 npm 安装（推荐）"></a>使用 npm 安装（推荐）</h3><p>进入 Hexo 根目录，依次执行以下命令。</p><pre><code class="bash">npm install hexo-theme-type --savenpm installcp -v ./node_modules/hexo-theme-type/_config_test.yml ./_config.type.yml</code></pre><p>随后，修改 Hexo 根目录的「站点配置文件」</p><pre><code class="yaml">theme: type</code></pre><p>是用这种方式安装的主题，「主题配置文件」即为站点目录下的 <code>_config.type.yml</code> 文件。</p><h3 id="使用-git-安装"><a href="#使用-git-安装" class="headerlink" title="使用 git 安装"></a>使用 git 安装</h3><p>进入 Hexo 根目录，依次执行以下命令。</p><pre><code class="bash">git clone https://github.com/aiokr/hexo-theme-type.git themes/type --depth=1npm install</code></pre><p>随后，修改 Hexo 根目录的「站点配置文件」</p><pre><code class="yaml">theme: type</code></pre>]]></content>
       
     </entry>
     
@@ -226,11 +226,11 @@
     
     
     <entry>
-      <title>快速开始</title>
-      <link href="/type/getstart.html"/>
-      <url>/type/getstart.html</url>
+      <title>工具箱</title>
+      <link href="/tools/index.html"/>
+      <url>/tools/index.html</url>
       
-        <content type="html"><![CDATA[<h1 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h1><p>要使用 Type，必须首先安装 Hexo。你可以访问 Hexo 的文档来了解如何安装 Hexo </p><blockquote><p><a href="https://hexo.io/zh-cn/">hexo.io&#x2F;zh-cn&#x2F;</a>。</p></blockquote><p>Hexo 中有两份配置文件，分别为站点目录下的 <code>_config.yml</code> 和 主题目录下的 <code>_config.yml</code>，后文将前者称为「站点配置文件」，后者称之为「主题配置文件」。</p><p>本主题支持 npm 和 git 两种安装方式，你也可以下载 release 版本手动安装。</p><h3 id="使用-npm-安装（推荐）"><a href="#使用-npm-安装（推荐）" class="headerlink" title="使用 npm 安装（推荐）"></a>使用 npm 安装（推荐）</h3><p>进入 Hexo 根目录，依次执行以下命令。</p><pre><code class="bash">npm install hexo-theme-type --savenpm installcp -v ./node_modules/hexo-theme-type/_config_test.yml ./_config.type.yml</code></pre><p>随后，修改 Hexo 根目录的「站点配置文件」</p><pre><code class="yaml">theme: type</code></pre><p>是用这种方式安装的主题，「主题配置文件」即为站点目录下的 <code>_config.type.yml</code> 文件。</p><h3 id="使用-git-安装"><a href="#使用-git-安装" class="headerlink" title="使用 git 安装"></a>使用 git 安装</h3><p>进入 Hexo 根目录，依次执行以下命令。</p><pre><code class="bash">git clone https://github.com/aiokr/hexo-theme-type.git themes/type --depth=1npm install</code></pre><p>随后，修改 Hexo 根目录的「站点配置文件」</p><pre><code class="yaml">theme: type</code></pre>]]></content>
+        <content type="html"><![CDATA[]]></content>
       
     </entry>
     
